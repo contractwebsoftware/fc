@@ -1,0 +1,14 @@
+h2 {
+	color: #0e7db6;
+	line-height: 1.5em;
+	margin-bottom: 1em;
+}
+p {
+	margin-bottom: 1.5em;
+}
+a {
+	color: #585b5d;
+	&:hover {
+		color: #424446;
+	}
+}

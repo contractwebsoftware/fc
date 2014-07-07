@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "gulp": "~3.6.2",
+    "gulp-include": "~0.2.2",
+    "gulp-concat": "~2.2.0",
+    "gulp-jshint": "~1.5.5",
+    "gulp-coffee": "~1.4.2",
+    "gulp-rename": "~1.2.0",
+    "gulp-ruby-sass": "~0.4.3",
+    "gulp-uglify": "~0.2.1",
+    "gulp-util": "~2.2.14"
+  }
+}
