@@ -50,10 +50,11 @@ class ClientController extends BaseController {
             
             $states = DB::table('state')->distinct()->get();
             if(Input::get('provider_id'))$provider = ClientController::updateProvider(Input::get('provider_id'));
-            elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
-            else $provider = Session::get('provider');
-                
-            echo '<br>INPUTS:<br />'; print_r(Input::get());  
+            //elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
+            elseif(is_object(Session::get('provider'))) $provider = Session::get('provider');
+            else $provider = ClientController::updateProvider(1); 
+            
+			echo '<br>INPUTS:<br />'; print_r(Input::get());  
           
             
             if($goToStep != 0)Session::put('step', $goToStep);
