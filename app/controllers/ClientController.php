@@ -50,11 +50,16 @@ class ClientController extends BaseController {
             
             $states = DB::table('state')->distinct()->get();
             if(Input::get('provider_id'))$provider = ClientController::updateProvider(Input::get('provider_id'));
-            //elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
-            elseif(is_object(Session::get('provider'))) $provider = Session::get('provider');
+                    #elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
+            //REFRESHING SO PROVIDER INFO ISN'T CACHED
+            elseif(is_object(Session::get('provider'))) {
+                $provider = Session::get('provider');
+                $provider = ClientController::updateProvider($provider->id);
+            }
             else $provider = ClientController::updateProvider(1); 
             
 			echo '<br>INPUTS:<br />'; print_r(Input::get());  
+          echo '<br>$provider:<br />'; print_r($provider);  
           
             
             if($goToStep != 0)Session::put('step', $goToStep);
@@ -64,6 +69,11 @@ class ClientController extends BaseController {
                 Session::put('step', $current_step->next_step_number);
             } 
             else Session::put('step', Input::get('step',1));
+            
+            if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+            else $client->sale_summary_r = Array();
+            //dd($sale_summary_r);
+            
             if($jsonReturn)return Response::json(Input::get());
             else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider]);
             
@@ -84,9 +94,8 @@ class ClientController extends BaseController {
         
         public function updateProvider($provider_id='', $client=''){
             $provider = DB::table('providers')->where('id', $provider_id)->first();
-            $provider_pricing = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
-            $provider->pricing_options = $provider_pricing;
-            
+            $provider->pricing_options = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
+           
             if(is_object($client)){
                 $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
                 if(count($client_provider)>0){
@@ -95,7 +104,7 @@ class ClientController extends BaseController {
                 else DB::table('clients_providers')->insert(array('provider_id'=>$provider_id, 'client_id'=>$client->id));
             }
             Session::put('provider', $provider);
-            Session::put('provider_pricing_options', $provider_pricing);
+            Session::put('provider_pricing_options', $provider->pricing_options);
             
             
             return $provider;
@@ -575,4 +584,90 @@ class ClientController extends BaseController {
             $client = Client::where('user_id',Sentry::getUser()->id)->first();
             return Response::json($client);
         }
+        
+        
+        // FIND THE TOTAL COST TO END USER FOR THIS REGISTRATION
+        public function getSaleTotals($client, $provider){
+            $TOTAL_PRICE = 0;
+            //dd();
+            
+            
+            if($client->CremainsInfo->package_plan == "1") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->basic_cremation;
+            elseif($client->CremainsInfo->package_plan == "2") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->premium_cremation;
+            else $saleSummary['report']['package_plan']['price'] = '';
+            $saleSummary['report']['package_plan']['desc'] = "Cremation Plan: " . ($client->CremainsInfo->package_plan==1?'Package A':'Package B');
+            $TOTAL_PRICE += $saleSummary['report']['package_plan']['price'];
+           
+
+            if($client->DeceasedInfo->weight == "weight_lt_250") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_lt_250;
+            elseif($client->DeceasedInfo->weight == "weight_lt_300") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_lt_300;
+            elseif($client->DeceasedInfo->weight == "weight_lt_350") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_lt_350;
+            elseif($client->DeceasedInfo->weight == "weight_gt_350") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_gt_350;
+            else $saleSummary['report']['weight']['price'] = '';
+            $saleSummary['report']['weight']['desc'] = "Weight: " . $client->DeceasedInfo->weight;
+            $TOTAL_PRICE += $saleSummary['report']['weight']['price'];
+            
+            
+
+            if($client->DeceasedInfo->has_pace_maker == "1") $saleSummary['report']['has_pace_maker']['price'] = $provider->pricing_options->pacemaker;
+            else $saleSummary['report']['has_pace_maker']['price'] = ''; 
+            $saleSummary['report']['has_pace_maker']['desc'] = "Has Pacemaker: " . ($client->DeceasedInfo->has_pace_maker?'Yes':'No');
+            $TOTAL_PRICE += $saleSummary['report']['has_pace_maker']['price'];
+            
+
+            if($client->CremainsInfo->cremain_plan == "scatter_on_land") $saleSummary['report']['cremain_plan']['price'] = $provider->pricing_options->scatter_on_land;
+            elseif($client->CremainsInfo->cremain_plan == "scatter_at_sea") $saleSummary['report']['cremain_plan']['price'] = $provider->pricing_options->scatter_at_sea;
+            else $saleSummary['report']['cremain_plan']['price'] = '';
+            $saleSummary['report']['cremain_plan']['desc'] = "Plan For Cremation Remains: " . $client->CremainsInfo->cremain_plan;
+            $TOTAL_PRICE += $saleSummary['report']['cremain_plan']['price'];
+            
+
+            if($client->CremainsInfo->cert_plan == "deathcert_wurn") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_wurn; $desc = "Mail certificate(s) with urn";}
+            elseif($client->CremainsInfo->cert_plan == "deathcert_cep") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_cep; $desc = "Mail certificate(s) seperately";}
+            elseif($client->CremainsInfo->cert_plan == "deathcert_pickup") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_pickup; $desc = "Pick up certificate(s) at our office";}
+            else { $saleSummary['report']['cert_plan']['price'] = $desc = ''; }            
+            $saleSummary['report']['cert_plan']['desc'] = "Certificate Shipping: " . $desc;
+            
+            $TOTAL_PRICE += $saleSummary['report']['cert_plan']['price'];
+            //echo '<pre>';print_r($client->CremainsInfo); print_r($provider->pricing_options); echo '</pre>'; die();
+            
+            //dd($cremain_info);
+            $saleSummary['report']['number_of_certs']['desc'] = 'Number of Certificates ($'.$provider->pricing_options->deathcert_each." each): " . $client->CremainsInfo->number_of_certs;
+            $saleSummary['report']['number_of_certs']['price'] = number_format((float)$provider->pricing_options->deathcert_each * ($client->CremainsInfo->number_of_certs?$client->CremainsInfo->number_of_certs:0), 2, '.', '');
+            $TOTAL_PRICE += $saleSummary['report']['number_of_certs']['price'];
+            
+            
+            $saleSummary['report']['filing_fee']['desc'] = "Filing Fee: " . $provider->pricing_options->filing_fee;
+            $saleSummary['report']['filing_fee']['price'] = $provider->pricing_options->filing_fee;
+            $TOTAL_PRICE += $saleSummary['report']['filing_fee']['price'];
+
+            if($client->CremainsInfo->custom1 != "" and $client->CremainsInfo->custom1 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
+                $saleSummary['report']['custom1']['desc'] = $client->CremainsInfo->custom1_text;
+                $saleSummary['report']['custom1']['price'] = $provider->pricing_options->custom1;
+                $TOTAL_PRICE += $saleSummary['report']['custom1']['price'];
+            }
+            if($client->CremainsInfo->custom2 != "" and $client->CremainsInfo->custom2 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
+                $saleSummary['report']['custom2']['desc'] = $client->CremainsInfo->custom2_text;
+                $saleSummary['report']['custom2']['price'] = $provider->pricing_options->custom2;
+                $TOTAL_PRICE += $saleSummary['report']['custom2']['price'];
+            }
+            if($client->CremainsInfo->custom3 != "" and $client->CremainsInfo->custom2 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
+                $saleSummary['report']['custom3']['desc'] = $client->CremainsInfo->custom2_text;
+                $saleSummary['report']['custom3']['price'] = $provider->pricing_options->custom3;
+                $TOTAL_PRICE += $saleSummary['report']['custom3']['price'];
+            }
+
+
+            $saleSummary['total'] = number_format((float)$TOTAL_PRICE, 2, '.', '');
+            
+            return $saleSummary;
+        }
+        
+        //DECIDE IF WE SHOULD COUNT THIS CUSTOM OPTION TOWARDS THE SALE
+	function customerCustomPlanOptions($package_plan, $custom_included){			
+            if($package_plan == $custom_included)return true;
+            elseif($custom_included == "both")return true;
+            else return false;
+	}   
+        
 }

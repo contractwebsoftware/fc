@@ -58,7 +58,7 @@
                         <h2>Login</h2>
                         <input type="text" id="login_email" placeholder="Email" />
                         <input type="password" id="login_password" placeholder="Password" />
-                        <button class="btn btn-info pull-right" id="login_btn">Login</button>
+                        <button class="btn btn-primary pull-right" id="login_btn">Login</button>
                     </div>
                     <div class="clear" /><br />
                     <div class="col-sm-12">
@@ -67,7 +67,7 @@
                         <input type="text" id="register_email" placeholder="Email" />
                         <input type="password" id="register_password" placeholder="Password" />
                         <input type="text" id="register_phone" placeholder="Phone" />
-                        <button class="btn btn-info pull-right" id="register_btn">Register</button>
+                        <button class="btn btn-primary pull-right" id="register_btn">Register</button>
                     </div>
                 </div>
                   

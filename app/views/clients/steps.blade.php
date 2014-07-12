@@ -57,11 +57,11 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12">
-                    <strong>Cremation Package A: $787.00</strong> <br />
-                    Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190. <br /><br />
+                    <strong>Cremation Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
+                    {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
-                    <strong>Cremation Package B: $1,087.00</strong> <br />
-                    Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection. <br /><br />
+                    <strong>Cremation Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
+                    {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
 
                     <strong><u>Pick A Plan</u></strong><br />
                     Please select a package from the drop down below:<br />
@@ -131,7 +131,7 @@
                 <div class="col-sm-6"><input name="deceased_info[yrs_in_county]" type="text" placeholder="Yrs In County" value="{{$client->DeceasedInfo->yrs_in_county}}"/></div>
             </div>
             <div class="row form-group"> 
-                <div class="col-sm-6"><input name="deceased_info[dob]" type="text" placeholder="Date of Birth YYYY-MM-DD" value="{{$client->DeceasedInfo->dob}}" /></div>
+                <div class="col-sm-6"><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth YYYY-MM-DD" value="{{$client->DeceasedInfo->dob}}" /></div>
                 <div class="col-sm-6">
                     <select name="deceased_info[gender]" class="form-control">
                         <option selected="selected" value="">Gender</option>
@@ -175,17 +175,17 @@
                     Items with potential additional fees<br />
                     <select name="deceased_info[weight]" class="form-control">
                          <option value="">Weight</option>
-                         <option value="Weight less than 250lbs." {{ ($client->DeceasedInfo->weight=="Weight less than 250lbs."?'selected':'') }} >Weight less than 250lbs.- Add $0.00</option>
-                         <option value="Weight 251-300lbs." {{ ($client->DeceasedInfo->weight=="Weight 251-300lbs."?'selected':'') }} >Weight 251-300lbs.- Add $100.00</option>
-                         <option value="Weight 301-350lbs." {{ ($client->DeceasedInfo->weight=="Weight 301-350lbs."?'selected':'') }} >Weight 301-350lbs.- Add $275.00</option>
-                         <option value="Weight 351lbs+" {{ ($client->DeceasedInfo->weight=="Weight 351lbs+"?'selected':'') }} >Weight 351lbs+- Add $350.00</option>
+                         <option value="weight_lt_250" {{ ($client->DeceasedInfo->weight=="weight_lt_250"?'selected':'') }} >Weight less than 250lbs - Add ${{$provider->pricing_options->weight_lt_250}}</option>
+                         <option value="weight_lt_300" {{ ($client->DeceasedInfo->weight=="weight_lt_300"?'selected':'') }} >Weight 251-300lbs - Add ${{$provider->pricing_options->weight_lt_300}}</option>
+                         <option value="weight_lt_350" {{ ($client->DeceasedInfo->weight=="weight_lt_350"?'selected':'') }} >Weight 301-350lbs - Add ${{$provider->pricing_options->weight_lt_350}}</option>
+                         <option value="weight_gt_350" {{ ($client->DeceasedInfo->weight=="weight_gt_350"?'selected':'') }} >Weight 351lbs - Add ${{$provider->pricing_options->weight_gt_350}}</option>
                      </select>
                 </div>                
                 <div class="col-sm-6"><br />
                     <select name="deceased_info[has_pace_maker]" class="form-control">
                         <option value="">Does deceased have a pacemaker?</option>
                         <option value="0" {{ ($client->DeceasedInfo->has_pace_maker=="0"?'selected':'') }}>Deceased DOES NOT have a pacemaker</option>
-                        <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add $150.00</option>
+                        <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add ${{$provider->pricing_options->pacemaker}}</option>
                     </select>
                 </div>                        
             </div>
@@ -195,7 +195,17 @@
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
                 <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
             </div>
-        </fieldset>        
+        </fieldset> 
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    
+        <script>
+            $("#dob").datepicker( {
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true
+            });
+        </script>
     {{ Form::close() }}
 
 
@@ -414,12 +424,12 @@
             <div class="row form-group">
                 <div class="col-sm-12">
                     <select name="cremains_info[cremain_plan]" class="form-control"> 
-                    <option value="Burial" {{ ($client->CremainsInfo->cremain_plan=="Burial"?'selected':'') }}> Burial </option> 
-                    <option value="Kept at residence" {{ ($client->CremainsInfo->cremain_plan=="Kept at residence"?'selected':'') }}> Kept at residence </option> 
-                    <option value="We scatter on land" {{ ($client->CremainsInfo->cremain_plan=="We scatter on land"?'selected':'') }}> We scatter on land- Add $125.00 </option> 
-                    <option value="You scatter on land" {{ ($client->CremainsInfo->cremain_plan=="You scatter on land"?'selected':'') }}> You scatters on land </option> 
-                    <option value="We scatter at sea" {{ ($client->CremainsInfo->cremain_plan=="We scatter at sea"?'selected':'') }}> We scatter at sea- Add $125.00 </option> 
-                    <option value="You scatter at sea" {{ ($client->CremainsInfo->cremain_plan=="You scatter at sea"?'selected':'') }}> You scatter at sea </option> 
+                    <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option> 
+                    <option value="kept_at_residence" {{ ($client->CremainsInfo->cremain_plan=="kept_at_residence"?'selected':'') }}> Kept at residence </option> 
+                    <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land- Add ${{$provider->pricing_options->scatter_on_land}} </option> 
+                    <option value="you_scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_land"?'selected':'') }}> You scatters on land </option> 
+                    <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea- Add ${{$provider->pricing_options->scatter_at_sea}} </option> 
+                    <option value="you_scatter_on_sea" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_sea"?'selected':'') }}> You scatter at sea </option> 
                 </select>
                 </div>
             </div>
@@ -462,7 +472,7 @@
             <div class="row form-group">
                 <div class="col-sm-12">
                     How many copies of the death certificate do you need? &nbsp; - &nbsp; 
-                    Each Certificate: <span id="MainContent_FormView9_FormView19_deathcertCEPLabel" style="font-weight:bold;">$21.00</span><br>
+                    Each Certificate: <span id="MainContent_FormView9_FormView19_deathcertCEPLabel" style="font-weight:bold;">${{$provider->pricing_options->deathcert_each}}</span><br>
                     <input name="cremains_info[number_of_certs]" type="text" value="{{$client->CremainsInfo->number_of_certs}}" />
                     
                 </div>
@@ -471,9 +481,9 @@
                 <div class="col-sm-9">
                     What would you like us to do with the certificates?<br />
                     <select name="cremains_info[cert_plan]" class="form-control">
-                        <option value="Mail certificate(s) with urn" {{ ($client->CremainsInfo->cert_plan=="Mail certificate(s) with urn"?'selected':'') }}>Mail certificate(s) with urn- Add $125.00</option>
-                        <option value="Mail certificate(s) seperately" {{ ($client->CremainsInfo->cert_plan=="Mail certificate(s) seperately"?'selected':'') }}>Mail certificate(s) separately- Add $25.00</option>
-                        <option value="Pick up certificate(s) at our office" {{ ($client->CremainsInfo->cert_plan=="Pick up certificate(s) at our office"?'selected':'') }}>Pick up certificate(s) at our office- Add $0.00</option>
+                        <option value="deathcert_wurn" {{ ($client->CremainsInfo->cert_plan=="deathcert_wurn"?'selected':'') }}>Mail certificate(s) with urn- Add ${{$provider->pricing_options->deathcert_wurn}}</option>
+                        <option value="deathcert_cep" {{ ($client->CremainsInfo->cert_plan=="deathcert_cep"?'selected':'') }}>Mail certificate(s) separately- Add ${{$provider->pricing_options->deathcert_cep}}</option>
+                        <option value="deathcert_pickup" {{ ($client->CremainsInfo->cert_plan=="deathcert_pickup"?'selected':'') }}>Pick up certificate(s) at our office- Add ${{$provider->pricing_options->deathcert_pickup}}</option>
                     </select>
                 </div>
                 <div class="col-sm-3">
@@ -533,6 +543,7 @@
     {{ Form::open(['action'=>'ClientController@postSteps10','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
+        
         <fieldset>
             
             <h3>FTC Disclosures <p>Legal Authorizations</p></h3>
@@ -549,15 +560,22 @@
             <br />
             <h3>Payment Summary <p>Itemization of goods and services <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="If you need to change a choice that affects the summary then return to the page and change the selection your summary will update.">?</a></p></h3>
 
-            <div class="row form-group">
+            <div class="row ">
                 <div class="col-sm-12" style="background-color:#fff;">            
-                    <table class="rgMasterTable" id="ctl00_MainContent_RadGrid1_ctl00" style="width:100%;table-layout:auto;empty-cells:show;">
-                        <th scope="col" class="rgHeader">Description</th><th scope="col" class="rgHeader">Price</th>
-                        <tr class="rgRow" id="ctl00_MainContent_RadGrid1_ctl00__0">
-                            <td><!--Basic Cremation Package--></td><td><!--$787.00--></td>
-                        </tr>
+                    <table style="width:100%;empty-cells:show;">
+                        <th>Description</th><th >Price</th>
+                        <?php
+                            if(is_array($client->sale_summary_r['report']))
+                            foreach($client->sale_summary_r['report'] as $key=>$value){
+                                echo '<tr><td>'.$value['desc'].'</td><td>'.$value['price'].'</td></tr>';
+                            }
+                        ?>                       
+                            
                     </table>
+                <div class="col-sm-12 pull-right" style="text-align:right;font-weight:bold;font-size:16px;">Total Summary: $<?=$client->sale_summary_r['total']?></div>
+                <br class="clear"/><br class="clear"/>
                 </div>
+                
             </div>
             <div class="row form-group">
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>

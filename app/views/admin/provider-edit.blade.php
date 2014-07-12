@@ -293,9 +293,9 @@
 					</div>
 					<div class="col-xs-12 col-md-3">
 						<select name="custom_pricing_1_include" id="custom_pricing_1_include" class="form-control">
-							<option value="A">Plan A</option>
-							<option value="B">Plan B</option>
-							<option value="Both">Both</option>
+							<option value="basic_cremation">Plan A</option>
+							<option value="premium_cremation">Plan B</option>
+							<option value="both">Both</option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-md-3">
