@@ -13,18 +13,18 @@ class ClientController extends BaseController {
             
             if($client == null){
                 if(Sentry::getUser()){
-                    echo 'found client in sentry, userid:'.Sentry::getUser()->id;
+                    //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
                     $client = Client::where('user_id',Sentry::getUser()->id)->first();
                     $client = ClientController::fillOutClientTables($client);
                 }
                 elseif(Session::get('client_id')!='') {
-                    echo 'found client in session';
+                    //echo 'found client in session';
                     $client = Client::where('id',Session::get('client_id'))->first();
                     $client = ClientController::fillOutClientTables($client);
                 }
                 
                 if($client == null){
-                    echo 'client not pulled form sentry or session';
+                    //echo 'client not pulled form sentry or session';
                     $client = New Client();
                 }
             }
@@ -58,8 +58,8 @@ class ClientController extends BaseController {
             }
             else $provider = ClientController::updateProvider(1); 
             
-			echo '<br>INPUTS:<br />'; print_r(Input::get());  
-          echo '<br>$provider:<br />'; print_r($provider);  
+                //echo '<br>INPUTS:<br />'; print_r(Input::get());  
+                //echo '<br>$provider:<br />'; print_r($provider);  
           
             
             if($goToStep != 0)Session::put('step', $goToStep);
