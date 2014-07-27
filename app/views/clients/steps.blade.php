@@ -80,20 +80,20 @@
                     <b><u>Plan Additions</u></b><br />
                     <?php
                         
-                        if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.' required-'.$provider->pricing_options->custom1_req.'">
+                        if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.'">
                                      <label for="custom1_req">'.$provider->pricing_options->custom1_text.': $'.$provider->pricing_options->custom1.'</label> 
-                                     <input id="custom1_req" type="checkbox" '.($provider->pricing_options->custom1_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom1]" value="1" />
+                                     <input id="custom1_req" type="checkbox" '.($provider->pricing_options->custom1_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom1_req.'" name="cremains_info[custom1]" value="1" />
                                      </div>';
                                  
                         
-                        if($provider->pricing_options->custom2_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom2_included.' required-'.$provider->pricing_options->custom2_req.'">
+                        if($provider->pricing_options->custom2_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom2_included.'">
                                      <label for="custom2_req">'.$provider->pricing_options->custom2_text.': $'.$provider->pricing_options->custom2.'</label> 
-                                     <input id="custom2_req"  type="checkbox" '.($provider->pricing_options->custom2_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom2]" value="1" /> 
+                                     <input id="custom2_req"  type="checkbox" '.($provider->pricing_options->custom2_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom2_req.'" name="cremains_info[custom2]" value="1" /> 
                                      </div>'; 
                         
-                        if($provider->pricing_options->custom3_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom3_included.' required-'.$provider->pricing_options->custom2_req.'">
+                        if($provider->pricing_options->custom3_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom3_included.'">
                                      <label for="custom3_req">'.$provider->pricing_options->custom3_text.': $'.$provider->pricing_options->custom3.'</label> 
-                                     <input id="custom3_req" type="checkbox" '.($provider->pricing_options->custom3_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom3]" value="1" />                                    
+                                     <input id="custom3_req" type="checkbox" '.($provider->pricing_options->custom3_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom3_req.'" name="cremains_info[custom3]" value="1" />                                    
                                      </div>'; 
                    ?>
                     
@@ -139,6 +139,11 @@
             $('#package_plan').on('change',function(){
                     plan_options();      
         
+            });
+            
+            $('.required-Y,.required-y').on('click change blur focus',function(){
+                //alert($(this).prop('checked',checked'));
+                $(this).prop('checked',true);
             });
             
             $("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
