@@ -653,18 +653,18 @@ class ClientController extends BaseController {
             $saleSummary['report']['filing_fee']['price'] = $provider->pricing_options->filing_fee;
             $TOTAL_PRICE += $saleSummary['report']['filing_fee']['price'];
 
-            if($client->CremainsInfo->custom1 != "" and $client->CremainsInfo->custom1 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
-                $saleSummary['report']['custom1']['desc'] = $client->CremainsInfo->custom1_text;
+            if($provider->pricing_options->custom1_text != "" and ($client->CremainsInfo->custom1==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
+                $saleSummary['report']['custom1']['desc'] = $provider->pricing_options->custom1_text;
                 $saleSummary['report']['custom1']['price'] = $provider->pricing_options->custom1;
                 $TOTAL_PRICE += $saleSummary['report']['custom1']['price'];
             }
-            if($client->CremainsInfo->custom2 != "" and $client->CremainsInfo->custom2 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
-                $saleSummary['report']['custom2']['desc'] = $client->CremainsInfo->custom2_text;
+            if($provider->pricing_options->custom2_text != "" and ($client->CremainsInfo->custom2==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
+                $saleSummary['report']['custom2']['desc'] = $provider->pricing_options->custom2_text;
                 $saleSummary['report']['custom2']['price'] = $provider->pricing_options->custom2;
                 $TOTAL_PRICE += $saleSummary['report']['custom2']['price'];
             }
-            if($client->CremainsInfo->custom3 != "" and $client->CremainsInfo->custom2 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
-                $saleSummary['report']['custom3']['desc'] = $client->CremainsInfo->custom2_text;
+            if($provider->pricing_options->custom3_text != "" and ($client->CremainsInfo->custom3==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
+                $saleSummary['report']['custom3']['desc'] = $provider->pricing_options->custom3_text;
                 $saleSummary['report']['custom3']['price'] = $provider->pricing_options->custom3;
                 $TOTAL_PRICE += $saleSummary['report']['custom3']['price'];
             }
@@ -678,7 +678,7 @@ class ClientController extends BaseController {
         //DECIDE IF WE SHOULD COUNT THIS CUSTOM OPTION TOWARDS THE SALE
 	function customerCustomPlanOptions($package_plan, $custom_included){			
             if($package_plan == $custom_included)return true;
-            elseif($custom_included == "both")return true;
+            elseif($custom_included == 3)return true;
             else return false;
 	}   
         
