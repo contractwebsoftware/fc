@@ -1,6 +1,6 @@
 @extends('layouts.client')
 @section('content')
-<div class="col-sm-10">
+<div class="col-sm-9">
  
 @if(Session::get('step')==1)
    
@@ -47,7 +47,6 @@
                     Please select the status:<br />
                     <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation 
                         <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />                    
-                    <font style="color:red;font-weight:bold;">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
                     <select name="deceased_info[cremation_reason]" class="form-control">
                         <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
                         <option value="a_death_is_pending" {{ ($client->DeceasedInfo->cremation_reason=="a_death_is_pending"?'selected':'') }}>A death is pending</option>
@@ -65,7 +64,8 @@
 
                     <strong><u>Pick A Plan</u></strong><br />
                     Please select a package from the drop down below:<br />
-                    <select name="cremains_info[package_plan]" class="form-control">
+                    <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
+                        <option value="0" {{ ($client->CremainsInfo->package_plan=="0"?'selected':'') }}>Select A Plan</option>
                         <option value="1" {{ ($client->CremainsInfo->package_plan=="1"?'selected':'') }}>Plan A</option>
                         <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
                     </select><br />
@@ -76,17 +76,71 @@
                     <strong>Plan B Description</strong>:<br />
                     Same as plan A, but choose one of the Urns from our list, included in the cost.<br /><br />
                     -->
+                    
+                    <b><u>Plan Additions</u></b><br />
+                    <?php
+                        
+                        if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.' required-'.$provider->pricing_options->custom1_req.'">
+                                     <label for="custom1_req">'.$provider->pricing_options->custom1_text.': $'.$provider->pricing_options->custom1.'</label> 
+                                     <input id="custom1_req" type="checkbox" '.($provider->pricing_options->custom1_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom1]" value="1" />
+                                     </div>';
+                                 
+                        
+                        if($provider->pricing_options->custom2_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom2_included.' required-'.$provider->pricing_options->custom2_req.'">
+                                     <label for="custom2_req">'.$provider->pricing_options->custom2_text.': $'.$provider->pricing_options->custom2.'</label> 
+                                     <input id="custom2_req"  type="checkbox" '.($provider->pricing_options->custom2_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom2]" value="1" /> 
+                                     </div>'; 
+                        
+                        if($provider->pricing_options->custom3_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom3_included.' required-'.$provider->pricing_options->custom2_req.'">
+                                     <label for="custom3_req">'.$provider->pricing_options->custom3_text.': $'.$provider->pricing_options->custom3.'</label> 
+                                     <input id="custom3_req" type="checkbox" '.($provider->pricing_options->custom3_req=='Y'?'checked=checked readonly':'').' name="cremains_info[custom3]" value="1" />                                    
+                                     </div>'; 
+                   ?>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    
+                    
+                    <br />
+                    <font style="color:red;font-weight:bold;">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
+                    
                 </div>
             </div>
             
             <div class="row form-group">
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-6"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Submit</button><br class="clear" /></div>
             </div>
         </fieldset>
-        
+        <style>
+            label {float:left;margin-right:15px;font-weight:normal;}
+            .price-options {clear:both;float:none;margin-left:15px;}
+        </style>
         <script src="{{ asset('js/jquery.chained.remote.min.js') }}"></script>
 	<script>
+            $('#submit').click(function(){
+                if($('#package_plan').val()=='0'){alert('Please Select A Package Plan');return false;}
+                
+                
+            });
+            
+            function plan_options(){
+                if($('#package_plan').val()=='1')$('.included-1, .included-3').slideDown();
+                else $('.included-1').hide();
+                if($('#package_plan').val()=='2')$('.included-2, .included-3').slideDown();
+                else $('.included-2').hide();
+            }
+            plan_options();
+            
+            $('#package_plan').on('change',function(){
+                    plan_options();      
+        
+            });
+            
             $("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
             $("#zip").remoteChained("#city", "{{action('StepController@getZips')}}");
             $("#select_zip").click(function(){

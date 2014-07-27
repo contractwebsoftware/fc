@@ -62,5 +62,15 @@ class ProviderController extends BaseController {
 		Session::flash('success','Provider\'s Data has been updated');
 		return Redirect::action('AdminController@getProviders');
 	}
+        
+        
+        public function postUpdatePricing(){
+		Session::flash('success','Provider\'s Data has been updated');
+                $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
+		
+                
+		return Redirect::action('ProviderController@getInformation');
+	}
+        
 
 }
