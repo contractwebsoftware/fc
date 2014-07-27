@@ -1,5 +1,6 @@
 /bootstrap/compiled.php
 /vendor
+/public/videos
 /.sass-cache
 composer.phar
 composer.lock
