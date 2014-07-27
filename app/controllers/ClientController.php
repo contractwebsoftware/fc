@@ -151,6 +151,18 @@ class ClientController extends BaseController {
             
             if(is_array(Input::get('cremains_info'))){
                 $input['cremains_info'] = Input::get('cremains_info');
+                
+                $provider = Session::get('provider');
+                if($provider->pricing_options->custom1_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom1'] = '0';
+                if($provider->pricing_options->custom2_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom2'] = '0';
+                if($provider->pricing_options->custom3_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom3'] = '0';
+                
+                if($provider->pricing_options->custom1_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom1'] = '0';
+                if($provider->pricing_options->custom2_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom2'] = '0';
+                if($provider->pricing_options->custom3_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom3'] = '0';
+                
+               
+                    
                 $client->CremainsInfo->fill($input['cremains_info']);
                 $client->CremainsInfo->save(); 
             }
@@ -641,17 +653,17 @@ class ClientController extends BaseController {
             $saleSummary['report']['filing_fee']['price'] = $provider->pricing_options->filing_fee;
             $TOTAL_PRICE += $saleSummary['report']['filing_fee']['price'];
 
-            if($client->CremainsInfo->custom1 != "" and $client->CremainsInfo->custom1 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
+            if($client->CremainsInfo->custom1 != "" and $client->CremainsInfo->custom1 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
                 $saleSummary['report']['custom1']['desc'] = $client->CremainsInfo->custom1_text;
                 $saleSummary['report']['custom1']['price'] = $provider->pricing_options->custom1;
                 $TOTAL_PRICE += $saleSummary['report']['custom1']['price'];
             }
-            if($client->CremainsInfo->custom2 != "" and $client->CremainsInfo->custom2 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
+            if($client->CremainsInfo->custom2 != "" and $client->CremainsInfo->custom2 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
                 $saleSummary['report']['custom2']['desc'] = $client->CremainsInfo->custom2_text;
                 $saleSummary['report']['custom2']['price'] = $provider->pricing_options->custom2;
                 $TOTAL_PRICE += $saleSummary['report']['custom2']['price'];
             }
-            if($client->CremainsInfo->custom3 != "" and $client->CremainsInfo->custom2 != "0.00" and customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
+            if($client->CremainsInfo->custom3 != "" and $client->CremainsInfo->custom2 != "0.00" and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
                 $saleSummary['report']['custom3']['desc'] = $client->CremainsInfo->custom2_text;
                 $saleSummary['report']['custom3']['price'] = $provider->pricing_options->custom3;
                 $TOTAL_PRICE += $saleSummary['report']['custom3']['price'];

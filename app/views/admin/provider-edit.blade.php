@@ -37,7 +37,7 @@
 					</div>
 					<div class="form-group">
 						<label  class="col-sm-4" for="email">Email</label>
-						<div class="col-sm-8"><input type="email" placeholder="Email" name="email" id="email" class="form-control" value="{{ $fuser->email }}"></div>
+						<div class="col-sm-8"><input type="email" placeholder="Email" name="email" id="email" class="form-control" value="{{ $provider->email }}"></div>
 					</div>
 					<div class="form-group">
 						<label  class="col-sm-4" for="phone">Phone</label>
@@ -145,7 +145,7 @@
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">
-			{{ Form::open(['class'=>'form-horizontal']) }}
+			{{ Form::open(['action'=>'AdminController@postUpdatePricing', 'class'=>'form-horizontal']) }}
 			{{ Form::hidden('provider_id',$provider->id) }}
 			<fieldset>
 				<legend>Pricing</legend>
@@ -293,9 +293,9 @@
 					</div>
 					<div class="col-xs-12 col-md-3">
 						<select name="custom_pricing_1_include" id="custom_pricing_1_include" class="form-control">
-							<option value="basic_cremation">Plan A</option>
-							<option value="premium_cremation">Plan B</option>
-							<option value="both">Both</option>
+							<option value="1">Plan A</option>
+							<option value="2">Plan B</option>
+							<option value="3">Both</option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-md-3">
@@ -328,9 +328,9 @@
 					</div>
 					<div class="col-xs-12 col-md-3">
 						<select name="custom_pricing_2_include" id="custom_pricing_2_include" class="form-control">
-							<option value="A">Plan A</option>
-							<option value="B">Plan B</option>
-							<option value="Both">Both</option>
+							<option value="1">Plan A</option>
+							<option value="2">Plan B</option>
+							<option value="3">Both</option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-md-3">
@@ -363,9 +363,9 @@
 					</div>
 					<div class="col-xs-12 col-md-3">
 						<select name="custom_pricing_3_include" id="custom_pricing_3_include" class="form-control">
-							<option value="A">Plan A</option>
-							<option value="B">Plan B</option>
-							<option value="Both">Both</option>
+							<option value="1">Plan A</option>
+							<option value="2">Plan B</option>
+							<option value="3">Both</option>
 						</select>
 					</div>
 					<div class="col-xs-12 col-md-3">

@@ -12,7 +12,8 @@
         <script src="{{ asset('packages/Bootflat/js/jquery-1.11.1.min.js') }}"></script>
 	<!--<script src="{{ asset('packages/Bootflat/js/jquery-1.11.1.min.map') }}"></script>-->
 	<script src="{{ asset('packages/Bootflat/js/jquery-migrate-1.2.1.min.js') }}"></script>
-	
+	<script type="text/javascript" src="{{ asset('videos/jwplayer/jwplayer.js') }}" ></script>
+
 	@section('header')
 	@show
 </head>
