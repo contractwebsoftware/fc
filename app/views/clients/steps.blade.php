@@ -44,18 +44,6 @@
             
             <div class="row form-group">
                 <div class="col-sm-12">
-                    Please select the status:<br />
-                    <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation 
-                        <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />                    
-                    <select name="deceased_info[cremation_reason]" class="form-control">
-                        <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
-                        <option value="a_death_is_pending" {{ ($client->DeceasedInfo->cremation_reason=="a_death_is_pending"?'selected':'') }}>A death is pending</option>
-                        <option value="a_death_has_occurred" {{ ($client->DeceasedInfo->cremation_reason=="a_death_has_occurred"?'selected':'') }}>A death has occurred</option>
-                    </select>                    
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-sm-12">
                     <strong>Cremation Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
@@ -97,14 +85,22 @@
                                      </div>'; 
                    ?>
                     
-                    
+                    <br /><br />
                 </div>
             </div>
             
+            
             <div class="row form-group">
                 <div class="col-sm-12">
-                    
-                    
+                    Please select the status:<br />
+                    <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation 
+                        <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />                    
+                    <select name="deceased_info[cremation_reason]" class="form-control">
+                        <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
+                        <option value="a_death_is_pending" {{ ($client->DeceasedInfo->cremation_reason=="a_death_is_pending"?'selected':'') }}>A death is pending</option>
+                        <option value="a_death_has_occurred" {{ ($client->DeceasedInfo->cremation_reason=="a_death_has_occurred"?'selected':'') }}>A death has occurred</option>
+                    </select>                    
+               
                     <br />
                     <font style="color:red;font-weight:bold;">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
                     

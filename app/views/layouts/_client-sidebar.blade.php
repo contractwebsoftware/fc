@@ -9,14 +9,14 @@
         
         <?php
             switch(Session::get('step')){
-                case 1: $vid = "004.m4v"; break;
+                case 1: $vid = "005.m4v"; break;
                 case 2: $vid = "006.m4v"; break;
                 case 3: $vid = "007.m4v"; break;
                 case 4: $vid = "008.m4v"; break;
                 case 5: $vid = "009.m4v"; break;
                 case 6: $vid = "010.m4v"; break;
                 case 7: $vid = "011.m4v"; break;
-                case 8: $vid = "012.m4v"; break;
+                case 8: $vid = "013.m4v"; break;
                 case 9: $vid = "014.m4v"; break;
                 case 10: $vid = "015.m4v"; break;
                 case 11: $vid = "016.m4v"; break;
@@ -37,6 +37,7 @@
                     file: "{{ asset('/videos/'.$vid) }}",
                     width: 270,
                     primary: 'flash',
+                    <?=(Session::get('step')==11?'autostart: true,':'')?>
                     image: "{{ asset('http://app.forcremation.com/images/forcremation-video-start.jpg') }}"
                 });
             </script>
