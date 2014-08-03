@@ -12,7 +12,7 @@
         <fieldset>
             <div class="row">
                 <div class="col-md-6"><h3 class="pull-left">Cremation Plans</h3></div>
-                <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle()" class="pull-right">Select a different provider?</a></div>
+                <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
             </div>
             <div id="select_location" style="display:none;" class="row pull-left">
                 <div class="col-md-3">
