@@ -49,8 +49,12 @@ class ClientController extends BaseController {
            
             
             $states = DB::table('state')->distinct()->get();
-            if(Input::get('provider_id'))$provider = ClientController::updateProvider(Input::get('provider_id'));
+            if(Input::get('provider_id')){
+                $provider_id = Input::get('provider_id');
+                $provider_id = str_replace('provider-','',$provider_id);
+                $provider = ClientController::updateProvider($provider_id);
                     #elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
+            }
             //REFRESHING SO PROVIDER INFO ISN'T CACHED
             elseif(is_object(Session::get('provider'))) {
                 $provider = Session::get('provider');
@@ -626,12 +630,20 @@ class ClientController extends BaseController {
             $saleSummary['report']['has_pace_maker']['desc'] = "Has Pacemaker: " . ($client->DeceasedInfo->has_pace_maker?'Yes':'No');
             $TOTAL_PRICE += $saleSummary['report']['has_pace_maker']['price'];
             
-
+            /*
             if($client->CremainsInfo->cremain_plan == "scatter_on_land") $saleSummary['report']['cremain_plan']['price'] = $provider->pricing_options->scatter_on_land;
             elseif($client->CremainsInfo->cremain_plan == "scatter_at_sea") $saleSummary['report']['cremain_plan']['price'] = $provider->pricing_options->scatter_at_sea;
             else $saleSummary['report']['cremain_plan']['price'] = '';
             $saleSummary['report']['cremain_plan']['desc'] = "Plan For Cremation Remains: " . $client->CremainsInfo->cremain_plan;
             $TOTAL_PRICE += $saleSummary['report']['cremain_plan']['price'];
+            */
+            
+            if($client->CremainsInfo->cremation_shipping_plan == "scatter_on_land") $saleSummary['report']['cremation_shipping_plan']['price'] = $provider->pricing_options->scatter_on_land;
+            elseif($client->CremainsInfo->cremation_shipping_plan == "scatter_at_sea") $saleSummary['report']['cremation_shipping_plan']['price'] = $provider->pricing_options->scatter_at_sea;
+            elseif($client->CremainsInfo->cremation_shipping_plan == "ship_to_you") $saleSummary['report']['cremation_shipping_plan']['price'] = $provider->pricing_options->ship_to_you;
+            else $saleSummary['report']['cremation_shipping_plan']['price'] = '';
+            $saleSummary['report']['cremation_shipping_plan']['desc'] = "Plan For Cremation Remains: " . $client->CremainsInfo->cremation_shipping_plan;
+            $TOTAL_PRICE += $saleSummary['report']['cremation_shipping_plan']['price'];
             
 
             if($client->CremainsInfo->cert_plan == "deathcert_wurn") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_wurn; $desc = "Mail certificate(s) with urn";}

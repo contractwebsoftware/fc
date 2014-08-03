@@ -6,17 +6,31 @@ class StepController extends BaseController {
 	
 	public function getCities(){
             //print_r($_GET);
-            $city = DB::table('funeral_homes')->where('e_state', 'like', Input::get('state'))->orderBy('e_city', 'asc')->groupBy('e_city')->get();
+            //->groupBy('e_city')->orderBy('e_city')
+            $city = DB::table('funeral_homes')->where('e_state', 'like', Input::get('state'))->groupBy('e_city')->orderBy('e_city','asc')->get();
             $json_r = array();
+            
+            //asort($city);
+            
             foreach($city as $key=>$row){
-                $json_r[$row->id] = $row->e_city;
+                $json_r[$row->e_city.'---'.$row->id] = $row->e_city;
             }
+            
+            //asort($json_r);
+            /*
+            foreach($city as $key=>$row){
+                $json_r[$row] = $key;
+            }*/
+            
+            // dd($json_r);
             return Response::json($json_r);
             
         }
         
         public function getZips(){
-            $zip = DB::table('funeral_homes')->where('id', Input::get('city'))->first();
+            $city_r = explode(Input::get('city'), '---');
+            
+            $zip = DB::table('funeral_homes')->where('id', $city_r[1])->first();
             //dd($zip);
             //$city = DB::table('zips')->where('city', Input::get('city'))->andWhere('state', $zip->state)->get();
             $cities = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->orderBy('e_postal', 'asc')->get();
@@ -26,6 +40,27 @@ class StepController extends BaseController {
             $json_r = array();
             foreach($cities as $key=>$row){
                 $json_r[$row->e_postal] = $row->e_postal;
+            }
+            return Response::json($json_r);
+        }
+        
+        public function getProvidersByCity(){
+            $city_r = explode('---', Input::get('city'));
+            //dd($city_r);
+            $zip = DB::table('funeral_homes')->where('id', $city_r[1])->first();
+            //dd($zip);
+            //$city = DB::table('zips')->where('city', Input::get('city'))->andWhere('state', $zip->state)->get();
+            $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->orderBy('biz_name', 'asc')->get();
+            $providers = DB::table('providers')->where('zip', $zip->e_postal)->orderBy('business_name', 'asc')->get();
+            
+            //print_r(DB::getQueryLog());
+            //dd($city);
+            $json_r = array(''=>'Select A Provider');
+            foreach($funeral_homes as $key=>$row){
+                $json_r['funeralhome-'.$row->id] = $row->biz_name;
+            }
+            foreach($providers as $key=>$row){
+                $json_r['provider-'.$row->id] = $row->business_name;
             }
             return Response::json($json_r);
         }

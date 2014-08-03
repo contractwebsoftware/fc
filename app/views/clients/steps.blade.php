@@ -15,7 +15,7 @@
                 <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle()" class="pull-right">Select a different location?</a></div>
             </div>
             <div id="select_location" style="display:none;" class="row pull-left">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select id="state" name="state" class="pull-right">
                         <option value="">--</option>
                         <?php
@@ -26,18 +26,18 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select id="city" name="city">
                         <option value="">--</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select id="zip" name="zip">
+                    <select id="new_provider" name="new_provider">
                         <option value="">--</option>
                     </select>
                 </div>
-                <div class="col-md-1">
-                    <button class="btn btn-primary" id="select_zip">Select Location</button>
+                <div class="col-md-2">
+                    <button class="btn btn-primary" id="choose_provider">Select Location</button>
                 </div>
                 <br style="float:none;clear:both;" /><Br />
             </div>
@@ -143,12 +143,24 @@
             });
             
             $("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
-            $("#zip").remoteChained("#city", "{{action('StepController@getZips')}}");
-            $("#select_zip").click(function(){
+            $("#new_provider").remoteChained("#city", "{{action('StepController@getProvidersByCity')}}");
+            $('#new_provider').on('change', function(){
+                $("#new_provider option:contains('funeralhome-')").attr("disabled",true);
+                $("#new_provider option[value*='funeralhome-']").attr('disabled', true );
+                
+                var val = $(this).val();
+                if(val == "" || val.toLowerCase().indexOf("funeralhome-") >= 0){
+                    $("#new_provider option:contains('provider-')").attr("selected",true);
+                    $("#new_provider option[value*='provider-']").attr('selected', true );
+                }
+            });
+            
+            $("#choose_provider").click(function(){
                 //alert('going to ?set_zip='+$("#zip").val());
-                window.location.href="{{action('ClientController@getSaveZip')}}?set_zip="+$("#zip").val();
+                window.location.href="{{action('ClientController@getSteps1')}}?provider_id="+$("#new_provider").val();
                 return false;
             });
+            
         </script>
     {{ Form::close() }}
 
@@ -481,9 +493,9 @@
                     <select name="cremains_info[cremain_plan]" class="form-control"> 
                     <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option> 
                     <option value="kept_at_residence" {{ ($client->CremainsInfo->cremain_plan=="kept_at_residence"?'selected':'') }}> Kept at residence </option> 
-                    <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land- Add ${{$provider->pricing_options->scatter_on_land}} </option> 
+                    <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land </option> <!--- Add ${{$provider->pricing_options->scatter_on_land}} -->
                     <option value="you_scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_land"?'selected':'') }}> You scatters on land </option> 
-                    <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea- Add ${{$provider->pricing_options->scatter_at_sea}} </option> 
+                    <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea </option> <!--- Add ${{$provider->pricing_options->scatter_at_sea}} -->
                     <option value="you_scatter_on_sea" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_sea"?'selected':'') }}> You scatter at sea </option> 
                 </select>
                 </div>
@@ -583,7 +595,15 @@
                 <div class="col-sm-6"><input type="text" placeholder="Phone Number" name="cremains_info[shipto_phone]" value="{{$client->CremainsInfo->shipto_phone}}" ></div>   
                 <div class="col-sm-6"><input type="text" placeholder="Email Address" name="cremains_info[shipto_email]" value="{{$client->CremainsInfo->shipto_email}}" > </div>    
             </div> 
-            <div class="row form-group">         
+            <div class="row form-group">    
+                <div class="col-sm-12">
+                    <select name="cremains_info[cremation_shipping_plan]" class="form-control"> 
+                        <option value="burial" {{ ($client->CremainsInfo->cremation_shipping_plan==""?'selected':'') }}> I will pick up at your facility - Add $0.00</option> 
+                        <option value="scatter_on_land" {{ ($client->CremainsInfo->cremation_shipping_plan=="scatter_on_land"?'selected':'') }}> Scatter on Land (non-witness, non-recoverable) - Add ${{$provider->pricing_options->scatter_on_land}} </option> 
+                        <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremation_shipping_plan=="scatter_at_sea"?'selected':'') }}> Scatter at Sea (non-witness, non-recoverable) - Add ${{$provider->pricing_options->scatter_at_sea}} </option> 
+                        <option value="ship_to_you" {{ ($client->CremainsInfo->cremation_shipping_plan=="ship_to_you"?'selected':'') }}> Ship to address via certified registered mail - Add ${{$provider->pricing_options->ship_to_you}} </option> 
+                    </select>
+                </div>
                 <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship remains.</span></div>
             </div>
             
