@@ -12,7 +12,7 @@
         <fieldset>
             <div class="row">
                 <div class="col-md-6"><h3 class="pull-left">Cremation Plans</h3></div>
-                <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle()" class="pull-right">Select a different location?</a></div>
+                <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle()" class="pull-right">Select a different provider?</a></div>
             </div>
             <div id="select_location" style="display:none;" class="row pull-left">
                 <div class="col-md-3">
@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-primary" id="choose_provider">Select Location</button>
+                    <button class="btn btn-primary" id="choose_provider">Select Provider</button>
                 </div>
                 <br style="float:none;clear:both;" /><Br />
             </div>
