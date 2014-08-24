@@ -1,0 +1,70 @@
+zips
+	move our providers up to the top of the dropdown.
+	add zips in bulk via radius of a zip
+	add zips individually
+	
+funeral_home
+	crud access to funeral home database, allow Hide column
+	
+	
+provider backend
+	provider self administration has google drive, right, freshbooks links
+	make right signature link to right with login - rightsignature.com/dashboard#/dashboard/ or just rightsignature.com
+	
+	
+Freshbooks integration:
+	Use the provider montly fee and per lead to populate a freshbooks invoice after a frontend client registers
+	When nick creates a provider in the backend it goes to nicks freshbooks and creates a "People" entry
+	The monthly fee is populating the recurring monthly invoice at that price, and the invoice is created upon provider creation
+	
+Frontend
+	Add the link general price list to the provider box on all steps
+	On the become a provider page add links to the Meet Travis, Meet Susan, Pricing Pakages, 
+	Update app.forcremation.com/providerreg.aspx so that the meet travis video shows up link ask susan
+
+
+
+
+
+
+If someone selects a location then show all funeral homes there
+	if there's a provider there then show them and grey out rest
+	Otherwise show default providers as bold and selected and others greyed out
+	
+Providers for each major location with prices for each
+
+Allow selection of a zip for a provider and then a mile radius which it will grab all zips within that radius		
+
+provider administration allows for nick to select a zip and then auto-grab all 
+
+select State/City and list all proviers for that city
+
+
+
+
+
+FrontEnd 
+   - Like the Plan A and B explanation at the bottom of the Price page can go away.
+   - make the provider specific homepage box with details and price the same throughout all the steps
+   - add choose the provider (determine location) to the homepage and not step 1
+   - add the "Find" google lookup to the shipping page
+
+
+Backend
+- add custom documents capability so that a provider can upload their own custom document, add unlimited form upload field
+    - a vital statistics form is generic and will always be provided for download 
+    - bryton creates a form build form for each provider doc that was uploaded (authorization, release, disposition)
+	- the download from form builder will have the option to consolidate the different pdfs they uploaded
+	
+- take out of the provider area for selecting the service area
+- add into the provider edit screen the ability to add 5 custom docs
+- add customers table (and view details/delete/edit) relating to a provider at the bottom of the admin providers and providers on account
+    - providers can view details / junk / delete
+	- providers can not delete the client
+	(table of provider, decesed, customer, account date, phone, email, pre-need)
+	- allow archive/completed capability for customers, mass select and archive
+	- take out junk type of customer
+	- deleting a customer just flags them hidden from provider
+	- allow mass updating/sorting of customers
+	- needs a search customer feature
+	- Admin can see cleartext end user passwords

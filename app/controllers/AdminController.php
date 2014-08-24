@@ -95,77 +95,180 @@ class AdminController extends BaseController {
 		return Redirect::action('AdminController@getProviders');
 	}
 
+        public function findZipsInRadius($miles, $ziplat, $ziplong){
+            
+                $zips = DB::select( DB::raw("SELECT zip, (
+                              3959 * acos (
+                                cos ( radians($ziplat) )
+                                * cos( radians( latitude ) )
+                                * cos( radians( longitude ) - radians($ziplong) )
+                                + sin ( radians($ziplat) )
+                                * sin( radians( latitude ) )
+                              )
+                            ) AS distance
+                            FROM zips
+                            HAVING distance < $miles
+                            ORDER BY zip asc
+                        "));
+                return $zips;
+                
+        }
 	public function getEditProvider($id)
 	{
 		$data['provider'] = FProvider::find($id);
 		$data['fuser'] = User::find($data['provider']->user_id);
 		$data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
-		$data['pricing'] = (object) [
-			'plan_a_total'=>875,
-			'plan_a_detail'=>'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $690, Crematory fee, Cremation container and Basic urn @ $185.',
-			'plan_b_total'=>1175,
-			'plan_b_detail'=>'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.',
-			'weight_under_250'=>0,
-			'weight_251_300'=>100,
-			'weight_301_350'=>275,
-			'weight_above_351'=>350,
-			'pacemaker_removal'=>150,
-			'certificate_with_urn'=>125,
-			'certificate_without_urn'=>25,
-			'pick_cert_office'=>0,
-			'each_death_certificate'=>21,
-			'scatter_on_land'=>125,
-			'scatter_at_sea'=>125,
-			'custom_pricing_1_text'=>'',
-			'custom_pricing_1_value'=>'',
-			'custom_pricing_1_include'=>'',
-			'custom_pricing_1_required'=>'',
-			'custom_pricing_2_text'=>'',
-			'custom_pricing_2_value'=>'',
-			'custom_pricing_2_include'=>'',
-			'custom_pricing_2_required'=>'',
-			'custom_pricing_3_text'=>'',
-			'custom_pricing_3_value'=>'',
-			'custom_pricing_3_include'=>'',
-			'custom_pricing_3_required'=>'',
-		];
-		$this->layout->content = View::make('admin.provider-edit',$data);
+		$data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
+                $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
+                
+                
+                $this_zip = Zip::where('zip',$data['provider']->zip)->first();
+                if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
+                
+		//$this->layout->content = View::make('admin.provider-edit',$data);
+                $this->layout->content = View::make('admin.provider-edit',$data);
+                //return View::make('admin.provider-edit',$data);
 	}
 
 	public function postUpdate()
 	{
 		$input = Input::all();
-		// find the provider
-		$provider = FProvider::find($input['provider_id']);
-	//	$provider->provider = $input['provider'];
+                //dd($input['provider']['id']);
+		$provider = FProvider::find($input['provider']['id']);
+                //dd($provider);
+                if($provider == null){
+                    $provider = new FProvider();  
+                } 
+                $provider->fill($input['provider']);   
 		$provider->save();
 		Session::flash('success','Provider\'s Data has been updated');
-		return Redirect::action('AdminController@getProviders');
+                return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+		//return Redirect::action('AdminController@getEditProvider');
+                
 	}
 	
 	public function postUpdateZip(){
-		Session::flash('success','Provider\'s Data has been updated');
-		return Redirect::action('AdminController@getProviders');
-	}
+                $input = Input::all();
+               
+                //MASS ADD FROM READIUS
+                if(array_key_exists('addzips',$input)){
+                    foreach($input['addzips'] as $this_zip){
+                        if($this_zip!=''){
+                          $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$this_zip)->first();
+                          if($zip==null)$zip = new ProviderZip();
+                          $zip->zip = $this_zip;   
+                          $zip->provider_id = $input['provider']['id'];
+                          $zip->save();
+                        }
+                    }
 
+                }
+
+                //ADD FROM MANUAL INPUT
+                if($input['provider_zip_code']!=''){
+                    
+                    
+                    if(array_key_exists('provider_zip_code',$input))
+                    if(strpos($input['provider_zip_code'],',')!==false){
+                      $zips_r = explode(',', $input['provider_zip_code']);  
+                      foreach($zips_r as $this_zip){
+                          if($this_zip!=''){
+                            $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$this_zip)->first();
+                            if($zip==null)$zip = new ProviderZip();
+                            $zip->zip = $this_zip;   
+                            $zip->provider_id = $input['provider']['id'];
+                            $zip->save();
+                          }
+                      }
+                    }
+                    else {
+                        $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$input['provider_zip_code'])->first();
+                        if($zip==null)$zip = new ProviderZip();
+                        $zip->zip = $input['provider_zip_code'];   
+                        $zip->provider_id = $input['provider']['id'];
+                        $zip->save();
+                    }
+                    
+                }
+                elseif(array_key_exists('removezips',$input)){
+                    foreach($input['removezips'] as $key=>$value){
+                        $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$value)->first();
+                        $zip->delete();
+                    }
+                }
+		Session::flash('success','Zips Updated Successfully');
+                
+                return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+	}
+        
+        public function postUpdatePricing(){
+		Session::flash('success','Provider\'s Data has been updated');
+                
+                $input = Input::all();
+		$pricing_options = ProviderPricingOptions::find($input['provider']['id']);
+                $pricing_options->fill($input['pricing']);   
+		$pricing_options->save();
+		Session::flash('success','Provider\'s Pricing Data has been updated');
+                return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+	}
+        
+        
 	public function getBillingPage()
 	{
 		$this->layout->content = View::make('admin.billing',['billing'=>Billing::first()]);
 	}
 
+        public function getRemoveFiles()
+        {
+            $fileid = Request::segment(3);
+            $provider_id = Request::segment(4);
+            
+            if($fileid!=''){
+                $file = ProviderFiles::where('provider_id',$provider_id)->where('id',$fileid)->first();
+                $file->delete();
+            }
+            Session::flash('success','File Removed Successfully');
+            return Redirect::action('AdminController@getEditProvider', array('id' => $provider_id));
+        }
+        
+        public function postUpdateFiles()
+        {
+		$input = Input::all();
+		
+                if (array_key_exists('provider_files_new',$input))
+                {
+                    //dd($input['provider_files']);
+                    $file = Input::file('provider_files_new');
+                    //dd($file);
+                    $destinationPath = public_path()."/provider_files/".$input['provider']['id'];
+                    $file->move($destinationPath, $file->getClientOriginalName());
+                    $name = $file->getClientOriginalName();
+                    
+                    $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
+                    if($provider_file==null || $provider_file=="")$provider_file = new ProviderFiles();
+                    $provider_file->provider_id = $input['provider']['id'];
+                    $provider_file->file_name = $name;
+                    $provider_file->file_type = $input['provider_files_type'];
+                    $provider_file->save();
+                }
+                
+		Session::flash('success','Provider Files Added Successfully');
+		return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+	}
+        
 	public function postUpdateBilling()
 	{
 		$input = Input::all();
 		$rules = ['monthly_fee'=>'required'];
-		$v = Validator::make($input,$rules);
+		$v = Validator::make($input['provider_billing'],$rules);
 		if($v->fails()) return Redirect::back()->withErrors($v);
 
-		$bill = Billing::find(1);
-		$bill->monthly_fee = $input['monthly_fee'];
-		$bill->lead_fee = $input['lead_fee'];
+		$bill = ProviderBilling::where('provider_id', $input['provider']['id'])->first();
+		$bill->monthly_fee = $input['provider_billing']['monthly_fee'];
+		$bill->per_case_fee = $input['provider_billing']['per_case_fee'];
 		$bill->save();
 		Session::flash('success','Billing Setting has been updated');
-		return Redirect::action('AdminController@getBillingPage');
+		return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
 	}
 
 	public function getAllUser()
