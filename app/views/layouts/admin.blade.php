@@ -38,7 +38,8 @@
 	<script src="{{ asset('packages/Bootflat/js/bootstrap.min.js') }}"></script>
 	<script>
 		$(function(){
-			
+                    $('.tooltips').tooltip();
+                   
 		})
 	</script>
 	@show

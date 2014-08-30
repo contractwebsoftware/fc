@@ -1,10 +1,16 @@
 <?php
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
 class FProvider extends Eloquent
 {
 	protected $table = 'providers';
 	protected $fillable = array();
 	protected $guarded = array();
-	
+        protected $dates = ['deleted_at'];
+        
+        use SoftDeletingTrait;
+
+    
 	public function client(){
 		return $this->hasMany('Client');
 	}

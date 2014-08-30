@@ -9,8 +9,8 @@
 				<fieldset>
 					<legend>Company Information</legend>
 					<div class="form-group">
-						<label  class="sr-only" for="provider">Business Name</label>
-						<div class="col-sm-12"><input type="text" placeholder="Business Name" name="provider" id="provider" class="form-control"></div>
+						<label  class="sr-only" for="business_name">Business Name</label>
+						<div class="col-sm-12"><input type="text" placeholder="Business Name" name="business_name" id="business_name" class="form-control"></div>
 					</div>
 					<div class="form-group">
 						<label  class="sr-only" for="address">Company Address</label>
@@ -40,9 +40,9 @@
 						<div class="col-sm-12"><input type="text" placeholder="Fax" name="fax" id="fax" class="form-control"></div>
 					</div>
 					<div class="form-group">
-						<label for="serviceable-area" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
+						<label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
 						<div class="col-sm-12">
-							<select name="service_radius" id="serviceable-area" class="form-control">
+							<select name="provider_radius" id="provider_radius" class="form-control">
 								<option value="5">5 Miles</option>
 								<option value="10">10 Miles</option>
 								<option value="15">15 Miles</option>

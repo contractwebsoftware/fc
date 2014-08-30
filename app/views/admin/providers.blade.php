@@ -10,24 +10,17 @@
 		</div>
 		<hr>
 		<div class="row">
-			<div class="col-xs-12 col-md-6">
-				<ul class="nav nav-pills">
-				  <li class="disabled"><a href="#">Filter:</a></li>
-				  <li class="active"><a href="#">All</a></li>
-				  <li><a href="#">Completed</a></li>
-				  <li><a href="#">Junk</a></li>
-				  <li><a href="#">Deleted</a></li>
-				</ul>
-			</div>
 			<div class="col-xs-12 col-md-6 text-right">
 				{{ Form::open(['action'=>'AdminController@getProviders','method'=>'GET']) }}
 				<div class="input-group">
 				  	<span class="input-group-addon">Search</span>
 				  	<input type="text" class="form-control" name="q">
 				  	<span class="input-group-btn">
-			          <button class="btn btn-default" type="submit">Search</button>
-			        </span>
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                        </span>
+                                        
 				</div>
+                                <input type="checkbox" name="include_deleted" value="1" /> Include Deleted
 				{{ Form::close() }}
 			</div>
 		</div>
@@ -47,9 +40,17 @@
 				<tbody>
 					@foreach( $providers as $provider )
 					<tr>
-						<td>{{ $provider->status }}</td>
+						<td><?php
+                                                        switch($provider->provider_status){
+                                                            case 0:echo 'UnApproved';break;
+                                                            case 1:echo 'Approved';break;
+                                                            case 2:echo 'Deleted';break;
+                                                            default:echo 'UnApproved';break;
+                                                        }       
+                                                    ?>
+                                                </td>
 						<td>{{ $provider->business_name }}</td>
-						<td>0</td>
+						<td>{{ $provider->client_count }}</td>
 						<td>{{ $provider->phone }}</td>
 						<td>@if($provider->user != null) {{ $provider->user->email }} @endif</td>
 						<td class="text-center">
@@ -57,9 +58,10 @@
 								<a href="{{ action('AdminController@getEditProvider',$provider->id) }}" class="btn btn-xs btn-default">
 									<span class="glyphicon glyphicon-pencil"></span> Edit info
 								</a>
-								<a href="#" class="btn btn-xs btn-danger" onclick="return confirm('Are you sure?')">
-									<span class="glyphicon glyphicon-trash"></span> Delete
-								</a>
+                                                            <?php
+                                                            if($provider->provider_status == 2)echo '<a href="'.action('AdminController@getUnDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                                                            else echo '<a href="'.action('AdminController@getDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> Delete</a>';
+                                                            ?>
 							</div>
 						</td>
 					</tr>

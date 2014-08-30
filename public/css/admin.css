@@ -308,10 +308,8 @@ body {
 
 #container {
   *zoom: 1;
-  max-width: 68em;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1000px;
+  margin: 15px 25px;
+  min-width: 700px;
   background: white;
   -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);

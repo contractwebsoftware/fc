@@ -16,6 +16,7 @@
                                                     <select name="provider[provider_status]" id="provider_status" class="form-control">
                                                         <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
                                                         <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
+                                                        <option value="2" {{ ($provider->provider_status=='2') ? ' selected' : '' }}>Deleted</option>
                                                     </select>
 						</div>
 					</div>
