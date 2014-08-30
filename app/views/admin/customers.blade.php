@@ -48,7 +48,7 @@
                 </thead>
                 <tbody>
                     @foreach( $clients as $client )
-                    <tr data-toggle="tooltip" data-html="true"  data-placement="bottom" class="tooltips" 
+                    <tr data-toggle="tooltip" data-html="true"  data-placement="bottom" 
                         title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
                             <td>{{ $client->first_name.' '.$client->last_name }}</td>
                             <td>{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
