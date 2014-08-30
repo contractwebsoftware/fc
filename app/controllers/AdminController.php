@@ -9,20 +9,20 @@ class AdminController extends BaseController {
 		{
 			//$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 			
-                        if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->get();
-                        else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->get();
+                        if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc')->get();
+                        else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc')->get();
                         ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%')->get();
                         //else $providers = FProvider::with('user')->get();
                         if($providers == null){
-                            if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->withTrashed()->get();
-                            else $providers = FProvider::with('user')->get();
+                            if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
+                            else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
                         }
                         
 		}
 		else
 		{
-                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->withTrashed()->get();
-                    else $providers = FProvider::with('user')->get();
+                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
+                    else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
 		}
                 foreach($providers as $provider){
                     $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
@@ -432,7 +432,7 @@ class AdminController extends BaseController {
         
 	public function getCustomers()
 	{
-            $per_page = 25;
+            $per_page = 50;
             if(Input::get('per')){
                 $per_page = Input::get('per');
             }
@@ -480,15 +480,9 @@ class AdminController extends BaseController {
         
         public function getEditClient($id)
 	{
-		$data['client'] = Client::find($id);
-		$data['fuser'] = User::find($data['client']->user_id);
-		$data['DeceasedInfo'] = DeceasedInfo::where('client_id',$data['client']->id)->first();
-		$data['DeceasedFamilyInfo'] = DeceasedFamilyInfo::where('client_id',$data['client']->id)->first();
-		$data['DeceasedInfoPresentLoc'] = DeceasedInfoPresentLoc::where('client_id',$data['client']->id)->first();
-		$data['CremainsInfo'] = CremainsInfo::where('client_id',$data['client']->id)->first();
-		
-                
-                $this->layout->content = View::make('admin.client-edit',$data);
+            Session::put('client_id',$id);
+            
+            return Redirect::action('ClientController@getSteps');
                 
 	}
         

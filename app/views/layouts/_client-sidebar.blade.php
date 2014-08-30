@@ -1,4 +1,4 @@
-<div id="sidebar" class="col-sm-3" >
+<div id="sidebar" class="col-sm-3 hideInAdmin" >
 	<ul id="step_navigation_menu" class="nav nav-pills nav-stacked span2">
     
           @foreach($steps_r as $step )

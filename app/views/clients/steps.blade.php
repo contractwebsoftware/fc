@@ -1,8 +1,24 @@
 @extends('layouts.client')
 @section('content')
-<div class="col-sm-9">
+<div class="col-sm-{{(Session::get('inAdminGroup')!=''?'12':'9')}}">
  
-@if(Session::get('step')==1)
+@if(Session::get('inAdminGroup')!='')
+    <div class="row">
+        <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Customers</a></div> 
+    </div>
+    <fieldset>
+           <div class="row">
+               <div class="col-md-8">
+                   <h2 class="pull-left"><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+               </div>
+           </div>
+    </fieldset>
+     <style>
+        .hideInAdmin{display:none;}
+    </style>
+@endif
+    
+@if(Session::get('step')==1 || Session::get('inAdminGroup')!='')
    
 {{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
@@ -12,7 +28,7 @@
         <fieldset>
             <div class="row">
                 <div class="col-md-6"><h3 class="pull-left">Cremation Plans</h3></div>
-                <div class="col-md-6"><a href="#" onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
+                <div class="col-md-6"><a href="#" {{ (Session::get('inAdminGroup')=='Admin'?'':'style="display:none"') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
             </div>
             <div id="select_location" style="display:none;" class="row pull-left">
                 <div class="col-md-3">
@@ -44,12 +60,14 @@
             
             <div class="row form-group">
                 <div class="col-sm-12">
+                    <div class="hideInAdmin">
                     <strong>Cremation Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
                     <strong>Cremation Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
-
+                    </div>                  
+                    
                     <strong><u>Pick A Plan</u></strong><br />
                     Please select a package from the drop down below:<br />
                     <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
@@ -57,6 +75,7 @@
                         <option value="1" {{ ($client->CremainsInfo->package_plan=="1"?'selected':'') }}>Plan A</option>
                         <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
                     </select><br />
+                    
                     <!--
                     <strong>Plan A Description</strong>:<br />
                     Basic cremation services, care of your loved one in climatically controlled environment, local transportation, obtaining signatures and filing the death certificate, securing permits from the state, ordering certified copies of the death certificate, preparation for shipping of the urn with cremains inside the U.S. (Shipping for additional cost) Basic urn provided or you may chose an urn from our catalog for an additional cost.<br /><br />
@@ -102,7 +121,7 @@
                     </select>                    
                
                     <br />
-                    <font style="color:red;font-weight:bold;">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
+                    <font style="color:red;font-weight:bold;" class="hideInAdmin">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
                     
                 </div>
             </div>
@@ -164,8 +183,9 @@
         </script>
     {{ Form::close() }}
 
+@endif
 
-@elseif(Session::get('step')==2)
+@if(Session::get('step')==2 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -275,8 +295,8 @@
         </script>
     {{ Form::close() }}
 
-
-@elseif(Session::get('step')==3)
+@endif
+@if(Session::get('step')==3 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -362,7 +382,8 @@
         </fieldset>        
     {{ Form::close() }}
 
-@elseif(Session::get('step')==4)
+@endif
+@if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps5','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -414,7 +435,8 @@
         </fieldset>        
     {{ Form::close() }}
 
-@elseif(Session::get('step')==5)
+@endif
+@if(Session::get('step')==5 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps6','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -458,11 +480,13 @@
         </fieldset>        
     {{ Form::close() }}
 
-@elseif(Session::get('step')==6)
+@endif
+
+@if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps7','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset class="step-authorized-person">
+        <fieldset class="step-authorized-person" id="edit_client_info">
             <div class="row form-group">
                 <div class="col-sm-12">
                     <h3>Authorized Person <p>Person authorized to make the arrangements &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Some states refer to this person as the informant. This is the person providing the information for the Death Certificate and the one authorized to request any changes needed.">?</a></p></h3>
@@ -530,7 +554,8 @@
         </script>
     {{ Form::close() }}
 
-@elseif(Session::get('step')==7)
+@endif
+@if(Session::get('step')==7 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps8','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -539,7 +564,7 @@
             <div class="row form-group">
                 <div class="col-sm-12">
                     How many copies of the death certificate do you need? &nbsp; - &nbsp; 
-                    Each Certificate: <span id="MainContent_FormView9_FormView19_deathcertCEPLabel" style="font-weight:bold;">${{$provider->pricing_options->deathcert_each}}</span><br>
+                    Each Certificate: <span style="font-weight:bold;">${{$provider->pricing_options->deathcert_each}}</span><br>
                     <input name="cremains_info[number_of_certs]" type="text" value="{{$client->CremainsInfo->number_of_certs}}" />
                     
                 </div>
@@ -558,8 +583,8 @@
                 </div>
             </div>
             <div class="row form-group">
-                <div class="col-sm-12"><br>
-                    <a id="MainContent_LinkButton2" href='' >How many certified copies do I need?</a><br>
+                <div class="col-sm-12 hideInAdmin"><br>
+                    <a  href='#' onclick="return false;">How many certified copies do I need?</a><br>
                     <i><span class="auto-style9">Window not opening? Try disabling your popup blocker</span></i><br>
                 </div>
             </div>
@@ -571,7 +596,8 @@
         </fieldset>        
     {{ Form::close() }}
 
-@elseif(Session::get('step')==8)
+@endif
+@if(Session::get('step')==8 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps9','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -614,15 +640,16 @@
         </fieldset>        
     {{ Form::close() }}
 
-@elseif(Session::get('step')==9)
+@endif
+@if(Session::get('step')==9 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps10','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
         
         <fieldset>
             
-            <h3>FTC Disclosures <p>Legal Authorizations</p></h3>
-            <div class="row form-group">
+            <h3 class="hideInAdmin">FTC Disclosures <p>Legal Authorizations</p></h3>
+            <div class="row form-group hideInAdmin">
                 <div class="col-sm-12" style="padding-left:30px;padding-right:0px;">
                     <a href="#" onclick="$('#ftc_disclosures').slideToggle();return false;">Read FTC Disclosures</a><br />
                     <div id="ftc_disclosures" style="height:300px;overflow-y:scroll;background-color:#fff;display:none;border:1px solid #999;">
@@ -658,8 +685,9 @@
             </div>
         </fieldset>        
     {{ Form::close() }}              
+@endif
 
-@elseif(Session::get('step')==10)
+@if(Session::get('step')==10)
     {{ Form::open(['action'=>'ClientController@postSteps11','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
@@ -723,8 +751,9 @@
             });
         </script>
     {{ Form::close() }}
+@endif
 
-@elseif(Session::get('step')==11)
+@if(Session::get('step')==11)
  
         <fieldset>
             <h3>Thank You</h3>

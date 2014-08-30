@@ -12,14 +12,14 @@ class ClientController extends BaseController {
 	{
             
             if($client == null){
-                if(Sentry::getUser()){
-                    //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
-                    $client = Client::where('user_id',Sentry::getUser()->id)->first();
-                    $client = ClientController::fillOutClientTables($client);
-                }
-                elseif(Session::get('client_id')!='') {
+                if(Session::get('client_id')!='') {
                     //echo 'found client in session';
                     $client = Client::where('id',Session::get('client_id'))->first();
+                    $client = ClientController::fillOutClientTables($client);
+                }
+                elseif(Sentry::getUser()){
+                    //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
+                    $client = Client::where('user_id',Sentry::getUser()->id)->first();
                     $client = ClientController::fillOutClientTables($client);
                 }
                 
@@ -74,9 +74,16 @@ class ClientController extends BaseController {
             } 
             else Session::put('step', Input::get('step',1));
             
-            if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
-            else $client->sale_summary_r = Array();
+            $client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+            //if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+            //else $client->sale_summary_r = Array();
             //dd($sale_summary_r);
+            
+            /* IF WE'RE ACTUALLY IN ADMINSITRATION THEN SHOW ALL STEPS AT ONCE */
+            $group = json_decode(Sentry::getUser()->getGroups());
+            if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
+            elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
+            else Session::put('inAdminGroup','');
             
             if($jsonReturn)return Response::json(Input::get());
             else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider]);
@@ -142,6 +149,12 @@ class ClientController extends BaseController {
         public function getSteps13(){ return ClientController::getSteps(13); }
         public function getSteps14(){ return ClientController::getSteps(14); }
         public function getSteps15(){ return ClientController::getSteps(15); }
+        
+        public function getStepsAsClient(){ 
+            
+            return ClientController::getSteps(1,false); 
+        }
+        
         
 	public function postSteps2()
 	{
@@ -393,17 +406,18 @@ class ClientController extends BaseController {
 	
             
             $client = null;
-            if(Sentry::getUser()){
+            if(Session::get('client_id')!=""){
+                $client = Client::where('id',Session::get('client_id'))->first();
+                $client = ClientController::fillOutClientTables($client);
+                //echo "fethced existing client from session"; 
+                //dd($client);
+                
+            }
+            elseif(Sentry::getUser()){
                 $client = Client::where('user_id',Sentry::getUser()->id)->first();
                 $client = ClientController::fillOutClientTables($client);
                 //echo "fetched existing user sentry";
-            }      
-            /*
-            elseif(Session::get('client_id')!=""){
-                $client = Client::where('id',Session::get('client_id'))->first();
-                echo "fethced existing client from session";  
-                
-            }*/
+            }   
             elseif(Input::get('client_id')!=""){
                 $client = Client::where('id',Input::get('client_id'))->first();
                 $client = ClientController::fillOutClientTables($client);
