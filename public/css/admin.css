@@ -343,9 +343,9 @@ body {
 #navigation ul li a {
   text-decoration: none;
   text-transform: uppercase;
-  color: #585b5d; }
+}
 #navigation ul li a:hover {
-  color: #424446; }
+ }
 
 #content {
   padding: 20px;
