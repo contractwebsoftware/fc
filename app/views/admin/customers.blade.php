@@ -25,11 +25,10 @@
 		<div class="col-xs-12 col-md-6 text-right">
 			{{ Form::open(['action'=>'AdminController@getCustomers','method'=>'GET']) }}
 			<div class="input-group">
-			  	<span class="input-group-addon">Search</span>
 			  	<input type="text" class="form-control" name="q">
 			  	<span class="input-group-btn">
-		          <button class="btn btn-default" type="submit">Search</button>
-		        </span>
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </span>
 			</div>
 			{{ Form::close() }}
 		</div>
