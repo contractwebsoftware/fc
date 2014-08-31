@@ -451,10 +451,7 @@ class AdminController extends BaseController {
             }
             elseif(Input::get('status')!="")
             {
-                if(Input::get('preneed')==1){
-                    $clients = Client::where('status','like','%')->leftJoin('deceased_info', 'clients.id', '=', 'deceased_info.client_id')->where('deceased_info.cremation_reason','=','planning_for_future')->paginate($per_page);
-                }
-                elseif(Input::get('status')==0 || Input::get('status')==1)$clients = Client::where('status','like',Input::get('status'))->paginate($per_page);
+                if(Input::get('status')==0 || Input::get('status')==1)$clients = Client::where('status','like',Input::get('status'))->paginate($per_page);
                 elseif(Input::get('status')==2)$clients = Client::where('status','like','%')->withTrashed()->paginate($per_page); 
                 elseif(Input::get('status')==3)$clients = Client::where('status','like',3)->withTrashed()->paginate($per_page);  
             }
@@ -471,7 +468,11 @@ class AdminController extends BaseController {
                 if($client_DeceasedInfo!=null){ 
                     $client->deceased_first_name = $client_DeceasedInfo->first_name;
                     $client->deceased_last_name = $client_DeceasedInfo->last_name;
+                    if($client_DeceasedInfo->cremation_reason == "planning_for_future")$client->preneed = "y";
+                    else $client->preneed = "n";
                 }
+                else $client->preneed = "n";
+                
             }
 
             $this->layout->content = View::make('admin.customers')->withClients($clients);
@@ -487,29 +488,91 @@ class AdminController extends BaseController {
 	}
         
         
-        public function  getDeleteClient($id){
-            $client = Client::find($id);    
+        public function  getDeleteClient($id, $return = true){
+            $client = Client::withTrashed()->find($id);    
+             
             if($client!=null){
-                $client->status = 3; //Active=0 Completed=2 Deleted=3 
+                $client->status = 3; //Active=0 Completed=1 Deleted=3 
                 $client->save();
                 $client->delete();
             }
-            Session::flash('success','Client Soft Deleted Successfully');
-            return Redirect::action('AdminController@getCustomers');
+            if($return){
+                Session::flash('success','Client Soft Deleted Successfully');
+                return Redirect::action('AdminController@getCustomers');
+            }
         }
         
-        public function  getUnDeleteClient($id){
+        public function  getUnDeleteClient($id, $return = true){
             $client = Client::withTrashed()->find($id);
+           
             if($client!=null){
                 $client->status = 0;
                 $client->save();
                 $client->restore();
-                Session::flash('success','Client UnDeleted Successfully');
+                
             }
-            return Redirect::action('AdminController@getCustomers');
+            if($return){
+                Session::flash('success','Client UnDeleted Successfully');
+                return Redirect::action('AdminController@getCustomers');
+            }
         }
         
         
+        public function  getCompleteClient($id, $return = true){
+            $client = Client::withTrashed()->find($id);
+           
+            if($client!=null){
+                $client->status = 1;
+                $client->save();
+                $client->restore();
+                
+            }
+            if($return){
+                Session::flash('success','Client Set As Completed Successfully');
+                return Redirect::action('AdminController@getCustomers');
+            }
+        }
+        
+        public function  getPreneedClient($id, $return = true){
+            $client = Client::withTrashed()->find($id);
+           
+            if($client!=null){
+                
+                $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
+                if($client_DeceasedInfo!=null){ 
+                
+                    $client_DeceasedInfo->cremation_reason = "planning_for_future";
+                    $client_DeceasedInfo->save();
+                    
+                    $client->status = 0;
+                    $client->save();
+                    $client->restore();
+                    if($return)Session::flash('success','Client Set As PreNeed Successfully');
+               
+                }
+                
+            }
+            if($return){
+                //Session::flash('success','Client Set As PreNeed Successfully');
+                return Redirect::action('AdminController@getCustomers');
+            }
+        }
+        
+        public function  postMassUpdateClients(){
+            $clients_r = Input::get('edit_clients');
+            $mass_edit_type = Input::get('mass_edit_type');
+            //dd($mass_edit_type);
+            if(is_array($clients_r))
+            foreach($clients_r as $key=>$client_id){
+                if($mass_edit_type == 'delete')AdminController::getDeleteClient($client_id,false);
+                if($mass_edit_type == 'undelete' || $mass_edit_type == 'active')AdminController::getUnDeleteClient($client_id,false);
+                if($mass_edit_type == 'completed')AdminController::getCompleteClient($client_id,false);
+                if($mass_edit_type == 'preneed')AdminController::getPreneedClient($client_id,false);
+            }
+            
+            Session::flash('success',count($clients_r).' Clients Updated Successfully');
+            return Redirect::action('AdminController@getCustomers');
+        }
         
         
         

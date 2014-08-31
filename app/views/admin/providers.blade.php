@@ -2,7 +2,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-xs-12 col-md-6">
-				<strong class="h2">Provider</strong>
+				<strong class="h2">Providers</strong>
 			</div>
 			<div class="col-xs-12 col-md-6 text-right">
 				<a href="{{ action('AdminController@getNewProvider') }}" class="btn btn-primary">New Provider</a>
@@ -29,12 +29,12 @@
 			<table class="table table-borders">
 				<thead>
 					<tr>
-						<th>Status</th>
-						<th>Provider Name</th>
-						<th># Cases</th>
-						<th>Phone</th>
-						<th>Email</th>
-						<th>Action</th>
+                                            <th>Status</th>
+                                            <th>Provider Name</th>
+                                            <th># Cases</th>
+                                            <th>Phone</th>
+                                            <th>Email</th>
+                                            <th>Action</th>
 					</tr>
 				</thead>
 				<tbody>

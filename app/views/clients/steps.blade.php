@@ -7,11 +7,14 @@
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Customers</a></div> 
     </div>
     <fieldset>
-           <div class="row">
-               <div class="col-md-8">
-                   <h2 class="pull-left"><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+            <div class="row">
+               <div class="col-md-12">
+                   <h2><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+                   &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
+                   &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
+                   &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br />
                </div>
-           </div>
+            </div>
     </fieldset>
      <style>
         .hideInAdmin{display:none;}

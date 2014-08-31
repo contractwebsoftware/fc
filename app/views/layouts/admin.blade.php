@@ -8,6 +8,7 @@
 	<!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
 	<![endif]-->
+	<script src="{{ asset('packages/Bootflat/js/jquery-1.10.1.min.js') }}"></script>
 	@section('header')
 	@show
 </head>
@@ -34,7 +35,6 @@
 		<div id="footer"></div>
 	</div>
 	@section('footer')
-	<script src="{{ asset('packages/Bootflat/js/jquery-1.10.1.min.js') }}"></script>
 	<script src="{{ asset('packages/Bootflat/js/bootstrap.min.js') }}"></script>
 	<script>
 		$(function(){

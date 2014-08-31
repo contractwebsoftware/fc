@@ -13,7 +13,7 @@ class ClientController extends BaseController {
             
             if($client == null){
                 if(Session::get('client_id')!='') {
-                    //echo 'found client in session';
+                    //dd(Session::get('client_id'));
                     $client = Client::where('id',Session::get('client_id'))->first();
                     $client = ClientController::fillOutClientTables($client);
                 }
@@ -28,11 +28,12 @@ class ClientController extends BaseController {
                     $client = New Client();
                 }
             }
-                
+            
             if($client->DeceasedFamilyInfo == null)$client->DeceasedFamilyInfo = New DeceasedFamilyInfo();
             if($client->DeceasedInfo == null)$client->DeceasedInfo = New DeceasedInfo();
             if($client->CremainsInfo == null)$client->CremainsInfo = New CremainsInfo();
             if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
+            if($client->User == null)$client->User = New User();
             
             
             //echo 'SESSION<br />';
@@ -368,6 +369,7 @@ class ClientController extends BaseController {
         // MAKE SURE ALL CLIENT RELATING TABLES GET POPULATED
         public function fillOutClientTables($client){
             
+            //if($client == null)$client = ClientController::registerUser();
             $client_details_input = Array('client_id' => $client->id); 
             
             $client->DeceasedFamilyInfo = DeceasedFamilyInfo::where('client_id', $client->id)->first();
@@ -397,6 +399,12 @@ class ClientController extends BaseController {
                 $client->DeceasedInfoPresentLoc->fill($client_details_input);
                 $client->DeceasedInfoPresentLoc->save(); 
             }
+            
+            $client->User = User::where('id', $client->user_id)->first();
+            if($client->User == null){
+                $client->User = new User();
+            }
+            
             return $client;
         }
         
@@ -478,8 +486,10 @@ class ClientController extends BaseController {
                         'activated' => true
                     ));
                 
-                $client->user_id = $user->id;                
+                $client->user_id = $user->id;  
                 $client->update();
+                
+                $client->User = User::where('id', $client->user_id)->first();
                 Session::put('client_id', $client->id);
                 
                 
