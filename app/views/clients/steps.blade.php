@@ -7,14 +7,26 @@
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Customers</a></div> 
     </div>
     <fieldset>
-            <div class="row">
-               <div class="col-md-12">
-                   <h2><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
-                   &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
-                   &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
-                   &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br />
-               </div>
+        <div class="row">
+            <div class="col-md-6"><b style="font-size:14px;color:#999;">Customer</b></div>
+            <div class="col-md-6"><b style="font-size:14px;color:#999;">Provider</b></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+                &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
+                &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
+                &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
+                &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br />
             </div>
+            <div class="col-md-6">
+                <h2>{{$provider->business_name}}</h2>
+                &nbsp; &nbsp; <b>Email</b>: {{$provider->email }}<br />
+                &nbsp; &nbsp; <b>Phone</b>: {{$provider->phone }} &nbsp; &nbsp; <b>Fax</b>: {{$provider->fax }}<br />
+                &nbsp; &nbsp; <b>Address</b>: {{$provider->address }} {{$provider->city }}, {{$provider->state }}, {{$provider->zip }}<br />
+                &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
+            </div>
+        </div>
     </fieldset>
      <style>
         .hideInAdmin{display:none;}

@@ -4,31 +4,32 @@ class AdminController extends BaseController {
 
 	public function getProviders()
 	{
-		$q = Input::get('q');
-		if(strlen($q)>=3)
-		{
-			//$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
-			
-                        if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc')->get();
-                        else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc')->get();
-                        ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%')->get();
-                        //else $providers = FProvider::with('user')->get();
-                        if($providers == null){
-                            if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
-                            else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
-                        }
-                        
-		}
-		else
-		{
-                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
-                    else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
-		}
-                foreach($providers as $provider){
-                    $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
-                    $provider->client_count = count($client_provider);
-                }
-                $this->layout->content = View::make('admin.providers')->withProviders($providers);
+            if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
+            $q = Input::get('q');
+            if(strlen($q)>=3)
+            {
+                    //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
+
+                    if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc')->get();
+                    else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc')->get();
+                    ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%')->get();
+                    //else $providers = FProvider::with('user')->get();
+                    if($providers == null){
+                        if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
+                        else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
+                    }
+
+            }
+            else
+            {
+                if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
+                else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
+            }
+            foreach($providers as $provider){
+                $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
+                $provider->client_count = count($client_provider);
+            }
+            $this->layout->content = View::make('admin.providers')->withProviders($providers);
 		
 	}
 
@@ -86,6 +87,7 @@ class AdminController extends BaseController {
                 $user = Sentry::createUser(array(
                     'email'       => Input::get('email'),
                     'password'    => Input::get('password'),
+                    'role'        => 'provider',
                     'activated'   => true,
                 ));
 
@@ -156,7 +158,8 @@ class AdminController extends BaseController {
 	{
 		$data['provider'] = FProvider::find($id);
 		$data['fuser'] = User::find($data['provider']->user_id);
-		$data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
+		if($data['fuser'] == null) $data['fuser'] = new User;
+                $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
 		$data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
                 $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
                 
@@ -164,9 +167,11 @@ class AdminController extends BaseController {
                 $this_zip = Zip::where('zip',$data['provider']->zip)->first();
                 if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
                 else $data['zip_info'] = null;
-		//$this->layout->content = View::make('admin.provider-edit',$data);
+                
+                $data['clients'] = AdminController::getProviderCustomers($id);
+                //dd($data['clients']);
+                
                 $this->layout->content = View::make('admin.provider-edit',$data);
-                //return View::make('admin.provider-edit',$data);
 	}
         
         
@@ -193,7 +198,7 @@ class AdminController extends BaseController {
         }
         
 
-	public function postUpdate()
+	public function postUpdateProvider()
 	{
 		$input = Input::all();
                 //dd($input['provider']['id']);
@@ -204,6 +209,42 @@ class AdminController extends BaseController {
                 } 
                 $provider->fill($input['provider']);
                 $provider->save();
+                
+                if($input['provider_login']!=""){
+                    $user = User::find($provider->user_id);
+                    if($user == null)$user = new User;
+                    $user->email = $input['provider_login']; 
+                    $user->activated = 1;
+                    $user->role = "provider";
+                    $user->save();
+                    
+                    $provider->user_id = $user->id;
+                    $provider->save();
+                } 
+                if($input['newpassword']!="" && $input['newpassword_confirmation']!="" && $user!=null){
+                    $newpass = ['newpassword'=>$input['newpassword'],'newpassword_confirmation'=>$input['newpassword_confirmation']] ;
+                    $rules = ['newpassword'=>'required|confirmed'] ;
+                    // Let's validate
+                    $v = Validator::make($newpass,$rules);
+                    if($v->fails())
+                            return Redirect::back()->withErrors($v);
+                    
+                    
+                    // Okay all validation passed, we change the password
+                    try {
+                        $sentry_user = Sentry::findUserById($user->id);
+                        $sentry_user->password = $input['newpassword'];
+                        $sentry_user->save();
+                        Session::flash('success','Password Updated');
+                    } catch (Exception $e) {
+                        Session::flash('error','Password Update Failed');
+                    }   
+                }
+                
+                       
+                
+                //dd($provider);
+                
 		if($provider->provider_status=='2'){
                     $provider->delete();
                     Session::flash('success','Provider Soft Deleted Successfully');
@@ -376,13 +417,13 @@ class AdminController extends BaseController {
 		}
 		// Okay all validation passed, we change the password
 		try {
-			$data = User::find(Sentry::getUser()->id);
-			$data->password = Hash::make($input['newpassword']);
-			$data->save();
-			Session::flash('success','Password Updated');
-		} catch (Exception $e) {
-			Session::flash('error','Password Update Failed');
-		}
+                    $sentry_user = Sentry::findUserById(Sentry::getUser()->id);
+                    $sentry_user->password = Input::get('newpassword');
+                    $sentry_user->save();
+                    Session::flash('success','Password Updated');
+                } catch (Exception $e) {
+                    Session::flash('error','Password Update Failed');
+                }
 		return Redirect::back();
 	}
 	public function getCreateUser() 
@@ -391,9 +432,9 @@ class AdminController extends BaseController {
 		{
 		    // Create the user
 		    $user = Sentry::createUser(array(
-		        'email'     => 'fikri.desertlion@gmail.com',
-		        'password'  => 'testing',
-		        'activated' => true,
+		        'email'     => 'bendavol@gmail.com',
+		        'password'  => 'test',
+		        'activated' => true
 		    ));
 
 		    // Find the group using the group id
@@ -419,45 +460,22 @@ class AdminController extends BaseController {
 		    echo 'Group was not found.';
 		}
 	}
-
-        
-        
-        
-        /*
-         * CLIENTS MANAGEMENT
-         * 
-         * 
-         */
-        
-        
-	public function getCustomers()
+        public function getProviderCustomers($provider_id)
 	{
+            Session::put('client_providers_id',$provider_id);
             $per_page = 50;
-            if(Input::get('per')){
-                $per_page = Input::get('per');
-            }
-
-            $q = Input::get('q');
-            if(strlen($q)>=3)
-            {
-                $clients = Client::where('zip','like','%'.$q.'%')->orWhere('phone','like','%'.$q.'%')->orWhere('state','like','%'.$q.'%')
-                        ->orWhere('address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
-                        ->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')
-                        ->orWhere('first_name','like','%'.$q.'%')->orWhere('last_name','like','%'.$q.'%')
-                        ->orWhere('created_at','like','%'.$q.'%')
-                        ->orderBy('created_at', 'desc')
-                        ->paginate($per_page);
-                if($clients == null)$clients = Client::with('user')->get();
-            }
-            elseif(Input::get('status')!="")
-            {
-                if(Input::get('status')==0 || Input::get('status')==1)$clients = Client::where('status','like',Input::get('status'))->paginate($per_page);
-                elseif(Input::get('status')==2)$clients = Client::where('status','like','%')->withTrashed()->paginate($per_page); 
-                elseif(Input::get('status')==3)$clients = Client::where('status','like',3)->withTrashed()->paginate($per_page);  
-            }
-            else {
-                $clients = Client::with('user')->paginate($per_page);
-            }
+            $clients = Client::with('user');
+            $clients->whereExists(function($query)
+                {
+                    $provider_id = Session::get('client_providers_id');
+                    $query->select(DB::raw(1))
+                          ->from('clients_providers')
+                          ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
+                    //dd("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
+                });
+            
+            $clients->orderBy('created_at', 'desc');
+            $clients = $clients->paginate($per_page);
             foreach($clients as $client){
                 $provider_id = Session::get('provider_id');
                 if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
@@ -474,7 +492,77 @@ class AdminController extends BaseController {
                 else $client->preneed = "n";
                 
             }
+            return $clients;
+        }
+        
+        
+        /*
+         * CLIENTS MANAGEMENT
+         * 
+         * 
+         */
+        
+	public function getCustomers()
+	{
+            $per_page = 50;
+            if(Input::get('per')){
+                $per_page = Input::get('per');
+            }
 
+            $q = Input::get('q');
+            if(strlen($q)>=3)
+            {
+                $clients = Client::where('zip','like','%'.$q.'%')->orWhere('phone','like','%'.$q.'%')->orWhere('state','like','%'.$q.'%')
+                        ->orWhere('address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
+                        ->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')
+                        ->orWhere('first_name','like','%'.$q.'%')->orWhere('last_name','like','%'.$q.'%')
+                        ->orWhere('created_at','like','%'.$q.'%');
+                if($clients == null)$clients = Client::with('user');
+            }
+            elseif(Input::get('status')!="")
+            {
+                if(Input::get('status')==0 || Input::get('status')==1)$clients = Client::where('status','like',Input::get('status'));
+                elseif(Input::get('status')==2)$clients = Client::where('status','like','%')->withTrashed(); 
+                elseif(Input::get('status')==3)$clients = Client::where('status','like',3)->withTrashed();  
+            }
+            else {
+                $clients = Client::with('user');
+            }
+            if(Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!=''){
+                //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
+                /*$clients->leftJoin('clients_providers', function($join)
+                    {
+                        $join->on('clients_providers.client_id', '=', 'clients.id')->andOn('clients_providers.provider_id','=',Session::get('logged_in_provider_id'));
+                    })*/
+                //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+                $clients->whereExists(function($query)
+                {
+                    $query->select(DB::raw(1))
+                          ->from('clients_providers')
+                          ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+                });
+            }
+            $clients = $clients->orderBy('created_at', 'desc')->paginate($per_page);
+            //$queries = DB::getQueryLog();
+            //print_r( end($queries)); 
+            
+            
+            foreach($clients as $client){
+                $provider_id = Session::get('provider_id');
+                if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
+                else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+
+
+                $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
+                if($client_DeceasedInfo!=null){ 
+                    $client->deceased_first_name = $client_DeceasedInfo->first_name;
+                    $client->deceased_last_name = $client_DeceasedInfo->last_name;
+                    if($client_DeceasedInfo->cremation_reason == "planning_for_future")$client->preneed = "y";
+                    else $client->preneed = "n";
+                }
+                else $client->preneed = "n";
+                
+            }
             $this->layout->content = View::make('admin.customers')->withClients($clients);
 		
 	}

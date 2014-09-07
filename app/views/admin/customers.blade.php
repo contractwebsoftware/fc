@@ -54,12 +54,13 @@
             <table class="table table-striped client_table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
-                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
+                        <th style="width:70px"><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                           <label for="checkallcb" style="cursor:pointer;white-space:nowrap;">All</label>
                         </th>
                         <th>Customer Name</th>
                         <th>Deceased Name</th>
                         <th>Phone</th>
+                        <th>Date</th>
                         <th>Customer Email</th>
                         <th class="text-right">Status</th>
                         <th class="text-right">Actions</th>
@@ -73,6 +74,7 @@
                                 <td >{{ $client->first_name.' '.$client->last_name }}</td>
                                 <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
                                 <td >{{ $client->phone }}</td>
+                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
                                 <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
                                 <td class="text-right" >
                                     <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  

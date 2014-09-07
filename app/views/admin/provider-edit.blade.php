@@ -6,7 +6,7 @@
 			<hr>
 		</div>
 		<div class="col-xs-12">
-			{{ Form::open(['action'=>'AdminController@postUpdate','class'=>'form-horizontal','role'=>'form']) }}
+			{{ Form::open(['action'=>'AdminController@postUpdateProvider','class'=>'form-horizontal','role'=>'form']) }}
 				{{ Form::hidden("provider[id]",$provider->id) }}
 				<fieldset>
 					<legend>Company Information</legend>
@@ -21,6 +21,19 @@
 						</div>
 					</div>
             
+                                        <div class="form-group">
+                                            <label  class="col-sm-4" for="provider_login">Provider Login</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" placeholder="Login Email" name="provider_login" id="provider_login" class="form-control" value="{{ $fuser->email }}">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" placeholder="Login Password" name="newpassword" class="form-control" value="">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" placeholder="Confirm Password" name="newpassword_confirmation" class="form-control" value="">
+                                            </div>
+					</div>
+                                        
 					<div class="form-group">
 						<label  class="col-sm-4" for="business_name">Provider Name</label>
 						<div class="col-sm-8">
@@ -32,16 +45,16 @@
 						<div class="col-sm-8"><textarea placeholder="Address" name="provider[address]" id="address" class="form-control" row="3">{{ $provider->address }}</textarea></div>
 					</div>
 					<div class="form-group">
-						<div class="col-sm-4"></div>
-						<div class="col-sm-4">
-					      <input type="text" class="form-control" id="city" placeholder="City" name="provider[city]" value="{{ $provider->city }}">
-					    </div>
-					    <div class="col-sm-2">
-					          <input type="text" class="form-control" id="state" placeholder="State" name="provider[state]" value="{{ $provider->state }}">
-					        </div>
-					    <div class="col-sm-2">
-					      <input type="text" class="form-control" id="zip" placeholder="Zip" name="provider[zip]" value="{{ $provider->zip }}">
-					    </div>
+                                            <div class="col-sm-4"></div>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" id="city" placeholder="City" name="provider[city]" value="{{ $provider->city }}">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                    <input type="text" class="form-control" id="state" placeholder="State" name="provider[state]" value="{{ $provider->state }}">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="zip" placeholder="Zip" name="provider[zip]" value="{{ $provider->zip }}">
+                                            </div>
 					</div>
 					<div class="form-group">
 						<label  class="col-sm-4" for="website">Website</label>
@@ -455,4 +468,65 @@
 			{{ Form::close() }}
 		</div>
 	</div>
+        
+        <hr>
+	<div class="row">
+            <div class="col-xs-12">
+            {{ $clients->links() }}
+          
+            <table class="">
+                <thead>
+                    <tr>
+                        <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
+                        </th>-->
+                        <th>Customer Name</th>
+                        <th>Deceased Name</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Customer Email</th>
+                        <th class="text-right">Status</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach( $clients as $client )
+                        <tr>
+                                <!--<td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>-->
+                                <td >{{ $client->first_name.' '.$client->last_name }}</td>
+                                <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
+                                <td >{{ $client->phone }}</td>
+                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
+                                <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+                                <td class="text-right" >
+                                    <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
+                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
+                                    <?php
+                                        switch($client->status){
+                                            case 0:echo 'Active';break;
+                                            case 1:echo 'Completed';break;
+                                            case 3:echo 'Deleted';break;
+                                        }   
+                                        if($client->preneed == "y")echo '/Pre-Need';
+                                    ?>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>&nbsp;
+                                    <?php
+                                    if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                                    else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
+                                    ?>
+                                </td>
+                        </tr>
+                    @endforeach
+            </tbody>
+            </table>
+            {{ $clients->links() }}
+          
+         </div>
+        </div>
+            {{ $clients->links() }}
 @stop

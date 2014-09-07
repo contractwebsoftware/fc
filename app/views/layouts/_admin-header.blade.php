@@ -10,8 +10,4 @@
             <li ><a href="{{ action('UserController@getLogout')}}">Logout</a></li>
     </ul>
     <div class="clear"></div>
-   
-    
-    
-    
 </div>

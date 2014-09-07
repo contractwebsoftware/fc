@@ -6,7 +6,8 @@ Route::group(array('before' => 'Sentry|inGroup:Admin'), function()
 });
 Route::group(array('before' => 'Sentry|inGroup:Provider'), function()
 {
-	Route::controller('providers','ProviderController');
+	//Route::controller('providers','ProviderController');
+    Route::controller('admin','AdminController');
 });
 
 Route::group(array('before' => 'Sentry|inGroup:Customer'), function()
@@ -29,6 +30,7 @@ Route::controller('usergroups','UsergroupController');
 
 Route::controller('clients','ClientController');
 Route::controller('steps','StepController');
+Route::controller('admin','AdminController');
 
 
 Route::get('test', function(){

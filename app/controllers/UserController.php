@@ -25,6 +25,7 @@ class UserController extends BaseController {
 		{
 		    // Try to authenticate the user
 		    $user = Sentry::authenticate($credentials, false);
+                  
 		}
 		catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 		{
@@ -48,15 +49,23 @@ class UserController extends BaseController {
 		    Session::flash('error','User is not activated');
 		}
 		if(Sentry::getUser()->role=='admin') {
-			return Redirect::action('AdminController@getProviders');
+                    //dd(Session::get('provider'));
+            
+                    return Redirect::action('AdminController@getProviders');
 		}else{
-			return Redirect::action('ProviderController@getCustomers');
+                    
+                    $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
+                    Session::put('logged_in_provider_id',$provider->id);
+                    Session::put('provider',$provider);
+                    return Redirect::action('AdminController@getCustomers');
 		}
 	}
 
 	public function getLogout(){
-		Sentry::logout();
-		return Redirect::to('/');
+                Session::flush();
+                Sentry::logout();
+		//return Redirect::to('/users/login');
+                return Redirect::action('UserController@getLogin');
 	}
 	public function getCreateUser() {
 		try

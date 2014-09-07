@@ -56,6 +56,9 @@ class ClientController extends BaseController {
                 $provider = ClientController::updateProvider($provider_id);
                     #elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
             }
+            elseif($client->FProvider!=null){
+                $provider = ClientController::updateProvider($client->FProvider->id); 
+            }
             //REFRESHING SO PROVIDER INFO ISN'T CACHED
             elseif(is_object(Session::get('provider'))) {
                 $provider = Session::get('provider');
@@ -398,6 +401,13 @@ class ClientController extends BaseController {
                 $client->DeceasedInfoPresentLoc = new DeceasedInfoPresentLoc();  
                 $client->DeceasedInfoPresentLoc->fill($client_details_input);
                 $client->DeceasedInfoPresentLoc->save(); 
+            }
+            
+            $provider_id = DB::table('clients_providers')->select(DB::raw('provider_id'))->where('client_id','=', $client->id)->first();
+            //dd($provider_id->provider_id);
+            if($provider_id!=null)$client->FProvider = FProvider::find($provider_id->provider_id);
+            if($client->FProvider == null){
+                $client->FProvider = FProvider::find(1);  
             }
             
             $client->User = User::where('id', $client->user_id)->first();
