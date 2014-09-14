@@ -129,14 +129,18 @@ class AdminController extends BaseController {
             $pricing->fill( Array('provider_id'=>$provider->id) );
             $pricing->save(); 
 
+            $bill = Billing::first();
+            
             $billing = new ProviderBilling();
             $billing->fill( Array('provider_id'=>$provider->id) );
+            $billing->monthly_fee = $bill->monthly_fee;
+            $billing->per_case_fee = $bill->per_case_fee;
             $billing->save(); 
 
 
             //CREATE FRESHBOOKS ENTRY
             $client_id = AdminController::postAddBillingClient($provider->id);
-            if($client_id!='')AdminController::postAddRecurringBillingToClient($client_id);
+            if($client_id!='')AdminController::postAddRecurringBillingToClient($provider->id);
             // $provider = FProvider::create($input);
              //dd($provider);
 
@@ -389,7 +393,10 @@ class AdminController extends BaseController {
             $bill->monthly_fee = $input['provider_billing']['monthly_fee'];
             $bill->per_case_fee = $input['provider_billing']['per_case_fee'];
             $bill->save();
-            Session::flash('success','Billing Setting has been updated');
+            
+            AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
+                    
+            Session::flash('success','Billing and Freshbooks have been updated');
             return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
     }
 
@@ -902,6 +909,10 @@ class AdminController extends BaseController {
                 //dd($fb->getResponse());
                 $res = $fb->getResponse();
                 $client_id = $res['client_id'];
+                $provider->freshbooks_client_id = $client_id;
+                $provider->save();
+                //freshbooks_client_id
+                //freshbooks_recurring_id
                 return $client_id;
             } else {
                 echo $fb->getError();
@@ -918,52 +929,96 @@ class AdminController extends BaseController {
     }
     
     
-    function postAddRecurringBillingToClient($client_id)
+    function postAddRecurringBillingToClient($provider_id, $create_new=true)
     {
+        $provider = FProvider::find($provider_id);
+        
         $bill = Billing::first();
-        if($client_id!=''){
-            $fb = new Freshbooks\FreshBooksApi('recurring.create');
+        if($provider !=null)
+        if($provider->freshbooks_client_id!=''){
 
-            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
-            $fb->post(
-                array('recurring'=>
-                    array(
-                       'client_id' => $client_id,
-                       'date' => date("Y-m-d"),
-                       'occurrences' => 0,
-                       'frequency'=>'monthly',
-                       //'terms'=>$bill->terms,
-                       'lines'=> array(
-                           'line' => array(
-                                'name'=>'Monthly',
-                                'description'=>'Charge for the month of ::month::',
-                                'unit_cost'=>$bill->monthly_fee,
-                                'quantity'=>'1',
-                                'tax1_name'=>'',
-                                'tax2_name'=>'',
-                                'tax1_percent'=>'',
-                                'tax2_percent'=>''
+                if($create_new){
+                    $fb = new Freshbooks\FreshBooksApi('recurring.create');
+                     // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+                    $fb->post(
+                        array('recurring'=>
+                            array(
+                               'client_id' => $provider->freshbooks_client_id,
+                               'date' => date("Y-m-d"),
+                               'occurrences' => 0,
+                               'frequency'=>'monthly',
+                               //'terms'=>$bill->terms,
+                               'lines'=> array(
+                                   'line' => array(
+                                        'name'=>'Monthly',
+                                        'description'=>'Charge for the month of ::month::',
+                                        'unit_cost'=>$bill->monthly_fee,
+                                        'quantity'=>'1',
+                                        'tax1_name'=>'',
+                                        'tax2_name'=>'',
+                                        'tax1_percent'=>'',
+                                        'tax2_percent'=>''
+                                    )
+                                )
                             )
                         )
-                    )
-                )
-            );
-            //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
-            
-            $fb->request();
+                    );
+                }
+                else {
+                    $providerBilling = ProviderBilling::where('provider_id', $provider_id)->first();
+                   
+                    $fb = new Freshbooks\FreshBooksApi('recurring.update');
+                     // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+                    $fb->post(
+                        array('recurring'=>
+                            array(
+                               'recurring_id' => $provider->freshbooks_recurring_id,
+                               'client_id' => $provider->freshbooks_client_id,
+                               'date' => date("Y-m-d"),
+                               'occurrences' => 0,
+                               'frequency'=>'monthly',
+                               //'terms'=>$bill->terms,
+                               'lines'=> array(
+                                   'line' => array(
+                                        'name'=>'Monthly',
+                                        'description'=>'Charge for the month of ::month::',
+                                        'unit_cost'=>$providerBilling->monthly_fee,
+                                        'quantity'=>'1',
+                                        'tax1_name'=>'',
+                                        'tax2_name'=>'',
+                                        'tax1_percent'=>'',
+                                        'tax2_percent'=>''
+                                    )
+                                )
+                            )
+                        )
+                    );
+                }
+               
+                //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
 
-            if($fb->success()) {
-                Session::flash('success','Successful!ly Set Recurring Freshbooks entry');
-                //dd($fb->getResponse());
-                $res = $fb->getResponse();
-                
-            } else {
-                echo $fb->getError();
-                Session::flash('error','Errors Creating Freshbooks Recurring Entry');
+                $fb->request();
 
-                var_dump($fb->getResponse());
-            }
-            
+                if($fb->success()) {
+                    Session::flash('success','Successful!ly Set Recurring Freshbooks entry');
+                    //dd($fb->getResponse());
+                    
+                    $res = $fb->getResponse();
+                    //dd($res);
+                    if($create_new){
+                        $recurring_id = $res['recurring_id'];
+
+                        $provider->freshbooks_recurring_id = $recurring_id;
+                        $provider->save();
+                    }
+
+                } else {
+                    echo $fb->getError();
+                    Session::flash('error','Errors Settings Freshbooks Recurring Entry');
+
+                    dd($fb->getResponse());
+                }
+
             
             
         }
