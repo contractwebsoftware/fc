@@ -70,35 +70,35 @@
                     @foreach( $clients as $client )
                         @if(($client->preneed == "y" && Input::get('preneed')=='1') || Input::get('preneed')!='1')
                         <tr >
-                                <td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>
-                                <td >{{ $client->first_name.' '.$client->last_name }}</td>
-                                <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
-                                <td >{{ $client->phone }}</td>
-                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
-                                <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
-                                <td class="text-right" >
-                                    <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
-                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
-                                    <?php
-                                        switch($client->status){
-                                            case 0:echo 'Active';break;
-                                            case 1:echo 'Completed';break;
-                                            case 3:echo 'Deleted';break;
-                                        }   
-                                        if($client->preneed == "y")echo '/Pre-Need';
-                                    ?>
-                                    </div>
-                                </td>
-                                <td class="text-right">
-                                        <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
-                                                <span class="glyphicon glyphicon-pencil"></span>
-                                        </a>&nbsp;
-                                    <?php
-                                    if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
-                                    else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
-                                    ?>
+                            <td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>
+                            <td >{{ $client->first_name.' '.$client->last_name }}</td>
+                            <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
+                            <td >{{ $client->phone }}</td>
+                            <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
+                            <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+                            <td class="text-right" >
+                                <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
+                        title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
+                                <?php
+                                    switch($client->status){
+                                        case 0:echo 'Active';break;
+                                        case 1:echo 'Completed';break;
+                                        case 3:echo 'Deleted';break;
+                                    }   
+                                    if($client->preneed == "y")echo '/Pre-Need';
+                                ?>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>&nbsp;
+                                <?php
+                                if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                                else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
+                                ?>
 
-                                </td>
+                            </td>
                         </tr>
                         @endif
                     @endforeach
@@ -115,11 +115,6 @@
                 $('.clients_mass_action').prop('checked', allchecked);
                 allchecked = !allchecked;
             }
-
-           $.ready(function(){
-              
-              
-           });
        </script>
         
 @stop
