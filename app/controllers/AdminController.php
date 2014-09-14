@@ -1,9 +1,17 @@
 <?php
+
+/* FRESHBOOKS API */
+$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+Freshbooks\FreshBooksApi::init($domain, $token);
+
+
 class AdminController extends BaseController {
     protected $layout = 'layouts.admin';
 
     public function getProviders()
     {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
         $q = Input::get('q');
         if(strlen($q)>=3)
@@ -40,10 +48,10 @@ class AdminController extends BaseController {
          $this->layout->content = View::make('admin.provider-new', $input);
     }
 
-    public function postStore()
+   
+    public function postNewProvider()
     {
-
-
+        Session::put('new_provider_data', Input::all());
         $input = [
                 'business_name' => Input::get('business_name'),
                 'address' => Input::get('address'),
@@ -93,6 +101,7 @@ class AdminController extends BaseController {
 
             $input = [
                 'business_name' => Input::get('business_name'),
+                'email' => Input::get('email'),
                 'address' => Input::get('address'),
                 'city' => Input::get('city'),
                 'state' => Input::get('state'),
@@ -125,12 +134,15 @@ class AdminController extends BaseController {
             $billing->save(); 
 
 
-
+            //CREATE FRESHBOOKS ENTRY
+            $client_id = AdminController::postAddBillingClient($provider->id);
+            if($client_id!='')AdminController::postAddRecurringBillingToClient($client_id);
             // $provider = FProvider::create($input);
              //dd($provider);
 
             DB::table('users_groups')->insert(['user_id'=>$user->id,'group_id'=>2]);
 
+            Session::put('new_provider_data',array());
             Session::flash('success','Provider has been added');
             return Redirect::action('AdminController@getEditProvider', array('id' => $provider->id));
         });
@@ -327,10 +339,6 @@ class AdminController extends BaseController {
     }
 
 
-    public function getBillingPage()
-    {
-            $this->layout->content = View::make('admin.billing',['billing'=>Billing::first()]);
-    }
 
     public function getRemoveFiles()
     {
@@ -504,6 +512,7 @@ class AdminController extends BaseController {
 
     public function getCustomers()
     {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         $per_page = 50;
         if(Input::get('per')){
             $per_page = Input::get('per');
@@ -672,6 +681,7 @@ class AdminController extends BaseController {
     */
     public function getFuneralhomes()
     {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
         $q = Input::get('q');
         if(strlen($q)>=3)
@@ -803,8 +813,165 @@ class AdminController extends BaseController {
         Session::flash('success',count($funeralhomes_r).' Funeral Homes Updated Successfully');
         return Redirect::action('AdminController@getFuneralhomes');
     }
+   
     
+    
+    
+    
+    /*
+    * BILLING MANAGEMENT
+    * 
+    * FRESHBOOKS API
+     * API URl: https://forcremationcom.freshbooks.com/api/2.1/xml-in
+     * Token: 95cad39d382f8bc4ae2d2a2a119e6559
+     * Docs: http://developers.freshbooks.com/docs/clients/
+     * 
+    */
+    
+    public function getBillingPage()
+    {
+        /*
+        // Method names are the same as found on the freshbooks API
+        $fb = new Freshbooks\FreshBooksApi('client.list');
+
+        // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+        $fb->post(array(
+            //'email' => 'some@email.com'
+        ));
+
+        $fb->request();
+
+        if($fb->success()) {
+            //echo 'successful! the full response is in an array below<pre>';
+            //dd($fb->getResponse());
+        } else {
+            echo $fb->getError();
+            //var_dump($fb->getResponse());
+        }
+        */
         
+        $this->layout->content = View::make('admin.billing',['billing'=>Billing::first()]);
+    }
+       
+    public function postUpdateDefaultBilling()
+    {
+            $input = Input::all();
+            $rules = ['monthly_fee'=>'required'];
+            $v = Validator::make($input,$rules);
+            if($v->fails()) return Redirect::back()->withErrors($v);
+
+            $bill = Billing::first();
+            $bill->monthly_fee = $input['monthly_fee'];
+            $bill->lead_fee = $input['lead_fee'];
+            $bill->save();
+            Session::flash('success','Billing Setting has been updated');
+            return Redirect::action('AdminController@getBillingPage', ['billing'=>Billing::first()]);
+    } 
+    
+    public function postAddBillingClient($provider_id)
+    {
+       
+        $provider = FProvider::find($provider_id);
+
+        if($provider != null){
+            $fb = new Freshbooks\FreshBooksApi('client.create');
+
+            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+            $fb->post(array('client'=>
+                array(
+                    'first_name' => $provider->business_name,
+                    'last_name' => "",
+                    'email' => $provider->email,
+                     //'username' => $provider->email,
+                    'work_phone'=>$provider->phone,
+                    'fax'=>$provider->fax,
+                    'p_street1'=>$provider->address,
+                    'p_city'=>$provider->city,
+                    'p_state'=>$provider->state,
+                    'p_country'=>'United States',
+                    'p_code'=>$provider->zip
+                    )
+                )
+            );
+            //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+            
+            $fb->request();
+
+            if($fb->success()) {
+                Session::flash('success','Successful!ly created Freshbooks entry');
+                //dd($fb->getResponse());
+                $res = $fb->getResponse();
+                $client_id = $res['client_id'];
+                return $client_id;
+            } else {
+                echo $fb->getError();
+                Session::flash('error','Errors Creating Freshbooks Entry');
+
+                var_dump($fb->getResponse());
+            }
+            
+ 
+        } 
+        else Session::flash('Issue Finding Provider To Create Freshbooks Entry');
+                    
+
+    }
+    
+    
+    function postAddRecurringBillingToClient($client_id)
+    {
+        $bill = Billing::first();
+        if($client_id!=''){
+            $fb = new Freshbooks\FreshBooksApi('recurring.create');
+
+            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+            $fb->post(
+                array('recurring'=>
+                    array(
+                       'client_id' => $client_id,
+                       'date' => date("Y-m-d"),
+                       'occurrences' => 0,
+                       'frequency'=>'monthly',
+                       //'terms'=>$bill->terms,
+                       'lines'=> array(
+                           'line' => array(
+                                'name'=>'Monthly',
+                                'description'=>'Charge for the month of ::month::',
+                                'unit_cost'=>$bill->monthly_fee,
+                                'quantity'=>'1',
+                                'tax1_name'=>'',
+                                'tax2_name'=>'',
+                                'tax1_percent'=>'',
+                                'tax2_percent'=>''
+                            )
+                        )
+                    )
+                )
+            );
+            //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+            
+            $fb->request();
+
+            if($fb->success()) {
+                Session::flash('success','Successful!ly Set Recurring Freshbooks entry');
+                //dd($fb->getResponse());
+                $res = $fb->getResponse();
+                
+            } else {
+                echo $fb->getError();
+                Session::flash('error','Errors Creating Freshbooks Recurring Entry');
+
+                var_dump($fb->getResponse());
+            }
+            
+            
+            
+        }
+        
+        
+
+    }
+    
 }
 
 
