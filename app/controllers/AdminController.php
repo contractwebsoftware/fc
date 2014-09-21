@@ -172,22 +172,24 @@ class AdminController extends BaseController {
     }
     public function getEditProvider($id)
     {
-            $data['provider'] = FProvider::find($id);
-            $data['fuser'] = User::find($data['provider']->user_id);
-            if($data['fuser'] == null) $data['fuser'] = new User;
-            $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
-            $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
-            $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+         
+        $data['provider'] = FProvider::find($id);
+        $data['fuser'] = User::find($data['provider']->user_id);
+        if($data['fuser'] == null) $data['fuser'] = new User;
+        $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
+        $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
+        $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
 
 
-            $this_zip = Zip::where('zip',$data['provider']->zip)->first();
-            if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
-            else $data['zip_info'] = null;
+        $this_zip = Zip::where('zip',$data['provider']->zip)->first();
+        if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
+        else $data['zip_info'] = null;
 
-            $data['clients'] = AdminController::getProviderCustomers($id);
-            //dd($data['clients']);
+        $data['clients'] = AdminController::getProviderCustomers($id);
+        //dd($data['clients']);
 
-            $this->layout->content = View::make('admin.provider-edit',$data);
+        $this->layout->content = View::make('admin.provider-edit',$data);
     }
 
 
@@ -216,60 +218,62 @@ class AdminController extends BaseController {
 
     public function postUpdateProvider()
     {
-            $input = Input::all();
-            //dd($input['provider']['id']);
-            $provider = FProvider::find($input['provider']['id']);
-            //dd($provider);
-            if($provider == null){
-                $provider = new FProvider();  
-            } 
-            $provider->fill($input['provider']);
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+        
+        $input = Input::all();
+        //dd($input['provider']['id']);
+        $provider = FProvider::find($input['provider']['id']);
+        //dd($provider);
+        if($provider == null){
+            $provider = new FProvider();  
+        } 
+        $provider->fill($input['provider']);
+        $provider->save();
+
+        if($input['provider_login']!=""){
+            $user = User::find($provider->user_id);
+            if($user == null)$user = new User;
+            $user->email = $input['provider_login']; 
+            $user->activated = 1;
+            $user->role = "provider";
+            $user->save();
+
+            $provider->user_id = $user->id;
             $provider->save();
-
-            if($input['provider_login']!=""){
-                $user = User::find($provider->user_id);
-                if($user == null)$user = new User;
-                $user->email = $input['provider_login']; 
-                $user->activated = 1;
-                $user->role = "provider";
-                $user->save();
-
-                $provider->user_id = $user->id;
-                $provider->save();
-            } 
-            if($input['newpassword']!="" && $input['newpassword_confirmation']!="" && $user!=null){
-                $newpass = ['newpassword'=>$input['newpassword'],'newpassword_confirmation'=>$input['newpassword_confirmation']] ;
-                $rules = ['newpassword'=>'required|confirmed'] ;
-                // Let's validate
-                $v = Validator::make($newpass,$rules);
-                if($v->fails())
-                        return Redirect::back()->withErrors($v);
+        } 
+        if($input['newpassword']!="" && $input['newpassword_confirmation']!="" && $user!=null){
+            $newpass = ['newpassword'=>$input['newpassword'],'newpassword_confirmation'=>$input['newpassword_confirmation']] ;
+            $rules = ['newpassword'=>'required|confirmed'] ;
+            // Let's validate
+            $v = Validator::make($newpass,$rules);
+            if($v->fails())
+                    return Redirect::back()->withErrors($v);
 
 
-                // Okay all validation passed, we change the password
-                try {
-                    $sentry_user = Sentry::findUserById($user->id);
-                    $sentry_user->password = $input['newpassword'];
-                    $sentry_user->save();
-                    Session::flash('success','Password Updated');
-                } catch (Exception $e) {
-                    Session::flash('error','Password Update Failed');
-                }   
-            }
+            // Okay all validation passed, we change the password
+            try {
+                $sentry_user = Sentry::findUserById($user->id);
+                $sentry_user->password = $input['newpassword'];
+                $sentry_user->save();
+                Session::flash('success','Password Updated');
+            } catch (Exception $e) {
+                Session::flash('error','Password Update Failed');
+            }   
+        }
 
 
 
-            //dd($provider);
+        //dd($provider);
 
-            if($provider->provider_status=='2'){
-                $provider->delete();
-                Session::flash('success','Provider Soft Deleted Successfully');
-                return Redirect::action('AdminController@getProviders');
-            }
+        if($provider->provider_status=='2'){
+            $provider->delete();
+            Session::flash('success','Provider Soft Deleted Successfully');
+            return Redirect::action('AdminController@getProviders');
+        }
 
-            Session::flash('success','Provider\'s Data has been updated');
-            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
-            //return Redirect::action('AdminController@getEditProvider');
+        Session::flash('success','Provider\'s Data has been updated');
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+        //return Redirect::action('AdminController@getEditProvider');
 
     }
 

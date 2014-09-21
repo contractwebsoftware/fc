@@ -15,8 +15,6 @@
     </div>
      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
        <ul class="nav navbar-nav navbar-right">
-
-
       </ul>
     </div>
   </div>
@@ -65,8 +63,11 @@
                         <br>Address: '.$provider->address.', '.$provider->city.', '.$provider->state.' '.$provider->zip.'
                     </td>
                     <td align="right">
-                            <b style="font-size: 20px;color:#0E7DB6 !important;">Prices Starting At: $'.$provider->pricing_options->basic_cremation.'</b>
-                            <br><span>Phone: '.$provider->phone.'</span>
+                        <b style="font-size: 20px;color:#0E7DB6 !important;">Prices Starting At: $'.$provider->pricing_options->basic_cremation.'</b>
+                        <br><span>Phone: '.$provider->phone.'</span>
+                         ';
+                         if($provider->ProviderPriceSheet!=null)echo '<Br /><a style="font-weight:bold;" href="'.asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name).'">Download Pricing Sheet</a>';
+                         echo'
                     </td></tr>
                </table>
         </div>';

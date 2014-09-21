@@ -102,7 +102,7 @@
 			{{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
 			{{ Form::hidden("provider[id]",$provider->id) }}
 			<?php
-                            $fileNames = Array('pricing'=>"Pricing Sheet", 'clientform'=>"Client Forms", 
+                            $fileNames = Array('pricing'=>"Pricing Sheet", 'clientform'=>"Client Forms", 'logo'=>'Business Logo',
                                                 'custom1'=>"Custom Document 1", 'custom2'=>"Custom Document 2", 'custom3'=>"Custom Document 3", 'custom4'=>"Custom Document 4", 'custom5'=>"Custom Document 5");
                         ?>
                         <fieldset>
@@ -113,14 +113,12 @@
                                        
                                     File Type: 
                                     <select name="provider_files_type" id="provider_files_type">
-                                            <option value="">Select A Type of File</option>
-                                            <option value="pricing"><?=$fileNames['pricing']?></option>
-                                            <option value="clientform"><?=$fileNames['clientform']?></option>
-                                            <option value="custom1"><?=$fileNames['custom1']?></option>
-                                            <option value="custom2"><?=$fileNames['custom2']?></option>
-                                            <option value="custom3"><?=$fileNames['custom3']?></option>
-                                            <option value="custom4"><?=$fileNames['custom4']?></option>
-                                            <option value="custom5"><?=$fileNames['custom5']?></option>
+                                        <option value="">Select A Type of File</option>
+                                        <?php 
+                                        foreach($fileNames as $key=>$value){
+                                            echo '<option value="'.$key.'">'.$value.'</option>';
+                                        }
+                                        ?>
                                     </select>
                                     <input type="file" id="provider_files" name="provider_files_new" class="form-control">
                                         

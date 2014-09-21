@@ -728,7 +728,7 @@
                 <div class="col-sm-12">
                     Enter initials here: <input type="text" class="form-control" id="confirmed_correct_info_initial" name="client[confirmed_correct_info_initial]" value="{{$client->confirmed_correct_info_initial}}" />
 
-                    <a class="btn btn-primary" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments') }}">Download Forms</a>
+                    <a class="btn btn-primary" id="download_forms" download="CremationDocuments{{date('Y-m-d')}}.pdf" target="_blank" href="{{ action('ClientController@getCustomerDocuments', array($client->id, $provider->id)) }}">Download Forms</a>
                     <div id="loading_gif" style="display:none;">
                     <br>
                     <img src="/images/ajax-loader.gif"> <b>Downloading Forms... please wait</b>

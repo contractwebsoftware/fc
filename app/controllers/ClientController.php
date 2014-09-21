@@ -66,6 +66,7 @@ class ClientController extends BaseController {
             }
             else $provider = ClientController::updateProvider(1); 
             
+            
                 //echo '<br>INPUTS:<br />'; print_r(Input::get());  
                 //echo '<br>$provider:<br />'; print_r($provider);  
           
@@ -114,6 +115,12 @@ class ClientController extends BaseController {
             $provider = DB::table('providers')->where('id', $provider_id)->first();
             $provider->pricing_options = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
            
+            $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
+            if($provider->ProviderFiles == null)$provider->ProviderFiles = new ProviderFiles();  
+            $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
+               
+            
+            
             if(is_object($client)){
                 $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
                 if(count($client_provider)>0){
@@ -877,17 +884,11 @@ class ClientController extends BaseController {
            
         }
         
-        
-        
-        
-        
-        
-        
         //dd();
         
         $pdf = App::make('dompdf');
         $pdf->loadHTML($html);
-        return $pdf->stream();   
+        return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');   
 
     }
     
