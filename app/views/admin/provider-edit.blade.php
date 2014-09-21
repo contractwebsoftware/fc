@@ -146,7 +146,252 @@
 		</div>
 	</div>
 	<hr>
-	<div class="row">
+      
+    @if(Sentry::getUser()->role=='admin')
+       
+        <div class="row" id="customer_document_forms">
+            <div class="col-xs-12">
+                {{ Form::open(['action'=>'AdminController@postUpdateProviderForms', 'class'=>'form-horizontal','files'=>true]) }}
+                {{ Form::hidden("provider[id]",$provider->id) }}
+
+                <fieldset>
+                        <legend>Form Documents</legend>
+                        
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                          <li class="active"><a href="#tab_customer_form_1" role="tab" data-toggle="tab">Vital Information Form</a></li>
+                          <li><a href="#tab_customer_form_2" role="tab" data-toggle="tab">Form 2</a></li>
+                          <li><a href="#tab_customer_form_3" role="tab" data-toggle="tab">Form 3</a></li>
+                          <li><a href="#tab_customer_form_4" role="tab" data-toggle="tab">Form 4</a></li>
+                          <li><a href="#tab_customer_form_5" role="tab" data-toggle="tab">Form 5</a></li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            
+                            
+                            <div class="tab-pane active" id="tab_customer_form_1">
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <textarea id="customer_form_1" name="provider[customer_form_1]" class="form-control customer_form_ta" >{{$provider->customer_form_1}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        
+                            <div class="tab-pane" id="tab_customer_form_2">
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <textarea id="customer_form_2" name="provider[customer_form_2]" class="form-control customer_form_ta" >{{$provider->customer_form_2}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane" id="tab_customer_form_3">
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <textarea id="customer_form_3" name="provider[customer_form_3]" class="form-control customer_form_ta" >{{$provider->customer_form_3}}</textarea> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_customer_form_4">
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <textarea id="customer_form_4" name="provider[customer_form_4]" class="form-control customer_form_ta" >{{$provider->customer_form_4}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="tab-pane" id="tab_customer_form_5">
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <textarea id="customer_form_5" name="provider[customer_form_5]" class="form-control customer_form_ta">{{$provider->customer_form_5}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--/end tab-content -->
+
+                        <div class="form-group">
+                            <div class="col-xs-8">
+                                <button type="submit" class="btn btn-primary btn-block">Update</button>
+                            </div>
+                            <div class="col-xs-4">
+                                <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id) ) }}">Preview Example</a>
+                            </div>
+                        </div>
+                </fieldset>
+                <a href="#" onclick="$('#key_map').slideToggle();return false;">Show Client and Provider Keywords</a>
+                <div style="display:none;" id="key_map">
+                   <?php
+                   echo '<table><tr><td align=left style="vertical-align: top;">
+                    <ul class="form_keys"><li><b>Person Registering for Cremation Services</b></li>
+                    <li>{{client_status}}</li>
+                    <li>{{client_first_name}}</li>
+                    <li>{{client_middle_name}}</li>
+                    <li>{{client_last_name}}</li>
+                    <li>{{client_legal_name}}</li>
+                    <li>{{client_initials}}</li>
+                    <li>{{client_relationship}}</li>
+                    <li>{{client_apt}}</li>
+                    <li>{{client_address}}</li>
+                    <li>{{client_city}}</li>
+                    <li>{{client_state}}</li>
+                    <li>{{client_zip}}</li>
+                    <li>{{client_phone}}</li>
+                    <li>{{client_agreed_to_ftc}}</li>
+                    <li>{{client_confirmed_legal_auth}}</li>
+                    <li>{{client_confirmed_legal_auth_name}}</li>
+                    <li>{{client_confirmed_correct_info}}</li>
+                    <li>{{client_confirmed_correct_info_initial}}</li>
+                    <li>{{client_feedback_questions_text}}</li>
+                    <li>{{client_feedback_suggestions}}</li>
+                    <li>{{client_is_junk}}</li>
+                    <li>{{client_purchase_option}}</li>
+                    <li>{{client_majority_count}}</li></ul>
+                    
+                    </td><td align=left style="vertical-align: top;">
+                    <ul class="form_keys"><li><b>Provider</b></li>
+                    <li>{{provider_business_name}}</li>
+                    <li>{{provider_address}}</li>
+                    <li>{{provider_city}}</li>
+                    <li>{{provider_state}}</li>
+                    <li>{{provider_zip}}</li>
+                    <li>{{provider_email}}</li>
+                    <li>{{provider_website}}</li>
+                    <li>{{provider_phone}}</li>
+                    <li>{{provider_fax}}</li>
+                    <li>{{provider_provider_radius}}</li>
+                    <li>{{provider_provider_status}}</li>
+                    <li>{{provider_logo_url}}<Br /><br /></li>
+
+                    <li><b>Deceased\'s Fmaily Information</b></li>
+                    <li>{{DeceasedFamilyInfo_srdp_first_name}}</li>
+                    <li>{{DeceasedFamilyInfo_srdp_middle_name}}</li>
+                    <li>{{DeceasedFamilyInfo_srdp_last_name}}</li>
+                    <li>{{DeceasedFamilyInfo_fthr_first_name}}</li>
+                    <li>{{DeceasedFamilyInfo_fthr_middle_name}}</li>
+                    <li>{{DeceasedFamilyInfo_fthr_last_name}}</li>
+                    <li>{{DeceasedFamilyInfo_fthr_birth_city}}</li>
+                    <li>{{DeceasedFamilyInfo_mthr_first_name}}</li>
+                    <li>{{DeceasedFamilyInfo_mthr_middle_name}}</li>
+                    <li>{{DeceasedFamilyInfo_mthr_last_name}}</li>            
+                    <li>{{DeceasedFamilyInfo_mthr_birth_city}}</li></ul>
+                    </td><td align=left style="vertical-align: top;">
+
+                    <ul class="form_keys">
+                    <li><b>Deceased Information</b></li>
+                    <li>{{DeceasedInfo_first_name}}</li>
+                    <li>{{DeceasedInfo_middle_name}}</li>
+                    <li>{{DeceasedInfo_last_name}}</li>
+                    <li>{{DeceasedInfo_aka}}</li>
+                    <li>{{DeceasedInfo_location}}</li>
+                    <li>{{DeceasedInfo_type_of_location}}</li>
+                    <li>{{DeceasedInfo_address}}</li>
+                    <li>{{DeceasedInfo_apt}}</li>
+                    <li>{{DeceasedInfo_city}}</li>
+                    <li>{{DeceasedInfo_state}}</li>
+                    <li>{{DeceasedInfo_zip}}</li>
+                    <li>{{DeceasedInfo_county}}</li>
+                    <li>{{DeceasedInfo_phone}}</li>
+                    <li>{{DeceasedInfo_dob}}</li>
+                    <li>{{DeceasedInfo_gender}}</li>
+                    <li>{{DeceasedInfo_race}}</li>
+                    <li>{{DeceasedInfo_weight}}</li>
+                    <li>{{DeceasedInfo_marriage_status}}</li>
+                    <li>{{DeceasedInfo_birth_city_state}}</li>
+                    <li>{{DeceasedInfo_yrs_in_county}}</li>
+                    <li>{{DeceasedInfo_schooling_level}}</li>
+                    <li>{{DeceasedInfo_military}}</li>
+                    <li>{{DeceasedInfo_occupation}}</li>
+                    <li>{{DeceasedInfo_business_type}}</li>
+                    <li>{{DeceasedInfo_years_in_occupation}}</li>
+                    <li>{{DeceasedInfo_has_pace_maker}}</li>
+                    <li>{{DeceasedInfo_cremation_reason}}</li>
+                    <li>{{DeceasedInfo_medical_donation}}</li>
+                    <li>{{DeceasedInfo_ssn}}</li></ul>
+                    </td><td align=left style="vertical-align: top;">
+
+                    <ul class="form_keys">
+                    <li><b>Cremation Information</b></li>
+                    <li>{{CremainsInfo_number_of_certs}}</li>
+                    <li>{{CremainsInfo_cert_plan}}</li>
+                    <li>{{CremainsInfo_cremain_plan}}</li>
+                    <li>{{CremainsInfo_cremation_shipping_plan}}</li>
+                    <li>{{CremainsInfo_keeper_of_cremains}}</li>
+                    <li>{{CremainsInfo_shipto_first_name}}</li>
+                    <li>{{CremainsInfo_shipto_middle_name}}</li>
+                    <li>{{CremainsInfo_shipto_last_name}}</li>
+                    <li>{{CremainsInfo_shipto_address}}</li>
+                    <li>{{CremainsInfo_shipto_apt}}</li>
+                    <li>{{CremainsInfo_shipto_city}}</li>
+                    <li>{{CremainsInfo_shipto_state}}</li>
+                    <li>{{CremainsInfo_shipto_zip}}</li>
+                    <li>{{CremainsInfo_shipto_phone}}</li>
+                    <li>{{CremainsInfo_shipto_email}}</li>
+                    <li>{{CremainsInfo_package_plan}}</li>
+                    <li>{{CremainsInfo_custom1}}</li>
+                    <li>{{CremainsInfo_custom2}}</li>
+                    <li>{{CremainsInfo_custom3}}<Br /><br /></li>
+
+                    <li><b>Deceased Current Location</b></li>
+                    <li>{{DeceasedInfoPresentLoc_location}}</li>
+                    <li>{{DeceasedInfoPresentLoc_type_of_location}}</li>
+                    <li>{{DeceasedInfoPresentLoc_address}}</li>
+                    <li>{{DeceasedInfoPresentLoc_apt}}</li>
+                    <li>{{DeceasedInfoPresentLoc_city}}</li>
+                    <li>{{DeceasedInfoPresentLoc_state}}</li>
+                    <li>{{DeceasedInfoPresentLoc_zip}}</li> </ul>   
+                    </td></tr></table>';
+                   ?>
+                </div>
+                
+                <style>
+                        .form_keys li{cursor:pointer;}
+                        .form_sheet{border:1px solid #999;width:100%;}
+                        .form_sheet td{border:1px solid #999;} 
+                </style>
+                <script src="//cdn.ckeditor.com/4.4.4/full/ckeditor.js"></script>
+                 
+                <script>
+                  
+                    CKEDITOR.replace( 'provider[customer_form_1]',
+                    {
+                       // extraPlugins : 'uicolor',
+                        height: '800px',
+                    }); 
+
+                 
+                 $().ready( function() {
+                    $('.form_keys li').click(function() { 
+                      //alert('awesome'+$(this).text()); 
+                      //$(".cke_source:first").insertAtCaret($(this).text());
+                      //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
+                      var editor = CKEDITOR.instances.customer_form_1;
+                      editor.insertText( $(this).text() );
+                      
+                      return false
+                    });
+                    /*
+                    $("#DragWordList li").draggable({helper: 'clone'});
+                    $(".txtDropTarget").droppable({
+                      accept: "#DragWordList li",
+                      drop: function(ev, ui) {
+                        $(this).insertAtCaret(ui.draggable.text());
+                      }
+                    });*/
+        
+                  });
+                  
+                </script>
+               
+                {{ Form::close() }}
+            </div>
+	</div>
+	<hr>
+        
+        
+        <div class="row" >
 		<div class="col-xs-12">
 			{{ Form::open(['action'=>'AdminController@postUpdateBilling', 'class'=>'form-horizontal','files'=>true]) }}
 			{{ Form::hidden("provider[id]",$provider->id) }}
@@ -271,6 +516,8 @@
 	</fieldset>
 	{{ Form::close() }}
 	<hr>
+        
+   @endif
 	<div class="row">
 		<div class="col-xs-12">
 			{{ Form::open(['action'=>'AdminController@postUpdatePricing', 'class'=>'form-horizontal']) }}

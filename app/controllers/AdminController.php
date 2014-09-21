@@ -342,7 +342,18 @@ class AdminController extends BaseController {
             return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
     }
 
-
+    public function postUpdateProviderForms(){
+        $input = Input::all();
+        $provider = FProvider::find($input['provider']['id']);
+        //dd($provider);
+        if($provider == null){
+            $provider = new FProvider();  
+        } 
+        $provider->fill($input['provider']);
+        $provider->save();
+        Session::flash('success','Provider\'s Custome Documents has been updated');
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));    
+    }
 
     public function getRemoveFiles()
     {
@@ -1019,13 +1030,15 @@ class AdminController extends BaseController {
                     dd($fb->getResponse());
                 }
 
-            
-            
         }
         
-        
-
     }
+    
+    
+    
+    
+    
+    
     
 }
 

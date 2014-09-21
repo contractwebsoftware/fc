@@ -17,7 +17,9 @@
                 &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
                 &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
                 &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
-                &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br />
+                &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
+                &nbsp; &nbsp; <a class="btn btn-primary" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array($client->id,$provider->id) ) }}">Download Forms</a>
+                    
             </div>
             <div class="col-md-6">
                 <h2>{{$provider->business_name}}</h2>
@@ -726,7 +728,7 @@
                 <div class="col-sm-12">
                     Enter initials here: <input type="text" class="form-control" id="confirmed_correct_info_initial" name="client[confirmed_correct_info_initial]" value="{{$client->confirmed_correct_info_initial}}" />
 
-                    <button class="btn btn-primary" id="download_forms">Download Forms</button>
+                    <a class="btn btn-primary" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments') }}">Download Forms</a>
                     <div id="loading_gif" style="display:none;">
                     <br>
                     <img src="/images/ajax-loader.gif"> <b>Downloading Forms... please wait</b>

@@ -360,3 +360,5 @@ body {
   clear: both; }
 
 input[type=checkbox]{height:15px;width:15px;}
+
+.customer_form_ta{height:450px!important;}

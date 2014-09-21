@@ -84,9 +84,12 @@ class ClientController extends BaseController {
             //dd($sale_summary_r);
             
             /* IF WE'RE ACTUALLY IN ADMINSITRATION THEN SHOW ALL STEPS AT ONCE */
-            $group = json_decode(Sentry::getUser()->getGroups());
-            if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
-            elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
+            if(Sentry::getUser()){
+                $group = json_decode(Sentry::getUser()->getGroups());
+                if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
+                elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
+                else Session::put('inAdminGroup','');
+            }
             else Session::put('inAdminGroup','');
             
             if($jsonReturn)return Response::json(Input::get());
@@ -727,5 +730,166 @@ class ClientController extends BaseController {
             elseif($custom_included == 3)return true;
             else return false;
 	}   
+        
+        
+     
+    /*
+     * PDF FORM BUILDER USING DOMPDF
+     * 
+     * 
+     */    
+    function getCustomerDocuments($client_id='', $provider_id=''){
+        if($client_id=='')$client_id = Session::get('client_id');
+        if($provider_id=='')$provider_id = Session::get('provider_id');
+        
+        $client = Client::find($client_id);
+        $client = ClientController::fillOutClientTables($client);
+        $provider = FProvider::find($provider_id);
+        
+        
+        $html = $provider->customer_form_1;
+        $options = Array(
+            'client_status',
+            'client_first_name',
+            'client_middle_name',
+            'client_last_name',
+            'client_legal_name',
+            'client_initials',
+            'client_relationship',
+            'client_apt',
+            'client_address',
+            'client_city',
+            'client_state',
+            'client_zip',
+            'client_phone',
+            'client_agreed_to_ftc',
+            'client_confirmed_legal_auth',
+            'client_confirmed_legal_auth_name',
+            'client_confirmed_correct_info',
+            'client_confirmed_correct_info_initial',
+            'client_feedback_questions_text',
+            'client_feedback_suggestions',
+            'client_is_junk',
+            'client_purchase_option',
+            'client_majority_count',
+            
+            'provider_business_name',
+            'provider_address',
+            'provider_city',
+            'provider_state',
+            'provider_zip',
+            'provider_email',
+            'provider_website',
+            'provider_phone',
+            'provider_fax',
+            'provider_provider_radius',
+            'provider_provider_status',
+            'provider_logo_url',
+            
+            'DeceasedFamilyInfo_srdp_first_name',
+            'DeceasedFamilyInfo_srdp_middle_name',
+            'DeceasedFamilyInfo_srdp_last_name',
+            'DeceasedFamilyInfo_fthr_first_name',
+            'DeceasedFamilyInfo_fthr_middle_name',
+            'DeceasedFamilyInfo_fthr_last_name',
+            'DeceasedFamilyInfo_fthr_birth_city',
+            'DeceasedFamilyInfo_mthr_first_name',
+            'DeceasedFamilyInfo_mthr_middle_name',
+            'DeceasedFamilyInfo_mthr_last_name',            
+            'DeceasedFamilyInfo_mthr_birth_city',
+            
+            'DeceasedInfo_first_name',
+            'DeceasedInfo_middle_name',
+            'DeceasedInfo_last_name',
+            'DeceasedInfo_aka',
+            'DeceasedInfo_location',
+            'DeceasedInfo_type_of_location',
+            'DeceasedInfo_address',
+            'DeceasedInfo_apt',
+            'DeceasedInfo_city',
+            'DeceasedInfo_state',
+            'DeceasedInfo_zip',
+            'DeceasedInfo_county',
+            'DeceasedInfo_phone',
+            'DeceasedInfo_dob',
+            'DeceasedInfo_gender',
+            'DeceasedInfo_race',
+            'DeceasedInfo_weight',
+            'DeceasedInfo_marriage_status',
+            'DeceasedInfo_birth_city_state',
+            'DeceasedInfo_yrs_in_county',
+            'DeceasedInfo_schooling_level',
+            'DeceasedInfo_military',
+            'DeceasedInfo_occupation',
+            'DeceasedInfo_business_type',
+            'DeceasedInfo_years_in_occupation',
+            'DeceasedInfo_has_pace_maker',
+            'DeceasedInfo_cremation_reason',
+            'DeceasedInfo_medical_donation',
+            'DeceasedInfo_ssn',
+            
+            'CremainsInfo_number_of_certs',
+            'CremainsInfo_cert_plan',
+            'CremainsInfo_cremain_plan',
+            'CremainsInfo_cremation_shipping_plan',
+            'CremainsInfo_keeper_of_cremains',
+            'CremainsInfo_shipto_first_name',
+            'CremainsInfo_shipto_middle_name',
+            'CremainsInfo_shipto_last_name',
+            'CremainsInfo_shipto_address',
+            'CremainsInfo_shipto_apt',
+            'CremainsInfo_shipto_city',
+            'CremainsInfo_shipto_state',
+            'CremainsInfo_shipto_zip',
+            'CremainsInfo_shipto_phone',
+            'CremainsInfo_shipto_email',
+            'CremainsInfo_package_plan',
+            'CremainsInfo_custom1',
+            'CremainsInfo_custom2',
+            'CremainsInfo_custom3',
+            
+            'DeceasedInfoPresentLoc_location',
+            'DeceasedInfoPresentLoc_type_of_location',
+            'DeceasedInfoPresentLoc_address',
+            'DeceasedInfoPresentLoc_apt',
+            'DeceasedInfoPresentLoc_city',
+            'DeceasedInfoPresentLoc_state',
+            'DeceasedInfoPresentLoc_zip'            
+        );
+      
+          
+        foreach($options as $val){
+           $key = substr($val, strpos($val, '_')+1, strlen($val));
+           $object = substr($val, 0, strpos($val, '_'));
+           
+           switch($object){
+               case 'client': $class = $client; break;
+               case 'provider': $class = $provider; break;
+               case 'DeceasedFamilyInfo': $class = $client->DeceasedFamilyInfo; break;
+               case 'DeceasedInfo': $class = $client->DeceasedInfo; break;
+               case 'CremainsInfo': $class = $client->CremainsInfo; break;
+               case 'DeceasedInfoPresentLoc': $class = $client->DeceasedInfoPresentLoc; break;
+               default:break;
+           }
+           
+           $html = str_replace('{{'.$val.'}}', $class->$key, $html); 
+           $html = str_replace('{{'.$val.'}}', '', $html); 
+           
+        }
+        
+        
+        
+        
+        
+        
+        
+        //dd();
+        
+        $pdf = App::make('dompdf');
+        $pdf->loadHTML($html);
+        return $pdf->stream();   
+
+    }
+    
         
 }
