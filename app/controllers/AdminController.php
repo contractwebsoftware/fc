@@ -706,18 +706,26 @@ class AdminController extends BaseController {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
         $q = Input::get('q');
-        if(strlen($q)>=3)
+        if(strlen($q)>=2)
         {
-                //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-                if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->withTrashed()->orderBy('biz_name', 'asc');
-                else $FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->orderBy('biz_name', 'asc');
+            //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-                if($FuneralHomes == null){
-                    if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc')->withTrashed();
-                    else $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
-                }
-                
+            if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->withTrashed()->orderBy('biz_name', 'asc');
+            else $FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->orderBy('biz_name', 'asc');
+
+            
+            $include_only = Input::get('include_only');
+            if($include_only=='state')$FuneralHomes = FuneralHomes::where('e_state','like','%'.$q.'%')->orderBy('biz_name', 'asc');
+            if($include_only=='city')$FuneralHomes = FuneralHomes::where('e_city','like','%'.$q.'%')->orderBy('biz_name', 'asc');
+            
+            
+            if($FuneralHomes == null){
+                if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc')->withTrashed();
+                else $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
+            }
+            
+            
         }
         else
         {
@@ -727,6 +735,7 @@ class AdminController extends BaseController {
 
         $FuneralHomes->orderBy('biz_name', 'asc');
         $FuneralHomes = $FuneralHomes->paginate(100);
+        //echo '<pre>'; dd(DB::getQueryLog()); echo '</pre>';  
         $data['funeral_homes'] = $FuneralHomes;
         $this->layout->content = View::make('admin.funeralhomes', $data);		
     } 

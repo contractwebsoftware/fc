@@ -22,8 +22,8 @@
 
                         </div>
                         <input type="checkbox" name="include_deleted" value="1" />Include Deleted
-                        &nbsp; <input type="checkbox" name="include_state" value="1" />Search Only State
-                        &nbsp; <input type="checkbox" name="include_state" value="1" />Search Only City
+                        &nbsp; <input type="radio" name="include_only" value="state" />Search Only State
+                        &nbsp; <input type="radio" name="include_only" value="city" />Search Only City
                         {{ Form::close() }}
                 </div>
         </div>

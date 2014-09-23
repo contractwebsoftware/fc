@@ -710,7 +710,7 @@
         {{ Form::hidden('step',Session::get('step')) }}
      
         <fieldset class="step-review-print">
-            <h3>Review/Print Forms <p>You're almost done!</p></h3>
+            <h3>Confirm/Submit <p>You're almost done!</p></h3>
             <div class="row form-group {{($errors->first('Confirmed Legal Authorization Checkbox')!=''?'has-error has-feedback':'')}}">
                 <div class="col-sm-12">
                     <input id="confirmed_legal_auth" type="checkbox" value="1" name="client[confirmed_legal_auth]" {{($client->confirmed_legal_auth=="1"?'checked=checked':'')}}>
@@ -727,12 +727,12 @@
             <div class="row form-group {{($errors->first('Your Initials')!=''?'has-error has-feedback':'')}}">
                 <div class="col-sm-12">
                     Enter initials here: <input type="text" class="form-control" id="confirmed_correct_info_initial" name="client[confirmed_correct_info_initial]" value="{{$client->confirmed_correct_info_initial}}" />
-
+                    <!--
                     <a class="btn btn-primary" id="download_forms" download="CremationDocuments{{date('Y-m-d')}}.pdf" target="_blank" href="{{ action('ClientController@getCustomerDocuments', array($client->id, $provider->id)) }}">Download Forms</a>
                     <div id="loading_gif" style="display:none;">
                     <br>
                     <img src="/images/ajax-loader.gif"> <b>Downloading Forms... please wait</b>
-                    </div>
+                    </div>-->
 
                 </div>
             </div>
