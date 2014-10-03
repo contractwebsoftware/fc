@@ -1,140 +1,167 @@
 @section('content')
 
-	<div class="row">
-		<div class="col-xs-12">
-			<h2>Edit Provider</h2>
-			<hr>
-		</div>
-		<div class="col-xs-12">
-			{{ Form::open(['action'=>'AdminController@postUpdateProvider','class'=>'form-horizontal','role'=>'form']) }}
-				{{ Form::hidden("provider[id]",$provider->id) }}
-				<fieldset>
-					<legend>Company Information</legend>
-                                        <div class="form-group">
-						<label  class="col-sm-4" for="provider_status">Provider Status</label>
-						<div class="col-sm-8">
-                                                    <select name="provider[provider_status]" id="provider_status" class="form-control">
-                                                        <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
-                                                        <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
-                                                        <option value="2" {{ ($provider->provider_status=='2') ? ' selected' : '' }}>Deleted</option>
-                                                    </select>
-						</div>
-					</div>
-                                        <div class="form-group">
-                                            <label  class="col-sm-4" for="provider_status">Provider Plan</label>
-                                            <div class="col-sm-8">
-                                                <div data-toggle="buttons">
-                                                    @if(Sentry::getUser()->role=='admin')
-                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
-                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
-                                                    @elseif($provider_plan_basic->id == $provider->plan_id)
-                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
-                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
-                                                    @elseif($provider_plan_premium->id == $provider->plan_id)
-                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}} disabled" for="plan_basic"><input type="radio" disabled name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
-                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
-                                                        &nbsp; <sub><i>If you wish to downgrade your account please contact us at <a href="mailto:forcremation@gmail.com?subject=Downgrading%20Account%20For%20{{$provider->email}}" target="_blank">forcremation@gmail.com</a></i></sub>
-                                                    @endif
-                                                </div>
-                                            </div>
-					</div>
-            
-                                        <div class="form-group">
-                                            <label  class="col-sm-4" for="provider_login">Provider Login</label>
-                                            <div class="col-sm-4">
-                                                <input type="text" placeholder="Login Email" name="provider_login" id="provider_login" class="form-control" value="{{ $fuser->email }}">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" placeholder="Login Password" name="newpassword" class="form-control" value="">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" placeholder="Confirm Password" name="newpassword_confirmation" class="form-control" value="">
-                                            </div>
-					</div>
-                                        
-					<div class="form-group">
-						<label  class="col-sm-4" for="business_name">Provider Name</label>
-						<div class="col-sm-8">
-							<input type="text" placeholder="Business Name" name="provider[business_name]" id="provider" class="form-control" value="{{ $provider->business_name }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label  class="col-sm-4" for="address">Company Address</label>
-						<div class="col-sm-8"><textarea placeholder="Address" name="provider[address]" id="address" class="form-control" row="3">{{ $provider->address }}</textarea></div>
-					</div>
-					<div class="form-group">
-                                            <div class="col-sm-4"></div>
-                                            <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="city" placeholder="City" name="provider[city]" value="{{ $provider->city }}">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                    <input type="text" class="form-control" id="state" placeholder="State" name="provider[state]" value="{{ $provider->state }}">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="zip" placeholder="Zip" name="provider[zip]" value="{{ $provider->zip }}">
-                                            </div>
-					</div>
-					<div class="form-group">
-						<label  class="col-sm-4" for="website">Website</label>
-						<div class="col-sm-8"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
-					</div>
-					<div class="form-group">
-						<label  class="col-sm-4" for="email">Email</label>
-						<div class="col-sm-8"><input type="email" placeholder="Email" name="provider[email]" id="email" class="form-control" value="{{ $provider->email }}"></div>
-					</div>
-					<div class="form-group">
-						<label  class="col-sm-4" for="phone">Phone</label>
-						<div class="col-sm-8"><input type="text" placeholder="Phone" name="provider[phone]" id="phone" class="form-control" value="{{ $provider->phone }}"></div>
-					</div>
-					<div class="form-group">
-                                            <label  class="col-sm-4" for="fax">Fax</label>
-                                            <div class="col-sm-8"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
-					</div>
-                                        
-					<div class="form-group">
-                                            <label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
-                                            <div class="col-sm-12">
-                                                    <select name="provider[provider_radius]" id="provider_radius" class="form-control">
-                                                            <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
-                                                            <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
-                                                            <option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
-                                                            <option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
-                                                            <option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
-                                                            <option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
-                                                            <option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
-                                                    </select>
-                                            </div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12">
-							<button type="submit" class="btn btn-primary btn-block">Update</button>
-						</div>
-					</div>
-				</fieldset>
-			{{ Form::close() }}
-		</div>
-	</div>
+<div class="row" style="margin:0 5px;">
+    <div class="col-xs-12">
+        <h2>Edit Provider</h2>
         <hr>
-	<div class="row">
+    </div>
+
+
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
+        <li><a href="#provider_files" role="tab" data-toggle="tab">Files</a></li>
+        @if(Sentry::getUser()->role=='admin')
+          <li><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
+          <li><a href="#customer_document_forms" role="tab" data-toggle="tab">Documents</a></li>
+        @endif
+        <li><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
+        <li><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
+        <li><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+
+
+        <div class="tab-pane active" id="company_info">
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdateProvider','class'=>'form-horizontal','role'=>'form']) }}
+                            {{ Form::hidden("provider[id]",$provider->id) }}
+                                
+                                    <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
+                                            <label  class="col-sm-4" for="provider_status">Provider Status</label>
+                                            <div class="col-sm-8">
+                                                <select name="provider[provider_status]" id="provider_status" class="form-control">
+                                                    <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
+                                                    <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
+                                                    <option value="2" {{ ($provider->provider_status=='2') ? ' selected' : '' }}>Deleted</option>
+                                                </select>
+                                            </div>
+                                    </div>
+                                
+                                    <div class="form-group">
+                                        <label  class="col-sm-4" for="provider_status">Provider Plan</label>
+                                        <div class="col-sm-8">
+                                            <div data-toggle="buttons">
+                                                @if(Sentry::getUser()->role=='admin')
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                @elseif($provider_plan_basic->id == $provider->plan_id)
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                @elseif($provider_plan_premium->id == $provider->plan_id)
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}} disabled" for="plan_basic"><input type="radio" disabled name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                    &nbsp; <sub><i>If you wish to downgrade your account please contact us at <a href="mailto:forcremation@gmail.com?subject=Downgrading%20Account%20For%20{{$provider->email}}" target="_blank">forcremation@gmail.com</a></i></sub>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label  class="col-sm-4" for="provider_login">Provider Login</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" placeholder="Login Email" name="provider_login" id="provider_login" class="form-control" value="{{ $fuser->email }}">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" placeholder="Login Password" name="newpassword" class="form-control" value="">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" placeholder="Confirm Password" name="newpassword_confirmation" class="form-control" value="">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                            <label  class="col-sm-4" for="business_name">Provider Name</label>
+                                            <div class="col-sm-8">
+                                                    <input type="text" placeholder="Business Name" name="provider[business_name]" id="provider" class="form-control" value="{{ $provider->business_name }}">
+                                            </div>
+                                    </div>
+                                    <div class="form-group">
+                                            <label  class="col-sm-4" for="address">Company Address</label>
+                                            <div class="col-sm-8"><textarea placeholder="Address" name="provider[address]" id="address" class="form-control" row="3">{{ $provider->address }}</textarea></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4"></div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="city" placeholder="City" name="provider[city]" value="{{ $provider->city }}">
+                                        </div>
+                                        <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="state" placeholder="State" name="provider[state]" value="{{ $provider->state }}">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="zip" placeholder="Zip" name="provider[zip]" value="{{ $provider->zip }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                            <label  class="col-sm-4" for="website">Website</label>
+                                            <div class="col-sm-8"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                            <label  class="col-sm-4" for="email">Email</label>
+                                            <div class="col-sm-8"><input type="email" placeholder="Email" name="provider[email]" id="email" class="form-control" value="{{ $provider->email }}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                            <label  class="col-sm-4" for="phone">Phone</label>
+                                            <div class="col-sm-8"><input type="text" placeholder="Phone" name="provider[phone]" id="phone" class="form-control" value="{{ $provider->phone }}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label  class="col-sm-4" for="fax">Fax</label>
+                                        <div class="col-sm-8"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
+                                    </div>
+
+                                    <div class="form-group"  {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
+                                        <label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
+                                        <div class="col-sm-12">
+                                                <select name="provider[provider_radius]" id="provider_radius" class="form-control">
+                                                        <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
+                                                        <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
+                                                        <option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
+                                                        <option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
+                                                        <option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
+                                                        <option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
+                                                        <option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                            <div class="col-xs-12">
+                                                    <button type="submit" class="btn btn-primary btn-block">Update</button>
+                                            </div>
+                                    </div>
+                    {{ Form::close() }}
+                    </fieldset>
+                </div><!--/col-12-->
+            </div><!--/row-->
+	</div> <!-- /END Company info tab -->
+        
+        
+        
+        <div class="tab-pane" id="provider_files">
+            <div class="row">
 		<div class="col-xs-12">
-			{{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
-			{{ Form::hidden("provider[id]",$provider->id) }}
-			<?php
-                            $fileNames = Array('vitals'=>"Vitals/Summary", 
-                                                'hospital_release'=>"Hospital Release", 
-                                                'cremation_authorization'=>'Cremation Authorization',
-                                                'disposition_embalming'=>'Disposition-Embalming',
-                                                'preneed_release'=>'Pre-need Release',
-                                                'corner_medical_examiner'=>'Corner-Medical Examiner',
-                                                'personnel_effects'=>'Personnel Effects',
-                                                'transfer_of_authority'=>'Transfer of Authority',
-                                                'viewing_release'=>'Viewing Release',
-                                                'other'=>'Other...');
-                            
-                          
-                        ?>
-                        <fieldset>
-                            <legend>Provider Files</legend>
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
+                    {{ Form::hidden("provider[id]",$provider->id) }}
+                    <?php
+                        $fileNames = Array('vitals'=>"Vitals/Summary", 
+                                            'hospital_release'=>"Hospital Release", 
+                                            'cremation_authorization'=>'Cremation Authorization',
+                                            'disposition_embalming'=>'Disposition-Embalming',
+                                            'preneed_release'=>'Pre-need Release',
+                                            'corner_medical_examiner'=>'Corner-Medical Examiner',
+                                            'personnel_effects'=>'Personnel Effects',
+                                            'transfer_of_authority'=>'Transfer of Authority',
+                                            'viewing_release'=>'Viewing Release',
+                                            'other'=>'Other...');
+
+
+                    ?>
+
                             <div class="form-group">
                                 <label for="provider_files" class="col-xs-4">Upload Provider File</label>
                                 <div class="col-xs-8">
@@ -169,20 +196,20 @@
                             </div>
                         </fieldset>
 			{{ Form::close() }}
-		</div>
-	</div>
-	<hr>
+                        </fieldset>
+		</div><!--/col-12-->
+            </div><!--/row-->
+	</div> <!-- /END Company info tab -->
+	
       
     @if(Sentry::getUser()->role=='admin')
-       
-        <div class="row" id="customer_document_forms">
-            <div class="col-xs-12">
-                {{ Form::open(['action'=>'AdminController@postUpdateProviderForms', 'class'=>'form-horizontal','files'=>true]) }}
-                {{ Form::hidden("provider[id]",$provider->id) }}
+       <div class="tab-pane" id="customer_document_forms">
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdateProviderForms', 'class'=>'form-horizontal','files'=>true]) }}
+                    {{ Form::hidden("provider[id]",$provider->id) }}
 
-                <fieldset>
-                        <legend>Form Documents</legend>
-                        
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist">
                           <li class="active"><a href="#tab_customer_form_1" role="tab" data-toggle="tab">Vital Information Form</a></li>
@@ -247,7 +274,7 @@
                                 <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id) ) }}">Preview Example</a>
                             </div>
                         </div>
-                </fieldset>
+              
                 <a href="#" onclick="$('#key_map').slideToggle();return false;">Show Client and Provider Keywords</a>
                 <div style="display:none;" id="key_map">
                    <?php
@@ -414,9 +441,10 @@
                 </script>
                
                 {{ Form::close() }}
-            </div>
-	</div>
-	<hr>
+                </fieldset>
+                </div><!--/col-12-->
+            </div><!--/row-->
+	</div> <!-- /END Forms info tab -->
         
         <?php /*
         <div class="row" >
@@ -450,13 +478,17 @@
 	</div>
 	<hr>
          */ ?>
-         
-	<!-- Start managing zip codes -->
-	{{ Form::open(['action'=>'AdminController@postUpdateZip']) }}
-	{{ Form::hidden("provider[id]",$provider->id) }}
+       
+    
+    <div class="tab-pane" id="provider_zips">
+        <div class="row">
+            <div class="col-xs-12">
+                <fieldset>
+                <!-- Start managing zip codes -->
+                {{ Form::open(['action'=>'AdminController@postUpdateZip']) }}
+                {{ Form::hidden("provider[id]",$provider->id) }}
         
-	<fieldset>
-		<legend>Zip Codes Assigned to Provider</legend>
+	
 		<div class="row">
                     <label for="provider_zip_code" class="col-xs-4">Currently Assigned Zip Codes</label><br style="float:none;clear:both;"/>
                         <script>
@@ -541,214 +573,221 @@
 				</div>
 			</div>
 		</div>
-	</fieldset>
-	{{ Form::close() }}
-	<hr>
+
+            {{ Form::close() }}
+            </fieldset>
+        </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END zip info tab -->
         
    @endif
+   <div class="tab-pane" id="provider_pricing">
 	<div class="row">
 		<div class="col-xs-12">
-			{{ Form::open(['action'=>'AdminController@postUpdatePricing', 'class'=>'form-horizontal']) }}
-			{{ Form::hidden("provider[id]",$provider->id) }}
-                        
-			<fieldset>
-				<legend>Pricing</legend>
-				<div class="form-group">
-					<label for="basic_cremation" class="col-xs-12 col-md-6">Plan A Cremation Package</label>
-					<div class="col-md-6">
-						<input type="text" id="basic_cremation" name="pricing[basic_cremation]" value="{{ $pricing->basic_cremation }}" class="form-control">
-					</div>
-				</div>
-                                
-				<div class="form-group">
-					<label for="package_a_desc" class="col-xs-12 col-md-6">Description</label>
-					<div class="col-xs-12 col-md-6">
-						<textarea rows="3" id="package_a_desc" name="pricing[package_a_desc]" class="form-control">{{ ($pricing->package_a_desc==''?'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $690, Crematory fee, Cremation container and Basic urn @ $185.':$pricing->package_a_desc) }}</textarea>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="premium_cremation" class="col-xs-12 col-md-6">Plan B Cremation Package</label>
-					<div class="col-xs-12 col-md-6">
-						<input type="text" id="premium_cremation" name="pricing[premium_cremation]" value="{{ $pricing->premium_cremation }}" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="package_b_desc" class="col-xs-12 col-md-6">Description</label>
-					<div class="col-xs-12 col-md-6">
-						<textarea rows="3" id="package_b_desc" name="pricing[package_b_desc]" class="form-control">{{ ($pricing->package_b_desc==''?'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.':$pricing->package_b_desc) }}</textarea>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="weight_lt_250" class="col-xs-12 col-md-6">Weight Under 250lbs</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="weight_lt_250" name="pricing[weight_lt_250]" value="{{ $pricing->weight_lt_250 }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="weight_lt_300" class="col-xs-12 col-md-6">Weight Between 25l-300lbs</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="weight_lt_300" name="pricing[weight_lt_300]" value="{{ $pricing->weight_lt_300 }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="weight_lt_350" class="col-xs-12 col-md-6">Weight Between 301-350lbs</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="weight_lt_350" name="pricing[weight_lt_350]" value="{{ $pricing->weight_lt_350 }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="weight_gt_350" class="col-xs-12 col-md-6">Weight Between greater than 351lbs</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="weight_gt_350" name="pricing[weight_gt_350]" value="{{ $pricing->weight_gt_350 }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="pacemaker" class="col-xs-12 col-md-6">Pacemaker Removal</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="pacemaker" name="pricing[pacemaker]" value="{{ $pricing->pacemaker }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="deathcert_wurn" class="col-xs-12 col-md-6">Ship death certificate(s) with urn</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="deathcert_wurn" name="pricing[deathcert_wurn]" value="{{ $pricing->deathcert_wurn }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="deathcert_cep" class="col-xs-12 col-md-6">Ship death certificate(s) separately</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="deathcert_cep" name="pricing[deathcert_cep]" value="{{ $pricing->deathcert_cep }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="deathcert_pickup" class="col-xs-12 col-md-6">Pick up death certificate(s) at providers office</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="deathcert_pickup" name="pricing[deathcert_pickup]" value="{{ $pricing->deathcert_pickup }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="deathcert_each" class="col-xs-12 col-md-6">Each Death Certificate</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="deathcert_each" name="pricing[deathcert_each]" value="{{ $pricing->deathcert_each }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="scatter_on_land" class="col-xs-12 col-md-6">Provider Scatter on Land</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="scatter_on_land" name="pricing[scatter_on_land]" value="{{ $pricing->scatter_on_land }}" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="scatter_at_sea" class="col-xs-12 col-md-6">Provider Scatter at Sea</label>
-					<div class="col-xs-12 col-md-6">
-						<div class="input-group">
-							<span class="input-group-addon">$</span>
-							<input type="text" id="scatter_at_sea" name="pricing[scatter_at_sea]" value="{{ $pricing->scatter_at_sea }}" class="form-control">
-						</div>
-					</div>
-				</div>
-                                <br  /><br />
-				<p>Custom Pricing Options: These are provided for custom options which are not available above. To add a new option, enter the description, dollar amount, and whether or not it is a required fee. Select whether to include the custom option in Plan A, Plan B, or both plans.</p>
-				
-                                <?php
-                                for($x=1;$x<=3;$x++){
-                                    $custom1_val = 'custom'.$x.'_text';
-                                    $custom1_text = $pricing->$custom1_val;
-                                    
-                                    $custom1_val = 'custom'.$x;
-                                    $custom1 = $pricing->$custom1_val;
-                                    
-                                    $custom1_val = 'custom'.$x.'_included';
-                                    $custom1_included = $pricing->$custom1_val;
-                                    
-                                    $custom1_val = 'custom'.$x.'_req';
-                                    $custom1_req = $pricing->$custom1_val;
-                                    
-                                    
-                                    ?>
-                                    <h4 style="font-size:16px;">Custom Pricing Option <?=$x?></h4>
-                                    <div class="form-group" style="margin-bottom:0px;">
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdatePricing', 'class'=>'form-horizontal']) }}
+                    {{ Form::hidden("provider[id]",$provider->id) }}
 
-                                            <div class="col-md-6">
-                                                <label for="custom<?=$x?>_text">Description:</label>
-                                                <input type="text" placeholder="Enter Description" name="pricing[custom<?=$x?>_text]" id="custom<?=$x?>_text" class="form-control" value="{{ $custom1_text }}">
-                                            </div>
+                            <div class="form-group">
+                                    <label for="basic_cremation" class="col-xs-12 col-md-6">Plan A Cremation Package</label>
+                                    <div class="col-md-6">
+                                            <input type="text" id="basic_cremation" name="pricing[basic_cremation]" value="{{ $pricing->basic_cremation }}" class="form-control">
+                                    </div>
+                            </div>
 
-                                            <div class="col-md-6">
-                                                <label for="custom<?=$x?>">Add</label>
-
-                                                    <div class="input-group">
-
-                                                            <span class="input-group-addon">$</span>
-                                                            <input type="text" id="custom<?=$x?>" name="pricing[custom<?=$x?>]" value="{{ $custom1 }}" class="form-control">
-                                                    </div>
+                            <div class="form-group">
+                                    <label for="package_a_desc" class="col-xs-12 col-md-6">Description</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <textarea rows="3" id="package_a_desc" name="pricing[package_a_desc]" class="form-control">{{ ($pricing->package_a_desc==''?'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $690, Crematory fee, Cremation container and Basic urn @ $185.':$pricing->package_a_desc) }}</textarea>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="premium_cremation" class="col-xs-12 col-md-6">Plan B Cremation Package</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <input type="text" id="premium_cremation" name="pricing[premium_cremation]" value="{{ $pricing->premium_cremation }}" class="form-control">
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="package_b_desc" class="col-xs-12 col-md-6">Description</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <textarea rows="3" id="package_b_desc" name="pricing[package_b_desc]" class="form-control">{{ ($pricing->package_b_desc==''?'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.':$pricing->package_b_desc) }}</textarea>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="weight_lt_250" class="col-xs-12 col-md-6">Weight Under 250lbs</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="weight_lt_250" name="pricing[weight_lt_250]" value="{{ $pricing->weight_lt_250 }}" class="form-control">
                                             </div>
                                     </div>
-                                    <div class="form-group">
-                                            <div class="col-md-6">
-                                                    <label for="custom<?=$x?>_included">Included in Plan(s):</label>
-                                                    <select name="pricing[custom<?=$x?>_included]" id="custom<?=$x?>_included" class="form-control">
-                                                            <option value="1" {{ ($custom1_included=='1') ? ' selected' : '' }}>Plan A</option>
-                                                            <option value="2" {{ ($custom1_included=='2') ? ' selected' : '' }}>Plan B</option>
-                                                            <option value="3" {{ ($custom1_included=='3') ? ' selected' : '' }}>Both</option>
-                                                    </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                    <label for="custom<?=$x?>_req">Required</label>
-                                                    <select name="pricing[custom<?=$x?>_req]" id="custom1_req" class="form-control">
-                                                            <option value="N" {{ ($custom1_req=='N') ? ' selected' : '' }}>No</option>
-                                                            <option value="Y" {{ ($custom1_req=='Y') ? ' selected' : '' }}>Yes</option>
-                                                    </select>
+                            </div>
+                            <div class="form-group">
+                                    <label for="weight_lt_300" class="col-xs-12 col-md-6">Weight Between 25l-300lbs</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="weight_lt_300" name="pricing[weight_lt_300]" value="{{ $pricing->weight_lt_300 }}" class="form-control">
                                             </div>
                                     </div>
-                                <?php
-                                }
+                            </div>
+                            <div class="form-group">
+                                    <label for="weight_lt_350" class="col-xs-12 col-md-6">Weight Between 301-350lbs</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="weight_lt_350" name="pricing[weight_lt_350]" value="{{ $pricing->weight_lt_350 }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="weight_gt_350" class="col-xs-12 col-md-6">Weight Between greater than 351lbs</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="weight_gt_350" name="pricing[weight_gt_350]" value="{{ $pricing->weight_gt_350 }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="pacemaker" class="col-xs-12 col-md-6">Pacemaker Removal</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="pacemaker" name="pricing[pacemaker]" value="{{ $pricing->pacemaker }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="deathcert_wurn" class="col-xs-12 col-md-6">Ship death certificate(s) with urn</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="deathcert_wurn" name="pricing[deathcert_wurn]" value="{{ $pricing->deathcert_wurn }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="deathcert_cep" class="col-xs-12 col-md-6">Ship death certificate(s) separately</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="deathcert_cep" name="pricing[deathcert_cep]" value="{{ $pricing->deathcert_cep }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="deathcert_pickup" class="col-xs-12 col-md-6">Pick up death certificate(s) at providers office</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="deathcert_pickup" name="pricing[deathcert_pickup]" value="{{ $pricing->deathcert_pickup }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="deathcert_each" class="col-xs-12 col-md-6">Each Death Certificate</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="deathcert_each" name="pricing[deathcert_each]" value="{{ $pricing->deathcert_each }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="scatter_on_land" class="col-xs-12 col-md-6">Provider Scatter on Land</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="scatter_on_land" name="pricing[scatter_on_land]" value="{{ $pricing->scatter_on_land }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="scatter_at_sea" class="col-xs-12 col-md-6">Provider Scatter at Sea</label>
+                                    <div class="col-xs-12 col-md-6">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="scatter_at_sea" name="pricing[scatter_at_sea]" value="{{ $pricing->scatter_at_sea }}" class="form-control">
+                                            </div>
+                                    </div>
+                            </div>
+                            <br  /><br />
+                            <p>Custom Pricing Options: These are provided for custom options which are not available above. To add a new option, enter the description, dollar amount, and whether or not it is a required fee. Select whether to include the custom option in Plan A, Plan B, or both plans.</p>
+
+                            <?php
+                            for($x=1;$x<=3;$x++){
+                                $custom1_val = 'custom'.$x.'_text';
+                                $custom1_text = $pricing->$custom1_val;
+
+                                $custom1_val = 'custom'.$x;
+                                $custom1 = $pricing->$custom1_val;
+
+                                $custom1_val = 'custom'.$x.'_included';
+                                $custom1_included = $pricing->$custom1_val;
+
+                                $custom1_val = 'custom'.$x.'_req';
+                                $custom1_req = $pricing->$custom1_val;
+
+
                                 ?>
-                                <div class="form-group">
-                                        <div class="col-xs-12">
-                                                <button type="submit" class="btn btn-primary btn-block">Update</button>
+                                <h4 style="font-size:16px;">Custom Pricing Option <?=$x?></h4>
+                                <div class="form-group" style="margin-bottom:0px;">
+
+                                        <div class="col-md-6">
+                                            <label for="custom<?=$x?>_text">Description:</label>
+                                            <input type="text" placeholder="Enter Description" name="pricing[custom<?=$x?>_text]" id="custom<?=$x?>_text" class="form-control" value="{{ $custom1_text }}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="custom<?=$x?>">Add</label>
+
+                                                <div class="input-group">
+
+                                                        <span class="input-group-addon">$</span>
+                                                        <input type="text" id="custom<?=$x?>" name="pricing[custom<?=$x?>]" value="{{ $custom1 }}" class="form-control">
+                                                </div>
                                         </div>
                                 </div>
-			</fieldset>
-			{{ Form::close() }}
-		</div>
-	</div>
+                                <div class="form-group">
+                                        <div class="col-md-6">
+                                                <label for="custom<?=$x?>_included">Included in Plan(s):</label>
+                                                <select name="pricing[custom<?=$x?>_included]" id="custom<?=$x?>_included" class="form-control">
+                                                        <option value="1" {{ ($custom1_included=='1') ? ' selected' : '' }}>Plan A</option>
+                                                        <option value="2" {{ ($custom1_included=='2') ? ' selected' : '' }}>Plan B</option>
+                                                        <option value="3" {{ ($custom1_included=='3') ? ' selected' : '' }}>Both</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                                <label for="custom<?=$x?>_req">Required</label>
+                                                <select name="pricing[custom<?=$x?>_req]" id="custom1_req" class="form-control">
+                                                        <option value="N" {{ ($custom1_req=='N') ? ' selected' : '' }}>No</option>
+                                                        <option value="Y" {{ ($custom1_req=='Y') ? ' selected' : '' }}>Yes</option>
+                                                </select>
+                                        </div>
+                                </div>
+                            <?php
+                            }
+                            ?>
+                            <div class="form-group">
+                                    <div class="col-xs-12">
+                                            <button type="submit" class="btn btn-primary btn-block">Update</button>
+                                    </div>
+                            </div>
+		
+		{{ Form::close() }}
+                </fieldset>
+		</div><!--/col-12-->
+            </div><!--/row-->
+	</div> <!-- /END Pricing info tab -->
         
-        <hr>
+        
+        
+        <div class="tab-pane" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
             {{ $clients->links() }}
-          
+            <fieldset>
             <table class="">
                 <thead>
                     <tr>
@@ -797,11 +836,73 @@
                                 </td>
                         </tr>
                     @endforeach
+                    @if(count($clients)<1)
+                    <tr><td colspan="7"><center><b><i>Your clients will appear here when they register</i></b></center></td></tr>
+                    @endif
             </tbody>
             </table>
+            </fieldset>
             {{ $clients->links() }}
-          
-         </div>
-        </div>
-            {{ $clients->links() }}
+            </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END Forms info tab -->
+    
+    <div class="tab-pane" id="provider_urns">
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdateProviderUrns','class'=>'form-horizontal','role'=>'form']) }}
+                    {{ Form::hidden("provider[id]",$provider->id) }}
+    
+                       
+                    <table class="">
+                    <thead>
+                        <tr>
+                            <th style="width:150px;">Image</th>
+                            <th style="width:250px;">Name</th>
+                            <th style="width:100px;">Price</th>
+                            <th style="width:100%;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach( $provider_products as $product )
+                           
+                            @if($product->product_id=='')
+                                <input type="hidden" name="product[{{$product->id}}][product_id]" value="{{$product->id}}" />
+                            @endif
+                            <tr>
+                                <td valign="top"><img src="{{ $product->image }}" style="width:150px;height:auto;" /><input type="hidden" name="product[{{ $product->id }}][image]" value="{{ $product->image }}" /></td>
+                                <td valign="top" style="padding:0 5px;"><input type="text" name="product[{{ $product->id }}][name]" value="{{ $product->name }}"/></td>
+                                <td valign="top" style="padding:0 5px;"><table><tr><td align="right" style="padding-top:0px;padding-right:5px;">$</td><td width="85%" align="left"><input type="text" name="product[{{ $product->id }}][price]" value="{{ $product->price }}"/></td></tr></table></div></td>
+                                <td valign="top"><textarea name="product[{{ $product->id }}][description]" id="urn_description{{ $product->id }}" style="width:100%;height:200px;">{{ $product->description }}</textarea></td>
+                            </tr>
+                            <script>
+                               
+                                CKEDITOR.replace( 'urn_description{{ $product->id }}', CKEDITOR.editorConfig);
+                               
+                                CKEDITOR.config.toolbarGroups = [
+                                    { name: 'links' },
+                                    { name: 'basicstyles', groups: [ 'basicstyles'] },
+                                    { name: 'styles' },
+                                    { name: 'colors' }
+                                    
+                                ];
+                            </script>
+                        @endforeach                       
+                    </tbody>
+                </table>
+                    
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <button type="submit" class="btn btn-primary btn-block">Update</button>
+                        </div>
+                    </div>
+		{{ Form::close() }}
+               </fieldset>
+            </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END Forms info tab -->                 
+    
+</div><!--/end tab-content -->
+</div><!--/row-->
 @stop

@@ -191,7 +191,9 @@ class AdminController extends BaseController {
         $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
         $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
-
+        $data['provider_products'] = ProviderProducts::where('provider_id', $data['provider']->id)->get();
+        if(count($data['provider_products'])<1)$data['provider_products'] = Products::get();
+        //dd($data['provider_products']);
         $data['provider_plan_basic'] = ProviderPlans::where('id','1')->first();
         $data['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
         
@@ -397,27 +399,51 @@ class AdminController extends BaseController {
 
     public function postUpdateFiles()
     {
-            $input = Input::all();
+        $input = Input::all();
 
-            if (array_key_exists('provider_files_new',$input))
-            {
-                //dd($input['provider_files']);
-                $file = Input::file('provider_files_new');
-                //dd($file);
-                $destinationPath = public_path()."/provider_files/".$input['provider']['id'];
-                $file->move($destinationPath, $file->getClientOriginalName());
-                $name = $file->getClientOriginalName();
+        if (array_key_exists('provider_files_new',$input))
+        {
+            //dd($input['provider_files']);
+            $file = Input::file('provider_files_new');
+            //dd($file);
+            $destinationPath = public_path()."/provider_files/".$input['provider']['id'];
+            $file->move($destinationPath, $file->getClientOriginalName());
+            $name = $file->getClientOriginalName();
 
-                $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
-                if($provider_file==null || $provider_file=="")$provider_file = new ProviderFiles();
-                $provider_file->provider_id = $input['provider']['id'];
-                $provider_file->file_name = $name;
-                $provider_file->file_type = $input['provider_files_type'];
-                $provider_file->save();
-            }
+            $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
+            if($provider_file==null || $provider_file=="")$provider_file = new ProviderFiles();
+            $provider_file->provider_id = $input['provider']['id'];
+            $provider_file->file_name = $name;
+            $provider_file->file_type = $input['provider_files_type'];
+            $provider_file->save();
+        }
 
-            Session::flash('success','Provider Files Added Successfully');
-            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+        Session::flash('success','Provider Files Added Successfully');
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+    }
+    
+    
+    public function postUpdateProviderUrns()
+    {
+        
+        $input = Input::all();
+        $provider = FProvider::find($input['provider']['id']);
+        
+        //dd($input['product']);
+        foreach($input['product'] as $id=>$product){
+            //dd($product);
+            $provider_products = ProviderProducts::where('provider_id', $provider->id)->where('id', $id)->first();
+            //dd($provider_products);
+            if($provider_products == null || count($provider_products)<1)$provider_products = new ProviderProducts();
+            //dd($provider_products);
+             
+            $provider_products->provider_id = $provider->id;
+            $provider_products->fill($product);
+            $provider_products->save();
+        }
+
+        Session::flash('success','Provider\'s Custome Documents has been updated');
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'#'=>'provider_urns')); 
     }
 
     /*
