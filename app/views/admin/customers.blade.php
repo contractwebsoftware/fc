@@ -25,7 +25,7 @@
 		<div class="col-xs-12 col-md-6 text-right">
 			{{ Form::open(['action'=>'AdminController@getCustomers','method'=>'GET']) }}
 			<div class="input-group">
-			  	<input type="text" class="form-control" name="q">
+			  	<input type="text" class="form-control" name="q" value="{{Input::get('q')}}">
 			  	<span class="input-group-btn">
                                     <button class="btn btn-primary" type="submit">Search</button>
                                 </span>
@@ -35,7 +35,7 @@
 	</div>
         <hr><style>div.tooltip-inner{min-width: 250px;}</style>
 	<div class="page-body">
-            {{ $clients->links() }}
+            {{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}
             
             {{ Form::open(['action'=>'AdminController@postMassUpdateClients','class'=>'form-horizontal','role'=>'form']) }}
            
@@ -106,7 +106,8 @@
             </table>
             {{ Form::close() }}
             
-            {{ $clients->links() }}
+            {{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}
+ 
 	</div>
 
         <script>

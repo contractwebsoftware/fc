@@ -20,6 +20,24 @@
                                                     </select>
 						</div>
 					</div>
+                                        <div class="form-group">
+                                            <label  class="col-sm-4" for="provider_status">Provider Plan</label>
+                                            <div class="col-sm-8">
+                                                <div data-toggle="buttons">
+                                                    @if(Sentry::getUser()->role=='admin')
+                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                    @elseif($provider_plan_basic->id == $provider->plan_id)
+                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                    @elseif($provider_plan_premium->id == $provider->plan_id)
+                                                        <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}} disabled" for="plan_basic"><input type="radio" disabled name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                        <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                        &nbsp; <sub><i>If you wish to downgrade your account please contact us at <a href="mailto:forcremation@gmail.com?subject=Downgrading%20Account%20For%20{{$provider->email}}" target="_blank">forcremation@gmail.com</a></i></sub>
+                                                    @endif
+                                                </div>
+                                            </div>
+					</div>
             
                                         <div class="form-group">
                                             <label  class="col-sm-4" for="provider_login">Provider Login</label>
@@ -69,23 +87,23 @@
 						<div class="col-sm-8"><input type="text" placeholder="Phone" name="provider[phone]" id="phone" class="form-control" value="{{ $provider->phone }}"></div>
 					</div>
 					<div class="form-group">
-						<label  class="col-sm-4" for="fax">Fax</label>
-						<div class="col-sm-8"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
+                                            <label  class="col-sm-4" for="fax">Fax</label>
+                                            <div class="col-sm-8"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
 					</div>
                                         
 					<div class="form-group">
-						<label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
-						<div class="col-sm-12">
-							<select name="provider[provider_radius]" id="provider_radius" class="form-control">
-								<option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
-								<option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
-								<option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
-								<option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
-								<option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
-								<option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
-								<option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
-							</select>
-						</div>
+                                            <label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
+                                            <div class="col-sm-12">
+                                                    <select name="provider[provider_radius]" id="provider_radius" class="form-control">
+                                                            <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
+                                                            <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
+                                                            <option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
+                                                            <option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
+                                                            <option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
+                                                            <option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
+                                                            <option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
+                                                    </select>
+                                            </div>
 					</div>
 					<div class="form-group">
 						<div class="col-xs-12">
@@ -102,8 +120,18 @@
 			{{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
 			{{ Form::hidden("provider[id]",$provider->id) }}
 			<?php
-                            $fileNames = Array('pricing'=>"Pricing Sheet", 'clientform'=>"Client Forms", 'logo'=>'Business Logo',
-                                                'custom1'=>"Custom Document 1", 'custom2'=>"Custom Document 2", 'custom3'=>"Custom Document 3", 'custom4'=>"Custom Document 4", 'custom5'=>"Custom Document 5");
+                            $fileNames = Array('vitals'=>"Vitals/Summary", 
+                                                'hospital_release'=>"Hospital Release", 
+                                                'cremation_authorization'=>'Cremation Authorization',
+                                                'disposition_embalming'=>'Disposition-Embalming',
+                                                'preneed_release'=>'Pre-need Release',
+                                                'corner_medical_examiner'=>'Corner-Medical Examiner',
+                                                'personnel_effects'=>'Personnel Effects',
+                                                'transfer_of_authority'=>'Transfer of Authority',
+                                                'viewing_release'=>'Viewing Release',
+                                                'other'=>'Other...');
+                            
+                          
                         ?>
                         <fieldset>
                             <legend>Provider Files</legend>
@@ -162,6 +190,7 @@
                           <li><a href="#tab_customer_form_3" role="tab" data-toggle="tab">Form 3</a></li>
                           <li><a href="#tab_customer_form_4" role="tab" data-toggle="tab">Form 4</a></li>
                           <li><a href="#tab_customer_form_5" role="tab" data-toggle="tab">Form 5</a></li>
+                          <li><a href="#tab_customer_form_5" role="tab" data-toggle="tab">Form 6</a></li>
                         </ul>
 
                         <!-- Tab panes -->
@@ -353,33 +382,34 @@
                  
                 <script>
                   
-                    CKEDITOR.replace( 'provider[customer_form_1]',
-                    {
-                       // extraPlugins : 'uicolor',
-                        height: '800px',
-                    }); 
-
+                    CKEDITOR.replace( 'provider[customer_form_1]', { height: '800px', }); 
+                    CKEDITOR.replace( 'provider[customer_form_2]', { height: '800px', }); 
+                    CKEDITOR.replace( 'provider[customer_form_3]', { height: '800px', }); 
+                    CKEDITOR.replace( 'provider[customer_form_4]', { height: '800px', }); 
+                    CKEDITOR.replace( 'provider[customer_form_5]', { height: '800px', }); 
+                    CKEDITOR.replace( 'provider[customer_form_6]', { height: '800px', }); 
+                    
                  
-                 $().ready( function() {
-                    $('.form_keys li').click(function() { 
-                      //alert('awesome'+$(this).text()); 
-                      //$(".cke_source:first").insertAtCaret($(this).text());
-                      //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
-                      var editor = CKEDITOR.instances.customer_form_1;
-                      editor.insertText( $(this).text() );
-                      
-                      return false
-                    });
-                    /*
-                    $("#DragWordList li").draggable({helper: 'clone'});
-                    $(".txtDropTarget").droppable({
-                      accept: "#DragWordList li",
-                      drop: function(ev, ui) {
-                        $(this).insertAtCaret(ui.draggable.text());
-                      }
-                    });*/
-        
-                  });
+                    $().ready( function() {
+                       $('.form_keys li').click(function() { 
+                         //alert('awesome'+$(this).text()); 
+                         //$(".cke_source:first").insertAtCaret($(this).text());
+                         //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
+                         var editor = CKEDITOR.instances.customer_form_1;
+                         editor.insertText( $(this).text() );
+
+                         return false
+                       });
+                       /*
+                       $("#DragWordList li").draggable({helper: 'clone'});
+                       $(".txtDropTarget").droppable({
+                         accept: "#DragWordList li",
+                         drop: function(ev, ui) {
+                           $(this).insertAtCaret(ui.draggable.text());
+                         }
+                       });*/
+
+                     });
                   
                 </script>
                
@@ -388,7 +418,7 @@
 	</div>
 	<hr>
         
-        
+        <?php /*
         <div class="row" >
 		<div class="col-xs-12">
 			{{ Form::open(['action'=>'AdminController@postUpdateBilling', 'class'=>'form-horizontal','files'=>true]) }}
@@ -419,6 +449,8 @@
 		</div>
 	</div>
 	<hr>
+         */ ?>
+         
 	<!-- Start managing zip codes -->
 	{{ Form::open(['action'=>'AdminController@postUpdateZip']) }}
 	{{ Form::hidden("provider[id]",$provider->id) }}
@@ -442,35 +474,33 @@
 			<div class="col-xs-12 col-md-4">
                             <div class="table-responsive">
                                 <br />
-                               <a href="#" onclick="removeall();return false;"><b>Select All</b></a>
-                                <table class="table table-condensed" style="margin:0;padding:0;">
-                                    <thead>
-                                    <tr>
-                                        <td>Zip Codes</td>
-                                        <td align="right">Remove</td>
-                                    </tr>
-                                    </thead>
-                                </table>
-					<div  style="height:370px;overflow-x:auto;border:1px solid #ccc;width:100%;margin-bottom:5px;">
-					<table class="table  table-condensed" width="90%">
-						
-						<tbody>
-                                                    <?php
-                                                    
-                                                        if($zips!=null){
-                                                           //print_r($zips);
-                                                            foreach($zips as $zip){
-                                                                $zips_r[$zip->zip]=$zip->zip;
-                                                                echo '<tr><td width="90%"><label for="zip-'.$zip->zip.'" style="cursor:pointer;">'.$zip->zip.'</label></td>'
-                                                                        . '<td width="10%"><input type="checkbox" class="removezips" id="zip-'.$zip->zip.'" name="removezips['.$zip->zip.']" value="'.$zip->zip.'" /></td>'
-                                                                        . '</tr>';
-                                                            }
-                                                        }
-                                                    ?>
-						</tbody>
-					</table>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-block" class="form-control">Remove</button>
+                                <a href="#" onclick="removeall();return false;"><b>Select All</b></a>
+                                    <table class="table table-condensed" style="margin:0;padding:0;">
+                                        <thead>
+                                        <tr>
+                                            <td>Zip Codes</td>
+                                            <td align="right">Remove</td>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                    <div  style="height:370px;overflow-x:auto;border:1px solid #ccc;width:100%;margin-bottom:5px;">
+                                    <table class="table  table-condensed" width="90%">
+                                        <tbody>
+                                            <?php
+                                                if($zips!=null){
+                                                   //print_r($zips);
+                                                    foreach($zips as $zip){
+                                                        $zips_r[$zip->zip]=$zip->zip;
+                                                        echo '<tr><td width="90%"><label for="zip-'.$zip->zip.'" style="cursor:pointer;">'.$zip->zip.'</label></td>'
+                                                                . '<td width="10%"><input type="checkbox" class="removezips" id="zip-'.$zip->zip.'" name="removezips['.$zip->zip.']" value="'.$zip->zip.'" /></td>'
+                                                                . '</tr>';
+                                                    }
+                                                }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block" class="form-control">Remove</button>
 				</div>
 			</div>
 			<div class="col-xs-12 col-md-8">

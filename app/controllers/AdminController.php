@@ -11,6 +11,8 @@ class AdminController extends BaseController {
 
     public function getProviders()
     {
+        $per_page = 50;
+        
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
         $q = Input::get('q');
@@ -18,34 +20,39 @@ class AdminController extends BaseController {
         {
                 //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-                if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc')->get();
-                else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc')->get();
-                ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%')->get();
+                if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc');
+                else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc');
+                ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%');
                 //else $providers = FProvider::with('user')->get();
                 if($providers == null){
-                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
-                    else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
+                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed();
+                    else $providers = FProvider::with('user')->orderBy('business_name', 'asc');
                 }
 
         }
         else
         {
-            if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed()->get();
-            else $providers = FProvider::with('user')->orderBy('business_name', 'asc')->get();
+            if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed();
+            else $providers = FProvider::with('user')->orderBy('business_name', 'asc');
         }
+        $providers = $providers->paginate($per_page);
+        
         foreach($providers as $provider){
             $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
             $provider->client_count = count($client_provider);
         }
+        
         $this->layout->content = View::make('admin.providers')->withProviders($providers);
 
     }
 
     public function getNewProvider()
     {
-         $input = Input::all();
-
-         $this->layout->content = View::make('admin.provider-new', $input);
+        $input = Input::all();
+        $input['provider_plan_basic'] = ProviderPlans::where('id','1')->first();
+        $input['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
+        
+        $this->layout->content = View::make('admin.provider-new', $input);
     }
 
    
@@ -63,6 +70,7 @@ class AdminController extends BaseController {
                 'fax' => Input::get('fax'),
                 'provider_radius' => Input::get('provider_radius'),
                 'email' => Input::get('email'),
+                'plan_id' => Input::get('plan_id'),
                 'password' => Input::get('password'),
                 'password_confirmation' => Input::get('password_confirmation')
         ];
@@ -109,6 +117,7 @@ class AdminController extends BaseController {
                 'website' => Input::get('website'),
                 'phone' => Input::get('phone'),
                 'fax' => Input::get('fax'),
+                'plan_id' => Input::get('plan_id'),
                 'provider_radius' => Input::get('provider_radius'),
                 'user_id' => $user->id
             ];
@@ -129,6 +138,7 @@ class AdminController extends BaseController {
             $pricing->fill( Array('provider_id'=>$provider->id) );
             $pricing->save(); 
 
+            /*
             $bill = Billing::first();
             
             $billing = new ProviderBilling();
@@ -136,7 +146,8 @@ class AdminController extends BaseController {
             $billing->monthly_fee = $bill->monthly_fee;
             $billing->per_case_fee = $bill->per_case_fee;
             $billing->save(); 
-
+            */
+            
 
             //CREATE FRESHBOOKS ENTRY
             $client_id = AdminController::postAddBillingClient($provider->id);
@@ -153,7 +164,7 @@ class AdminController extends BaseController {
     }
 
     public function findZipsInRadius($miles, $ziplat, $ziplong){
-
+            if($miles=='')$miles=5;
             $zips = DB::select( DB::raw("SELECT zip, (
                           3959 * acos (
                             cos ( radians($ziplat) )
@@ -181,7 +192,9 @@ class AdminController extends BaseController {
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
         $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
 
-
+        $data['provider_plan_basic'] = ProviderPlans::where('id','1')->first();
+        $data['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
+        
         $this_zip = Zip::where('zip',$data['provider']->zip)->first();
         if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
         else $data['zip_info'] = null;
@@ -227,17 +240,27 @@ class AdminController extends BaseController {
         if($provider == null){
             $provider = new FProvider();  
         } 
+        
+        if($provider->plan_id != $input['provider']['plan_id']){
+            $provider->plan_id = $input['provider']['plan_id'];
+            $provider->save();
+            AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
+        }
+        
         $provider->fill($input['provider']);
         $provider->save();
 
+        
+        
+        
         if($input['provider_login']!=""){
             $user = User::find($provider->user_id);
             if($user == null)$user = new User;
             $user->email = $input['provider_login']; 
             $user->activated = 1;
-            $user->role = "provider";
+            //$user->role = "provider";
             $user->save();
-
+            //dd($user);
             $provider->user_id = $user->id;
             $provider->save();
         } 
@@ -397,6 +420,7 @@ class AdminController extends BaseController {
             return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
     }
 
+    /*
     public function postUpdateBilling()
     {
             $input = Input::all();
@@ -413,7 +437,9 @@ class AdminController extends BaseController {
                     
             Session::flash('success','Billing and Freshbooks have been updated');
             return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
-    }
+    }*/
+    
+    
 
     public function getAllUser()
     {
@@ -428,7 +454,13 @@ class AdminController extends BaseController {
 
     public function getSetting()
     {
-            $this->layout->content = View::make('admin.setting');
+        $admin_settings = AdminSetting::where('setting_type','provider_registration_letter')->first();
+        $data['admin_settings']['provider_registration_letter'] = $admin_settings->setting_value;
+        
+        $admin_settings = AdminSetting::where('setting_type','provider_registration_message')->first();
+        $data['admin_settings']['provider_registration_message'] = $admin_settings->setting_value;
+        
+        $this->layout->content = View::make('admin.setting', $data);
     }
 
     public function postSetting()
@@ -456,6 +488,20 @@ class AdminController extends BaseController {
             }
             return Redirect::back();
     }
+    public function postAdminSetting()
+    {
+        $input = Input::all();
+        if(is_array($input['admin_settings'])){
+            foreach($input['admin_settings'] as $key=>$value){
+                $setting = AdminSetting::where('setting_type',$key)->first();
+                $setting->setting_value = $value;
+                $setting->save();
+            }            
+        }
+        
+        return Redirect::action('AdminController@getSetting');
+    }
+    
     public function getCreateUser() 
     {
             try
@@ -706,16 +752,25 @@ class AdminController extends BaseController {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
         $q = Input::get('q');
+        $include_deleted = Input::get('include_deleted');
+        $include_only = Input::get('include_only');
+
+        
         if(strlen($q)>=2)
         {
-
+            Session::put('fh_q', $q);
+            Session::put('fh_include_deleted', $include_deleted);
+            Session::put('fh_include_only', $include_only);
+        
+            //dd(Session::get('fh_include_only'));  
+        
             //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-            if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->withTrashed()->orderBy('biz_name', 'asc');
+            if($include_deleted==1)$FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->withTrashed()->orderBy('biz_name', 'asc');
             else $FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->orderBy('biz_name', 'asc');
 
             
-            $include_only = Input::get('include_only');
+            
             if($include_only=='state')$FuneralHomes = FuneralHomes::where('e_state','like','%'.$q.'%')->orderBy('biz_name', 'asc');
             if($include_only=='city')$FuneralHomes = FuneralHomes::where('e_city','like','%'.$q.'%')->orderBy('biz_name', 'asc');
             
@@ -742,40 +797,19 @@ class AdminController extends BaseController {
 
     public function getNewFuneralhome()
     {
-         $input = Input::all();
+        //$input = Input::all();
+        $data['funeralhome'] = new FuneralHomes();
 
-         $this->layout->content = View::make('admin.funeralhome-new', $input);
-    }
-
-    public function postFuneralhome()
-    {
-        $input_r = Input::all();
-        $input = $input_r['funeralhome'];
-        $rules = [
-                'biz_name' => 'required',
-                'e_postal' => 'required'
-        ];
-
-        // validate the input
-        $v = Validator::make($input,$rules);
-        if( $v->fails() ) return Redirect::back()->withErrors($v);
-
-        // run the transaction
-        return DB::transaction(function()
-        {
-            $funeralhome = new FuneralHomes();  
-            $funeralhome->fill($input);
-            $funeralhome->save(); 
-
-            Session::flash('success','Funeral Home has been added');
-            return Redirect::action('AdminController@getEditFuneralhome', array('id' => $funeralhome->id));
-        });
+        $this->layout->content = View::make('admin.funeralhome-edit', $data);
     }
 
     public function getEditFuneralhome($id)
     {
             $data['funeralhome'] = FuneralHomes::find($id);
-
+            if($data['funeralhome']==null){
+                $data['funeralhome'] = new FuneralHomes();
+                $data['funeralhome']['id'] = -1;
+            }
             $this->layout->content = View::make('admin.funeralhome-edit',$data);
     }
 
@@ -825,7 +859,7 @@ class AdminController extends BaseController {
             }
 
             Session::flash('success','Funeral Home\'s Data has been updated');
-            return Redirect::action('AdminController@getEditFuneralhome', array('id' => $input['funeralhome']['id']));
+            return Redirect::action('AdminController@getEditFuneralhome', array('id' => $funeralhome->id));
             //return Redirect::action('AdminController@getEditProvider');
 
     }
@@ -880,10 +914,13 @@ class AdminController extends BaseController {
             //var_dump($fb->getResponse());
         }
         */
+        $plan_basic = ProviderPlans::where('id', 1)->first();
+        $plan_premium = ProviderPlans::where('id', 2)->first();
         
-        $this->layout->content = View::make('admin.billing',['billing'=>Billing::first()]);
+        $this->layout->content = View::make('admin.billing', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
     }
-       
+    
+    /*
     public function postUpdateDefaultBilling()
     {
             $input = Input::all();
@@ -896,14 +933,14 @@ class AdminController extends BaseController {
             $bill->lead_fee = $input['lead_fee'];
             $bill->save();
             Session::flash('success','Billing Setting has been updated');
-            return Redirect::action('AdminController@getBillingPage', ['billing'=>Billing::first()]);
-    } 
+            return Redirect::action('AdminController@getBillingPage', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
+    } */
     
     public function postAddBillingClient($provider_id)
     {
        
         $provider = FProvider::find($provider_id);
-
+        
         if($provider != null){
             $fb = new Freshbooks\FreshBooksApi('client.create');
 
@@ -957,10 +994,22 @@ class AdminController extends BaseController {
     {
         $provider = FProvider::find($provider_id);
         
-        $bill = Billing::first();
-        if($provider !=null)
+        //$bill = Billing::first();
+        
+        
+        if($provider == null)return;
+        
+        $billing_plan = ProviderPlans::where('id', $provider->plan_id)->first();
+        if($billing_plan==null)$billing_plan = ProviderPlans::where('id',1)->first();
+        
+        if($provider->freshbooks_client_id=='' || $provider->freshbooks_client_id=='0'){
+            $provider->freshbooks_client_id = AdminController::postAddBillingClient($provider_id);
+            //$provider = FProvider::find($provider->id);
+        }
+        
         if($provider->freshbooks_client_id!=''){
-
+                
+                if($provider->freshbooks_recurring_id=='0' || $provider->freshbooks_recurring_id=='')$create_new = true;
                 if($create_new){
                     $fb = new Freshbooks\FreshBooksApi('recurring.create');
                      // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
@@ -976,7 +1025,7 @@ class AdminController extends BaseController {
                                    'line' => array(
                                         'name'=>'Monthly',
                                         'description'=>'Charge for the month of ::month::',
-                                        'unit_cost'=>$bill->monthly_fee,
+                                        'unit_cost'=>$billing_plan->price,
                                         'quantity'=>'1',
                                         'tax1_name'=>'',
                                         'tax2_name'=>'',
@@ -989,7 +1038,7 @@ class AdminController extends BaseController {
                     );
                 }
                 else {
-                    $providerBilling = ProviderBilling::where('provider_id', $provider_id)->first();
+                    //$providerBilling = ProviderBilling::where('provider_id', $provider_id)->first();
                    
                     $fb = new Freshbooks\FreshBooksApi('recurring.update');
                      // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
@@ -1006,7 +1055,7 @@ class AdminController extends BaseController {
                                    'line' => array(
                                         'name'=>'Monthly',
                                         'description'=>'Charge for the month of ::month::',
-                                        'unit_cost'=>$providerBilling->monthly_fee,
+                                        'unit_cost'=>$billing_plan->price,
                                         'quantity'=>'1',
                                         'tax1_name'=>'',
                                         'tax2_name'=>'',
@@ -1037,10 +1086,15 @@ class AdminController extends BaseController {
                     }
 
                 } else {
-                    echo $fb->getError();
-                    Session::flash('error','Errors Settings Freshbooks Recurring Entry');
-
-                    dd($fb->getResponse());
+                    //echo $fb->getError();
+                    Session::flash('error','Errors Setting Freshbooks Recurring Entry, Has the Person or Recurring Invoice Been Deleted From Freshbooks?<br />'
+                            . 'The Freshbook Integration Has been Reset for this client, the next time you change plans and save it will create a new setup in freshbooks for them. '
+                            . 'Make sure to login to Freshbooks to double check everything is ok and no duplicates exist '.$fb->getError());
+                    
+                    $provider->freshbooks_recurring_id = '';
+                    $provider->freshbooks_client_id = '';
+                    $provider->save();
+                    //dd($fb->getResponse());
                 }
 
         }
@@ -1048,6 +1102,26 @@ class AdminController extends BaseController {
     }
     
     
+    
+    public function postUpdateProviderPlans()
+    {
+            $input = Input::all();
+            $rules = ['plan_basic'=>'required', 'plan_premium'=>'required'];
+            
+            $v = Validator::make($input['provider_plans'],$rules);
+            if($v->fails()) return Redirect::back()->withErrors($v);
+
+            $plan_basic = ProviderPlans::where('id', 1)->first();
+            $plan_basic->price = $input['provider_plans']['plan_basic'];
+            $plan_basic->save();
+            
+            $plan_premium = ProviderPlans::where('id', 2)->first();
+            $plan_premium->price = $input['provider_plans']['plan_premium'];
+            $plan_premium->save();
+            
+            Session::flash('success','Plans have been updated');
+            return Redirect::action('AdminController@getBillingPage', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
+    }
     
     
     

@@ -2,7 +2,7 @@
 
 Route::group(array('before' => 'Sentry|inGroup:Admin'), function()
 {
-	Route::controller('admin','AdminController');
+    Route::controller('admin','AdminController');
 });
 Route::group(array('before' => 'Sentry|inGroup:Provider'), function()
 {
@@ -12,7 +12,7 @@ Route::group(array('before' => 'Sentry|inGroup:Provider'), function()
 
 Route::group(array('before' => 'Sentry|inGroup:Customer'), function()
 {
-	 Route::controller('clients','ClientController');
+    Route::controller('clients','ClientController');
 });
 
 Route::get('this', array('as'=>'routename','uses'=>'controllerName@method'));
@@ -34,12 +34,21 @@ Route::controller('admin','AdminController');
 
 
 Route::get('test', function(){
-	$user = Sentry::createUser(array(
-	        'email'       => 'bendavol@gmail.com',
-	        'password'    => 'test',
-	        'activated'   => true,
-	    ));
+    $user = Sentry::createUser(array(
+            'email'       => 'bendavol@gmail.com',
+            'password'    => 'test',
+            'activated'   => true,
+        ));
 });
 Route::get('test2',function(){
-	return User::all();
+    //return User::all();
+    /*
+    Mail::send('emails.welcome', array('provider'=>new FProvider(),'pass'=>'testpass'), function($message)
+        {
+
+            $message->from('forcremation@gmail.com', 'ForCremation');
+            $message->to('bendavol@gmail.com')->cc('forcremation@gmail.com');
+            //$message->attach($pathToFile);
+        });*/
+            
 });

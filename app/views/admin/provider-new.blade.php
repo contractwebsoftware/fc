@@ -57,6 +57,15 @@
 						<label  class="sr-only" for="fax">Fax</label>
 						<div class="col-sm-12"><input type="text" placeholder="Fax" name="fax" id="fax" class="form-control" value="{{$data['fax']}}" /></div>
 					</div>
+                                        <div class="form-group">
+                                            <label  class="col-sm-4" for="provider_status">Provider Plan</label>
+                                            <div class="col-sm-8">
+                                                <div data-toggle="buttons">
+                                                    <label class="btn btn-primary active" for="plan_basic"><input type="radio" name="plan_id" id="plan_basic" value="{{$provider_plan_basic->id}}" checked> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary" for="plan_premium"><input type="radio" name="plan_id" id="plan_premium" value="{{$provider_plan_premium->id}}" > &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
+                                                </div>
+                                            </div>
+					</div>
 					<div class="form-group">
 						<label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
 						<div class="col-sm-12">

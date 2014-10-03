@@ -7,7 +7,7 @@
                         <strong class="h2">Providers</strong>
                 </div>
                 <div class="col-xs-12 col-md-6 text-right">
-                        <a href="{{ action('AdminController@getNewFuneralhome') }}" class="btn btn-primary">New Funeral Home</a>
+                        <a href="{{ action('AdminController@getEditFuneralhome',-1) }}" class="btn btn-primary">New Funeral Home</a>
                 </div>
         </div>
         <hr>
@@ -15,21 +15,22 @@
                 <div class="col-xs-12 col-md-6 text-right">
                         {{ Form::open(['action'=>'AdminController@getFuneralhomes','method'=>'GET']) }}
                         <div class="input-group">
-                                <input type="text" class="form-control" name="q">
+                                <input type="text" class="form-control" name="q" value="{{Input::get('q')}}" />
                                 <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="submit">Search</button>
+                                    <button class="btn btn-primary" type="submit" >Search</button>
                                 </span>
 
                         </div>
-                        <input type="checkbox" name="include_deleted" value="1" />Include Deleted
-                        &nbsp; <input type="radio" name="include_only" value="state" />Search Only State
-                        &nbsp; <input type="radio" name="include_only" value="city" />Search Only City
+                        <input type="checkbox" name="include_deleted" value="1" {{(Input::get('include_deleted')=='1'?'checked':'')}} />Include Deleted
+                        &nbsp; <input type="radio" name="include_only" value="state" {{(Input::get('include_only')=='state'?'checked':'')}} />Search Only State
+                        &nbsp; <input type="radio" name="include_only" value="city" {{(Input::get('include_only')=='city'?'checked':'')}} />Search Only City
+                        
                         {{ Form::close() }}
                 </div>
         </div>
         <hr>
 
-     {{ $funeral_homes->links() }}
+     {{ $funeral_homes->appends(array('q' => Input::get('q'),'include_only' => Input::get('include_only'), 'include_deleted'=>Input::get('include_deleted')))->links() }}
 
      {{ Form::open(['action'=>'AdminController@postMassUpdateFuneralHomes','class'=>'form-horizontal','role'=>'form']) }}
 
@@ -97,7 +98,7 @@
 
 
     {{ Form::close() }}
-    {{ $funeral_homes->links() }}
+    {{ $funeral_homes->appends(array('q' => Input::get('q'),'include_only' => Input::get('include_only'), 'include_deleted'=>Input::get('include_deleted')))->links() }}
 
     </div>
     <script>

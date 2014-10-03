@@ -382,7 +382,9 @@ class ClientController extends BaseController {
         // MAKE SURE ALL CLIENT RELATING TABLES GET POPULATED
         public function fillOutClientTables($client){
             
-            //if($client == null)$client = ClientController::registerUser();
+            if($client == null || !is_object($client))return null;
+                //$client = new Client();
+           
             $client_details_input = Array('client_id' => $client->id); 
             
             $client->DeceasedFamilyInfo = DeceasedFamilyInfo::where('client_id', $client->id)->first();
@@ -432,62 +434,70 @@ class ClientController extends BaseController {
         //CREATE A NEW CLIENT ACCOUNT OR TEMP CLIENT ACCOUNT
         public function registerUser(){
 	
-            
+            $create_client = false;
             $client = null;
             if(Session::get('client_id')!=""){
+                //dd(Session::get('client_id'));
                 $client = Client::where('id',Session::get('client_id'))->first();
-                $client = ClientController::fillOutClientTables($client);
+                if($client==null)$create_client = true;
+                else $client = ClientController::fillOutClientTables($client);
                 //echo "fethced existing client from session"; 
                 //dd($client);
                 
             }
             elseif(Sentry::getUser()){
                 $client = Client::where('user_id',Sentry::getUser()->id)->first();
-                $client = ClientController::fillOutClientTables($client);
+                if($client==null)$create_client = true;
+                else $client = ClientController::fillOutClientTables($client);
                 //echo "fetched existing user sentry";
             }   
             elseif(Input::get('client_id')!=""){
                 $client = Client::where('id',Input::get('client_id'))->first();
-                $client = ClientController::fillOutClientTables($client);
-                
-                try
-                {
-                    // Find the user using the user id
-                    $user = Sentry::findUserById($client->user_id);
+                if($client==null)$create_client = true;
+                else {
+                    $client = ClientController::fillOutClientTables($client);
 
-                    // Log the user in
-                    Sentry::login($user, true);
-                }
-                catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
-                {
-                    echo 'Login field is required.';
-                }
-                catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
-                {
-                    echo 'User not found.';
-                }
-                catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
-                {
-                    echo 'User not activated.';
-                }
+                    try
+                    {
+                        // Find the user using the user id
+                        $user = Sentry::findUserById($client->user_id);
 
-                // Following is only needed if throttle is enabled
-                catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
-                {
-                    $time = $throttle->getSuspensionTime();
+                        // Log the user in
+                        Sentry::login($user, true);
+                    }
+                    catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+                    {
+                        echo 'Login field is required.';
+                    }
+                    catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+                    {
+                        echo 'User not found.';
+                    }
+                    catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
+                    {
+                        echo 'User not activated.';
+                    }
 
-                    echo "User is suspended for [$time] minutes.";
+                    // Following is only needed if throttle is enabled
+                    catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
+                    {
+                        $time = $throttle->getSuspensionTime();
+
+                        echo "User is suspended for [$time] minutes.";
+                    }
+                    catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
+                    {
+                        echo 'User is banned.';
+                    }
+
+                    //echo "fethced existing client from input";    
                 }
-                catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
-                {
-                    echo 'User is banned.';
-                }
-                
-                //echo "fethced existing client from input";    
                 
             }
-            else{
-               
+            
+            if($create_client)
+            {
+               //dd('creating user');
                 $client_input = Array(
                         'first_name' => "unregistered",
                         'last_name' => "unregistered"
@@ -540,7 +550,7 @@ class ClientController extends BaseController {
         
 	public function getCreateUser() {
 		try
-		{
+		{/*
 		    // Create the user
 		    $user = Sentry::createUser(array(
 		        'email'     => 'fikri.desertlion@gmail.com',
@@ -553,6 +563,8 @@ class ClientController extends BaseController {
 
 		    // Assign the group to the user
 		    $user->addGroup($adminGroup);
+                 * */
+                 
 		}
 		catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 		{
@@ -618,31 +630,50 @@ class ClientController extends BaseController {
         }
         
         
-        public function getCreationAccountJson(){
-            
-            
-            if(DB::table('users')->where('email', Input::get('register_email'))->first())return Response::json(array('fail'=>'You Already Registered With That Email'));
-            if(Input::get('register_phone')=='' || Input::get('register_email')=='' || Input::get('register_name')=='' || Input::get('register_password')=='')
-                return Response::json(array('fail'=>'Please Enter All Information'));
-            $first_space = strpos(Input::get('register_name'),' ');
-            if($first_space==0 || $first_space=='')return Response::json(array('fail'=>'Please Enter A First and Last Name'));
+        public function getCreationAccountJson()
+        {
+                // run the transaction
+           return DB::transaction(function()
+           {
+                if(DB::table('users')->where('email', Input::get('register_email'))->first())return Response::json(array('fail'=>'You Already Registered With That Email'));
+                if(Input::get('register_phone')=='' || Input::get('register_email')=='' || Input::get('register_name')=='' || Input::get('register_password')=='')
+                    return Response::json(array('fail'=>'Please Enter All Information'));
+                $first_space = strpos(Input::get('register_name'),' ');
+                if($first_space==0 || $first_space=='')return Response::json(array('fail'=>'Please Enter A First and Last Name'));
+
+                $client = ClientController::registerUser();
+                $user = Sentry::findUserById($client->user_id);
+
+
+                $input['client']['first_name'] = substr(Input::get('register_name'), 0, $first_space);
+                $input['client']['last_name'] = substr(Input::get('register_name'), $first_space+1, strlen(Input::get('register_name')) );
+                $input['client']['phone'] = Input::get('register_phone');
                 
-            $client = ClientController::registerUser();
-            $user = Sentry::findUserById($client->user_id);
-            
-            
-            $input['client']['first_name'] = substr(Input::get('register_name'), 0, $first_space);
-            $input['client']['last_name'] = substr(Input::get('register_name'), $first_space+1, strlen(Input::get('register_name')) );
-            $input['client']['phone'] = Input::get('register_phone');
-            
-            $input['user']['email'] = Input::get('register_email'); 
-            
-            DB::table('clients')->where('id', $client->id)->update($input['client']);
-            DB::table('users')->where('id', $client->user_id)->update($input['user']);
-            if ($user->attemptResetPassword($user->getResetPasswordCode(), Input::get('register_password')));                
-            
-            $client = Client::where('user_id',Sentry::getUser()->id)->first();
-            return Response::json($client);
+                $input['user']['email'] = Input::get('register_email'); 
+
+                DB::table('clients')->where('id', $client->id)->update($input['client']);
+                DB::table('users')->where('id', $client->user_id)->update($input['user']);
+                if ($user->attemptResetPassword($user->getResetPasswordCode(), Input::get('register_password')));                
+
+                $client = Client::where('user_id',Sentry::getUser()->id)->first();
+
+               
+                //dd($client);
+               
+                $mail_data['client'] = $client;
+                $mail_data['login'] = $input['user']['email'];
+                $mail_data['pass']= Input::get('register_password');
+                Mail::send('emails.client-welcome', $mail_data, function($message) use ($input)
+                {
+                   
+                 //dd();
+                    //$message->from('us@example.com', 'Laravel');
+                    $message->to($input['user']['email'])->cc('forcremation@gmail.com');
+                    //$message->attach($pathToFile);
+                });
+                
+                return Response::json($client);
+           });
         }
         
         
@@ -892,5 +923,4 @@ class ClientController extends BaseController {
 
     }
     
-        
 }

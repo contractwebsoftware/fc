@@ -13,17 +13,19 @@
 			<div class="col-xs-12 col-md-6 text-right">
 				{{ Form::open(['action'=>'AdminController@getProviders','method'=>'GET']) }}
 				<div class="input-group">
-				  	<input type="text" class="form-control" name="q">
+				  	<input type="text" class="form-control" name="q" value="{{Input::get('q')}}" />
 				  	<span class="input-group-btn">
                                             <button class="btn btn-primary" type="submit">Search</button>
                                         </span>
                                         
 				</div>
-                                <input type="checkbox" name="include_deleted" value="1" /> Include Deleted
+                                <input type="checkbox" name="include_deleted" value="1" {{(Input::get('include_deleted')=='1'?'checked':'')}} /> Include Deleted
 				{{ Form::close() }}
 			</div>
 		</div>
 		<hr>
+                {{ $providers->appends(array('q' => Input::get('q'),'include_deleted'=>Input::get('include_deleted')))->links() }}
+
 		<div class="table-responsive">
 			<table class="table table-borders">
 				<thead>
@@ -68,5 +70,6 @@
 				</tbody>
 			</table>
 		</div>
+                {{ $providers->appends(array('q' => Input::get('q'),'include_deleted'=>Input::get('include_deleted')))->links() }}
 	</div>
 @stop
