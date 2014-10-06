@@ -502,6 +502,7 @@
 @if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps7','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
+        {{ Form::hidden('provider_id',$provider->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
         <fieldset class="step-authorized-person" id="edit_client_info">
             <div class="row form-group">
@@ -550,12 +551,58 @@
                 </div>
             </div>
             
+            <Br /><Br />
+            <h3>Select An Urn</h3>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="owl-example" class="owl-carousel owl-theme" data-toggle="buttons" style="max-width:600px;">    
+                        @foreach( $products as $product )
+                            <div class="item"> 
+                                <table style="border:none;">
+                                    <tr><td style="width:230px;">
+                                    <img src="{{ $product->image }}" style="max-width:200px;width:auto;height:auto;max-height:200px;" />
+                                    </td><td valign="top">
+                                        <h4>{{ $product->name }}</h4><Br />
+                                        Description: {{ $product->description }}<Br /><Br />
+                                        <label class="btn btn-primary {{$client_product->product_id == $product->product_id?'active':''}}" for="client_product_id{{ $product->product_id }}">
+                                            <input name="client_product[product_id]" id="client_product_id{{ $product->product_id }}" value="{{ $product->product_id }}" {{$client_product->product_id == $product->product_id?'checked="true" selected="true"':''}} type="radio"> &nbsp; <b>Select</b> &nbsp; ${{ $product->price }}
+                                            <input name="client_product[price][{{ $product->product_id }}]" value="{{ $product->price }}" type="hidden" /> 
+                                        </label>
+                                    </td></tr>
+                                </table>
+                            </div>
+                        @endforeach 
+                    </div>
+            <hr>
+            
+                </div>
+            </div>
+            
+            <div class="row form-group">
+                <div class="col-sm-12" >
+                    <label for="client_product_note">Send Your Provider A Note About Your Urn Order</label>
+                    <i><b>*</b> Urns do not come inscribed or engraved. Personalization is responsibility of client.</i><BR />
+                    <textarea name="client_product[note]" id="client_product_note" style="width:100%;height:100px;">{{ $client_product->note }}</textarea>
+                    
+                </div>
+            </div>
+            
+            
+            
             <div class="row form-group">
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
                 <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
             </div>
-        </fieldset> 
-        <script>
+        </fieldset>
+        
+    <!-- Important Owl stylesheet -->
+    <link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.carousel.css')}}">
+    <link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.theme.css')}}">
+    <style>#owl-example table td{border:none!important;}</style>
+    <script src="{{asset('packages/owl-carousel/owl.carousel.min.js')}}"></script>
+    <script>
+     
             function updateAddr(){
                 var html = $('#client_first_name').val() +" "+ $('#client_middle_name').val() +" "+ $('#client_last_name').val() + "\n"+
                         $('#client_address').val() +" "+ $('#client_city').val() +", "+ $('#client_state').val() +" "+ $('#client_zip').val() + "\n" +
@@ -564,6 +611,13 @@
             }
     
             $(function(){
+                $("#owl-example").owlCarousel({
+                    navigation : true, // Show next and prev buttons
+                    slideSpeed : 300,
+                    paginationSpeed : 400,
+                    singleItem:true
+                });
+
                 $('#keeper_of_cremains').click(function(){ updateAddr(); });
                 $('.step-authorized-person').on('change', function(){ updateAddr() });
                 $('.step-authorized-person').on('keyup', function(){ updateAddr() });
@@ -650,11 +704,13 @@
                 <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship remains.</span></div>
             </div>
             
+            
             <div class="row form-group">
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
                 <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
             </div>
-        </fieldset>        
+        </fieldset> 
+                
     {{ Form::close() }}
 
 @endif

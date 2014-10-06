@@ -2,7 +2,7 @@
 
 <div class="row" style="margin:0 5px;">
     <div class="col-xs-12">
-        <h2>Edit Provider</h2>
+        <h2>Edit Provider &nbsp; <i style="font-size:14px;">{{ $provider->business_name }}</i></h2>
         <hr>
     </div>
 
@@ -10,22 +10,22 @@
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li class="active"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
-        <li><a href="#provider_files" role="tab" data-toggle="tab">Files</a></li>
+        <li class="{{$current_tab==''||$current_tab=='company_info'?'active':''}}"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
+        <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Files</a></li>
         @if(Sentry::getUser()->role=='admin')
-          <li><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
-          <li><a href="#customer_document_forms" role="tab" data-toggle="tab">Documents</a></li>
+          <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
+          <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Documents</a></li>
         @endif
-        <li><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
-        <li><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
-        <li><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
+        <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
+        <li class="{{$current_tab=='provider_urns'?'active':''}}"><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
+        <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
 
 
-        <div class="tab-pane active" id="company_info">
+        <div class="tab-pane {{$current_tab==''||$current_tab=='company_info'?'active':''}}" id="company_info">
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
@@ -48,13 +48,13 @@
                                         <div class="col-sm-8">
                                             <div data-toggle="buttons">
                                                 @if(Sentry::getUser()->role=='admin')
-                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id || $provider->plan_id==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
                                                     <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
                                                 @elseif($provider_plan_basic->id == $provider->plan_id)
-                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id || $provider->plan_id==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
                                                     <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
                                                 @elseif($provider_plan_premium->id == $provider->plan_id)
-                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}} disabled" for="plan_basic"><input type="radio" disabled name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
+                                                    <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}} disabled" for="plan_basic"><input type="radio" disabled name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id || $provider->plan_id==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
                                                     <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
                                                     &nbsp; <sub><i>If you wish to downgrade your account please contact us at <a href="mailto:forcremation@gmail.com?subject=Downgrading%20Account%20For%20{{$provider->email}}" target="_blank">forcremation@gmail.com</a></i></sub>
                                                 @endif
@@ -141,7 +141,7 @@
         
         
         
-        <div class="tab-pane" id="provider_files">
+        <div class="tab-pane {{$current_tab=='provider_files'?'active':''}}" id="provider_files">
             <div class="row">
 		<div class="col-xs-12">
                     <fieldset>
@@ -163,7 +163,7 @@
                     ?>
 
                             <div class="form-group">
-                                <label for="provider_files" class="col-xs-4">Upload Provider File</label>
+                                <label for="provider_files" class="col-xs-4">Upload Provider File To ForCremation Staff</label>
                                 <div class="col-xs-8">
                                        
                                     File Type: 
@@ -203,78 +203,59 @@
 	
       
     @if(Sentry::getUser()->role=='admin')
-       <div class="tab-pane" id="customer_document_forms">
+       <div class="tab-pane {{$current_tab=='customer_document_forms'?'active':''}}" id="customer_document_forms">
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
                     {{ Form::open(['action'=>'AdminController@postUpdateProviderForms', 'class'=>'form-horizontal','files'=>true]) }}
                     {{ Form::hidden("provider[id]",$provider->id) }}
 
-                        <!-- Nav tabs -->
-                        <ul class="nav nav-tabs" role="tablist">
-                          <li class="active"><a href="#tab_customer_form_1" role="tab" data-toggle="tab">Vital Information Form</a></li>
-                          <li><a href="#tab_customer_form_2" role="tab" data-toggle="tab">Form 2</a></li>
-                          <li><a href="#tab_customer_form_3" role="tab" data-toggle="tab">Form 3</a></li>
-                          <li><a href="#tab_customer_form_4" role="tab" data-toggle="tab">Form 4</a></li>
-                          <li><a href="#tab_customer_form_5" role="tab" data-toggle="tab">Form 5</a></li>
-                          <li><a href="#tab_customer_form_5" role="tab" data-toggle="tab">Form 6</a></li>
-                        </ul>
+                    <div class="form-group">
+                        <div class="col-xs-2">
+                            Editing Form:
+                            <select id="edit_custom_form" name="edit_custom_form" style="font-size:16px;" >
+                                <?php
+                                    $forms[1] = 'Vitals/Summary';
+                                    $forms[2] = 'Hospital Release';
+                                    $forms[3] = 'Cremation Authorization';
+                                    $forms[4] = 'Disposition-Embalming';
+                                    $forms[5] = 'Pre-need Release';
+                                    $forms[6] = 'Corner-Medical Examiner';
+                                    $forms[7] = 'Personnel Effects';
+                                    $forms[8] = 'Transfer of Authority';
+                                    $forms[9] = 'Viewing Release';
+                                    $forms[10] = 'Other';
+                                    foreach($forms as $key=>$form_name){
+                                        echo '<option value="'.$key.'" '.($custom_form_num==$key?'selected':'').' >'.$form_name.'</option>';
+                                    }
+                                    if($custom_form_num=='')$this_form = 'customer_form_1';
+                                    else $this_form = 'customer_form_'.$custom_form_num;
 
-                        <!-- Tab panes -->
-                        <div class="tab-content">
-                            
-                            
-                            <div class="tab-pane active" id="tab_customer_form_1">
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <textarea id="customer_form_1" name="provider[customer_form_1]" class="form-control customer_form_ta" >{{$provider->customer_form_1}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            
-                        
-                            <div class="tab-pane" id="tab_customer_form_2">
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <textarea id="customer_form_2" name="provider[customer_form_2]" class="form-control customer_form_ta" >{{$provider->customer_form_2}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="tab-pane" id="tab_customer_form_3">
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <textarea id="customer_form_3" name="provider[customer_form_3]" class="form-control customer_form_ta" >{{$provider->customer_form_3}}</textarea> 
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tab_customer_form_4">
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <textarea id="customer_form_4" name="provider[customer_form_4]" class="form-control customer_form_ta" >{{$provider->customer_form_4}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                            <div class="tab-pane" id="tab_customer_form_5">
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <textarea id="customer_form_5" name="provider[customer_form_5]" class="form-control customer_form_ta">{{$provider->customer_form_5}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!--/end tab-content -->
-
-                        <div class="form-group">
-                            <div class="col-xs-8">
-                                <button type="submit" class="btn btn-primary btn-block">Update</button>
-                            </div>
-                            <div class="col-xs-4">
-                                <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id) ) }}">Preview Example</a>
-                            </div>
+                                    $custom_form = $provider->$this_form;
+                                ?>
+                            </select>
                         </div>
-              
+                        <div class="col-xs-2">
+                            <button value="Change Form" name="change_form" class="btn btn-primary btn-block">Change Form</button>                           
+                        </div>
+                        <div class="col-xs-8"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <textarea id="custom_provider_form" name="provider[{{$this_form}}]" class="form-control customer_form_ta" >{{$custom_form}}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-8">
+                            <button type="submit" class="btn btn-primary btn-block">Update</button>
+                        </div>
+                        <div class="col-xs-4">
+                            <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id,$this_form) ) }}">Preview Example</a>
+                        </div>
+                    </div>
+
                 <a href="#" onclick="$('#key_map').slideToggle();return false;">Show Client and Provider Keywords</a>
                 <div style="display:none;" id="key_map">
                    <?php
@@ -302,7 +283,14 @@
                     <li>{{client_feedback_suggestions}}</li>
                     <li>{{client_is_junk}}</li>
                     <li>{{client_purchase_option}}</li>
-                    <li>{{client_majority_count}}</li></ul>
+                    <li>{{client_majority_count}}<Br /><br /></li>
+                    
+                    <li><b>Urn Selection</b></li>
+                    <li>{{ClientProducts_name}}</li>
+                    <li>{{ClientProducts_price}}</li>
+                    <li>{{ClientProducts_description}}</li>
+                    <li>{{ClientProducts_note}}</li>
+                    </ul>
                     
                     </td><td align=left style="vertical-align: top;">
                     <ul class="form_keys"><li><b>Provider</b></li>
@@ -409,20 +397,14 @@
                  
                 <script>
                   
-                    CKEDITOR.replace( 'provider[customer_form_1]', { height: '800px', }); 
-                    CKEDITOR.replace( 'provider[customer_form_2]', { height: '800px', }); 
-                    CKEDITOR.replace( 'provider[customer_form_3]', { height: '800px', }); 
-                    CKEDITOR.replace( 'provider[customer_form_4]', { height: '800px', }); 
-                    CKEDITOR.replace( 'provider[customer_form_5]', { height: '800px', }); 
-                    CKEDITOR.replace( 'provider[customer_form_6]', { height: '800px', }); 
+                    CKEDITOR.replace( 'custom_provider_form', { height: '500px' }); 
                     
-                 
                     $().ready( function() {
                        $('.form_keys li').click(function() { 
                          //alert('awesome'+$(this).text()); 
                          //$(".cke_source:first").insertAtCaret($(this).text());
                          //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
-                         var editor = CKEDITOR.instances.customer_form_1;
+                         var editor = CKEDITOR.instances.custom_provider_form;
                          editor.insertText( $(this).text() );
 
                          return false
@@ -480,7 +462,7 @@
          */ ?>
        
     
-    <div class="tab-pane" id="provider_zips">
+    <div class="tab-pane {{$current_tab=='provider_zips'?'active':''}}" id="provider_zips">
         <div class="row">
             <div class="col-xs-12">
                 <fieldset>
@@ -581,7 +563,7 @@
     </div> <!-- /END zip info tab -->
         
    @endif
-   <div class="tab-pane" id="provider_pricing">
+   <div class="tab-pane {{$current_tab=='provider_pricing'?'active':''}}" id="provider_pricing">
 	<div class="row">
 		<div class="col-xs-12">
                     <fieldset>
@@ -782,8 +764,65 @@
 	</div> <!-- /END Pricing info tab -->
         
         
-        
-        <div class="tab-pane" id="provider_clients">
+    <div class="tab-pane {{$current_tab=='provider_urns'?'active':''}}" id="provider_urns">
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                    {{ Form::open(['action'=>'AdminController@postUpdateProviderUrns','class'=>'form-horizontal','role'=>'form','#'=>'provider_urns']) }}
+                    {{ Form::hidden("provider[id]",$provider->id) }}
+    
+                       
+                    <table class="">
+                    <thead>
+                        <tr>
+                            <th style="width:150px;">Image</th>
+                            <th style="width:250px;">Name</th>
+                            <th style="width:100px;">Price</th>
+                            <th style="width:100%;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach( $provider_products as $product )
+                           
+                            @if($product->product_id=='')
+                                <input type="hidden" name="product[{{$product->id}}][product_id]" value="{{$product->id}}" />
+                            @endif
+                            <tr>
+                                <td valign="top"><img src="{{ $product->image }}" style="width:150px;height:auto;" /><input type="hidden" name="product[{{ $product->id }}][image]" value="{{ $product->image }}" /></td>
+                                <td valign="top" style="padding:0 5px;"><input type="text" name="product[{{ $product->id }}][name]" value="{{ $product->name }}"/></td>
+                                <td valign="top" style="padding:0 5px;"><table><tr><td align="right" style="padding-top:0px;padding-right:5px;">$</td><td width="85%" align="left"><input type="text" name="product[{{ $product->id }}][price]" value="{{ $product->price }}"/></td></tr></table></div></td>
+                                <td valign="top"><textarea name="product[{{ $product->id }}][description]" id="urn_description{{ $product->id }}" style="width:100%;height:130px;">{{ $product->description }}</textarea></td>
+                            </tr>
+                            <script>    
+                                $().ready(function(){
+                                    var editor = CKEDITOR.replace( 'urn_description{{ $product->id }}', {height: '120px'});
+
+                                    editor.config.toolbarGroups = [
+                                        { name: 'links' },
+                                        { name: 'basicstyles', groups: [ 'basicstyles'] },
+                                        { name: 'styles' },
+                                        { name: 'colors' }
+
+                                    ];
+                                });
+                            </script>
+                        @endforeach                       
+                    </tbody>
+                </table>
+                    
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <button type="submit" class="btn btn-primary btn-block">Update</button>
+                        </div>
+                    </div>
+		{{ Form::close() }}
+               </fieldset>
+            </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END Forms info tab -->    
+    
+    
+    <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
             {{ $clients->links() }}
@@ -847,62 +886,7 @@
         </div><!--/row-->
     </div> <!-- /END Forms info tab -->
     
-    <div class="tab-pane" id="provider_urns">
-            <div class="row">
-                <div class="col-xs-12">
-                    <fieldset>
-                    {{ Form::open(['action'=>'AdminController@postUpdateProviderUrns','class'=>'form-horizontal','role'=>'form']) }}
-                    {{ Form::hidden("provider[id]",$provider->id) }}
-    
-                       
-                    <table class="">
-                    <thead>
-                        <tr>
-                            <th style="width:150px;">Image</th>
-                            <th style="width:250px;">Name</th>
-                            <th style="width:100px;">Price</th>
-                            <th style="width:100%;">Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach( $provider_products as $product )
-                           
-                            @if($product->product_id=='')
-                                <input type="hidden" name="product[{{$product->id}}][product_id]" value="{{$product->id}}" />
-                            @endif
-                            <tr>
-                                <td valign="top"><img src="{{ $product->image }}" style="width:150px;height:auto;" /><input type="hidden" name="product[{{ $product->id }}][image]" value="{{ $product->image }}" /></td>
-                                <td valign="top" style="padding:0 5px;"><input type="text" name="product[{{ $product->id }}][name]" value="{{ $product->name }}"/></td>
-                                <td valign="top" style="padding:0 5px;"><table><tr><td align="right" style="padding-top:0px;padding-right:5px;">$</td><td width="85%" align="left"><input type="text" name="product[{{ $product->id }}][price]" value="{{ $product->price }}"/></td></tr></table></div></td>
-                                <td valign="top"><textarea name="product[{{ $product->id }}][description]" id="urn_description{{ $product->id }}" style="width:100%;height:200px;">{{ $product->description }}</textarea></td>
-                            </tr>
-                            <script>
-                               
-                                CKEDITOR.replace( 'urn_description{{ $product->id }}', CKEDITOR.editorConfig);
-                               
-                                CKEDITOR.config.toolbarGroups = [
-                                    { name: 'links' },
-                                    { name: 'basicstyles', groups: [ 'basicstyles'] },
-                                    { name: 'styles' },
-                                    { name: 'colors' }
-                                    
-                                ];
-                            </script>
-                        @endforeach                       
-                    </tbody>
-                </table>
-                    
-                    <div class="form-group">
-                        <div class="col-xs-12">
-                            <button type="submit" class="btn btn-primary btn-block">Update</button>
-                        </div>
-                    </div>
-		{{ Form::close() }}
-               </fieldset>
-            </div><!--/col-12-->
-        </div><!--/row-->
-    </div> <!-- /END Forms info tab -->                 
-    
 </div><!--/end tab-content -->
 </div><!--/row-->
+
 @stop

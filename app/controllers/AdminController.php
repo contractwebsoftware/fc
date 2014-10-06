@@ -181,7 +181,7 @@ class AdminController extends BaseController {
             return $zips;
 
     }
-    public function getEditProvider($id)
+    public function getEditProvider($id, $current_tab='company_info', $custom_form_num='')
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
          
@@ -196,6 +196,10 @@ class AdminController extends BaseController {
         //dd($data['provider_products']);
         $data['provider_plan_basic'] = ProviderPlans::where('id','1')->first();
         $data['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
+        $data['custom_form_num'] = $custom_form_num;
+        $data['current_tab'] = $current_tab;
+        
+        
         
         $this_zip = Zip::where('zip',$data['provider']->zip)->first();
         if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
@@ -353,7 +357,7 @@ class AdminController extends BaseController {
             }
             Session::flash('success','Zips Updated Successfully');
 
-            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_zips'));
     }
 
     public function postUpdatePricing(){
@@ -368,20 +372,25 @@ class AdminController extends BaseController {
             $pricing_options->save();
 
             Session::flash('success','Provider\'s Pricing Data has been updated');
-            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+            return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_pricing'));
     }
 
     public function postUpdateProviderForms(){
         $input = Input::all();
         $provider = FProvider::find($input['provider']['id']);
-        //dd($provider);
-        if($provider == null){
-            $provider = new FProvider();  
-        } 
+        //dd($input);
+        
         $provider->fill($input['provider']);
-        $provider->save();
-        Session::flash('success','Provider\'s Custome Documents has been updated');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));    
+        if(!array_key_exists('change_form',$input)){
+            $provider->save();
+            Session::flash('success','Provider\'s Custome Documents has been updated');
+        }
+        
+        if(array_key_exists('edit_custom_form',$input))$key = $input['edit_custom_form'];
+        else $key = '1';
+        
+        
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'customer_document_forms','custom_form_num'=>$key));    
     }
 
     public function getRemoveFiles()
@@ -394,7 +403,7 @@ class AdminController extends BaseController {
             $file->delete();
         }
         Session::flash('success','File Removed Successfully');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $provider_id));
+        return Redirect::action('AdminController@getEditProvider', array('id' => $provider_id,'tab'=>'provider_files'));
     }
 
     public function postUpdateFiles()
@@ -419,13 +428,12 @@ class AdminController extends BaseController {
         }
 
         Session::flash('success','Provider Files Added Successfully');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_files'));
     }
     
     
     public function postUpdateProviderUrns()
-    {
-        
+    {        
         $input = Input::all();
         $provider = FProvider::find($input['provider']['id']);
         
@@ -443,7 +451,7 @@ class AdminController extends BaseController {
         }
 
         Session::flash('success','Provider\'s Custome Documents has been updated');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'#'=>'provider_urns')); 
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_urns')); 
     }
 
     /*

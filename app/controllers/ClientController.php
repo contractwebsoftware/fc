@@ -35,7 +35,6 @@ class ClientController extends BaseController {
             if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
             if($client->User == null)$client->User = New User();
             
-            
             //echo 'SESSION<br />';
             //print_r(Session::all());
             
@@ -71,6 +70,21 @@ class ClientController extends BaseController {
                 //echo '<br>$provider:<br />'; print_r($provider);  
           
             
+           
+            /*
+             * USE THE PROVIDERS PRODUCT PRICES IF THEY HAVE ANY 
+             */
+                $products = ProviderProducts::where('provider_id',$provider->id)->get();
+                if($products == null || count($products)<1)$products = Products::get();
+
+                $client_product = ClientProducts::where('provider_id',$provider->id)->where('client_id',$client->id)->first();
+                if($client_product == null || count($client_product)<1){
+                    $client_product = new ClientProducts();
+                    $client_product->product_id = 1;
+                }
+            /* END PROVIDER PRODUCTS */
+            
+            
             if($goToStep != 0)Session::put('step', $goToStep);
             elseif(Input::get('submit')=="submit"){
                 
@@ -94,7 +108,7 @@ class ClientController extends BaseController {
             else Session::put('inAdminGroup','');
             
             if($jsonReturn)return Response::json(Input::get());
-            else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider]);
+            else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider, 'products'=>$products,'client_product'=>$client_product]);
             
 	}
         /*
@@ -180,10 +194,14 @@ class ClientController extends BaseController {
                 $client->DeceasedInfo->save(); 
             }
             
+            if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
+            
             if(is_array(Input::get('cremains_info'))){
                 $input['cremains_info'] = Input::get('cremains_info');
                 
+                
                 $provider = Session::get('provider');
+               
                 if($provider->pricing_options->custom1_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom1'] = '0';
                 if($provider->pricing_options->custom2_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom2'] = '0';
                 if($provider->pricing_options->custom3_included=='1' && $input['cremains_info']['package_plan']=='2')$input['cremains_info']['custom3'] = '0';
@@ -207,7 +225,6 @@ class ClientController extends BaseController {
            
             //SAVE A STORED PROVIDER THAT MATCHED A ZIP
             
-            if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
             
             
             return ClientController::getSteps(0, false, $client);	
@@ -272,6 +289,23 @@ class ClientController extends BaseController {
                 $client->CremainsInfo->save(); 
             }
             
+            
+            if(is_array(Input::get('client_product'))){
+                $client_product = Input::get('client_product');
+                
+                $cliend_product_r = ClientProducts::where('provider_id', Input::get('provider_id'))->where('client_id', Input::get('client_id'))->first();
+                //dd(DB::getQueryLog());
+                if($cliend_product_r == null){
+                    $cliend_product_r = new ClientProducts();
+                    $cliend_product_r->provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $cliend_product_r->client_id = $client->id;
+                }
+                $cliend_product_r->product_id = $client_product['product_id'];
+                $cliend_product_r->price = $client_product['price'][$client_product['product_id']];
+                $cliend_product_r->note = $client_product['note'];
+                $cliend_product_r->save();
+                
+            }
             return ClientController::getSteps();	   
         }
 	public function postSteps8()
@@ -415,6 +449,8 @@ class ClientController extends BaseController {
                 $client->DeceasedInfoPresentLoc->save(); 
             }
             
+            
+            
             $provider_id = DB::table('clients_providers')->select(DB::raw('provider_id'))->where('client_id','=', $client->id)->first();
             //dd($provider_id->provider_id);
             if($provider_id!=null)$client->FProvider = FProvider::find($provider_id->provider_id);
@@ -422,6 +458,21 @@ class ClientController extends BaseController {
                 $client->FProvider = FProvider::find(1);  
             }
             
+            
+            $client->ClientProducts = ClientProducts::where('client_id', $client->id)->where('provider_id',$client->FProvider->id)->first();
+            if($client->ClientProducts == null){
+                $client_product = ProviderProducts::where('provider_id',$client->FProvider->id)->where('product_id',1)->first();
+                if($client_product == null) $client_product = Products::where('id',1)->first();            
+           
+                $client->ClientProducts = new ClientProducts();  
+                $client->ClientProducts->provider_id = $client->FProvider->id;
+                $client->ClientProducts->product_id = 1;
+                $client->ClientProducts->price = $client_product->price;
+                $client->ClientProducts->fill($client_details_input);
+                $client->ClientProducts->save(); 
+            }
+            
+                 
             $client->User = User::where('id', $client->user_id)->first();
             if($client->User == null){
                 $client->User = new User();
@@ -433,16 +484,20 @@ class ClientController extends BaseController {
         
         //CREATE A NEW CLIENT ACCOUNT OR TEMP CLIENT ACCOUNT
         public function registerUser(){
-	
+            
             $create_client = false;
             $client = null;
+            //dd(Session::get('client_id'));
             if(Session::get('client_id')!=""){
-                //dd(Session::get('client_id'));
+                
                 $client = Client::where('id',Session::get('client_id'))->first();
+                
                 if($client==null)$create_client = true;
                 else $client = ClientController::fillOutClientTables($client);
+                
                 //echo "fethced existing client from session"; 
-                //dd($client);
+               
+                
                 
             }
             elseif(Sentry::getUser()){
@@ -450,6 +505,7 @@ class ClientController extends BaseController {
                 if($client==null)$create_client = true;
                 else $client = ClientController::fillOutClientTables($client);
                 //echo "fetched existing user sentry";
+               
             }   
             elseif(Input::get('client_id')!=""){
                 $client = Client::where('id',Input::get('client_id'))->first();
@@ -490,14 +546,19 @@ class ClientController extends BaseController {
                         echo 'User is banned.';
                     }
 
-                    //echo "fethced existing client from input";    
                 }
                 
+                //echo "fethced existing client from input"; 
+                    
             }
+            else $create_client = true;
             
+            //if($client==null)$create_client = true;
+            //elseif($client->id==null)$create_client = true;
+             
             if($create_client)
             {
-               //dd('creating user');
+                //dd('creating user');
                 $client_input = Array(
                         'first_name' => "unregistered",
                         'last_name' => "unregistered"
@@ -537,7 +598,9 @@ class ClientController extends BaseController {
                    
                 
             }
-            
+            //dd($client);
+            if($client)Session::put('client_id', $client->id);
+            //dd(Session::get('client_id'));
             
             return $client;
 	}
@@ -755,7 +818,21 @@ class ClientController extends BaseController {
                 $saleSummary['report']['custom3']['price'] = $provider->pricing_options->custom3;
                 $TOTAL_PRICE += $saleSummary['report']['custom3']['price'];
             }
-
+            
+            
+            //URN COSTS
+            $client_choosen_product = ClientProducts::where('provider_id',$provider->id)->where('client_id',$client->id)->first();
+            if($client_choosen_product == null || count($client_choosen_product)<1)$this_product = 1;
+            else $this_product = $client_choosen_product->product_id;            
+             
+            $client_product = ProviderProducts::where('provider_id',$provider->id)->where('product_id',$this_product)->first();
+            if($client_product == null || count($client_product)<1)$client_product = Products::where('id',$this_product)->first();            
+           
+            $saleSummary['report']['urn_product']['desc'] = 'Urn: '. $client_product->name;
+            $saleSummary['report']['urn_product']['price'] = $client_product->price;
+            $TOTAL_PRICE += $saleSummary['report']['urn_product']['price'];
+            
+            
 
             $saleSummary['total'] = number_format((float)$TOTAL_PRICE, 2, '.', '');
             
@@ -776,16 +853,17 @@ class ClientController extends BaseController {
      * 
      * 
      */    
-    function getCustomerDocuments($client_id='', $provider_id=''){
+    function getCustomerDocuments($client_id='', $provider_id='',$form='customer_form_1'){
         if($client_id=='')$client_id = Session::get('client_id');
         if($provider_id=='')$provider_id = Session::get('provider_id');
         
+            
         $client = Client::find($client_id);
         $client = ClientController::fillOutClientTables($client);
         $provider = FProvider::find($provider_id);
         
         
-        $html = $provider->customer_form_1;
+        $html = $provider->$form;
         $options = Array(
             'client_status',
             'client_first_name',
@@ -892,7 +970,12 @@ class ClientController extends BaseController {
             'DeceasedInfoPresentLoc_apt',
             'DeceasedInfoPresentLoc_city',
             'DeceasedInfoPresentLoc_state',
-            'DeceasedInfoPresentLoc_zip'            
+            'DeceasedInfoPresentLoc_zip',
+            
+            'ClientProducts_name',
+            'ClientProducts_price',
+            'ClientProducts_description',
+            'ClientProducts_note'
         );
       
           
@@ -907,6 +990,15 @@ class ClientController extends BaseController {
                case 'DeceasedInfo': $class = $client->DeceasedInfo; break;
                case 'CremainsInfo': $class = $client->CremainsInfo; break;
                case 'DeceasedInfoPresentLoc': $class = $client->DeceasedInfoPresentLoc; break;
+               case 'ClientProducts': {
+                   $class = $client->ClientProducts; 
+                   $client_product = ProviderProducts::where('provider_id',$provider_id)->where('product_id',$class->product_id)->first();
+                   if($client_product == null) $client_product = Products::where('id',1)->first(); 
+                   $class->name = $client_product->name;
+                   $class->description = $client_product->description;
+               }
+               break;
+               
                default:break;
            }
            
