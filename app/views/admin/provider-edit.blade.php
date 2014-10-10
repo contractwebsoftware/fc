@@ -42,18 +42,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                        <label  class="col-sm-4" for="freshbooks_api_token">Provider Freshbooks Authentication Token</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                        <label  class="col-sm-4" for="freshbooks_api_url">Provider Freshbooks API URL</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
-                                        </div>
-                                    </div>
+                            
                                     <div class="form-group">
                                         <label  class="col-sm-4" for="provider_status">Provider Plan</label>
                                         <div class="col-sm-8">
@@ -139,11 +128,63 @@
                                                 </select>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                            <div class="col-xs-12">
-                                                    <button type="submit" class="btn btn-primary btn-block">Update</button>
-                                            </div>
+                            
+                                     
+                                    
+                                    
+                                    <div class="form-group" >
+                                        <label  class="col-sm-4" for="freshbooks_clients_enabled"><b style="font-size:16px">Freshbooks Integration</b></label>
+                                        <div class="col-sm-8">
+                                            <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }}" />
+                                        </div>
                                     </div>
+                                    
+                                    <div id='freshbooks_settings'>
+                                        <div class="form-group" >
+                                            <label  class="col-sm-4" for="freshbooks_clients_invoice">Automatically Create Invoices For My Clients</label>
+                                            <div class="col-sm-8">
+                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" >
+                                            <label  class="col-sm-4" for="freshbooks_clients_people">Automatically Create Freshbooks People From My Clients</label>
+                                            <div class="col-sm-8">
+                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" >
+                                            <label  class="col-sm-4" for="freshbooks_api_url">Freshbooks API URL</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group"> 
+                                            <label  class="col-sm-4" for="freshbooks_api_token">Freshbooks Authentication Token</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                                <button type="submit" class="btn btn-primary btn-block">Update</button>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        function fb_settings(){
+                                            if($('#freshbooks_clients_enabled').prop('checked'))$('#freshbooks_settings').slideDown();
+                                            else $('#freshbooks_settings').slideUp();
+                                        }
+                                        $(function(){
+                                            $('#freshbooks_clients_enabled').click(function(){
+                                                fb_settings();                                                
+                                            });
+                                        });
+                                        fb_settings();
+                                    </script>
+                                    
                     {{ Form::close() }}
                     </fieldset>
                 </div><!--/col-12-->

@@ -250,6 +250,24 @@ class AdminController extends BaseController {
             $provider = new FProvider();  
         } 
         
+        if(array_key_exists('freshbooks_clients_enabled',$input)){            
+            if($input['freshbooks_clients_enabled']=='1')$provider->freshbooks_clients_enabled = 1;
+            else $provider->freshbooks_clients_enabled = 0;
+        }        
+        else $provider->freshbooks_clients_enabled = 0; 
+        
+        if(array_key_exists('freshbooks_clients_invoice',$input)){            
+            if($input['freshbooks_clients_invoice']=='1')$provider->freshbooks_clients_invoice = 1;
+            else $provider->freshbooks_clients_invoice = 0;
+        }        
+        else $provider->freshbooks_clients_invoice = 0; 
+        
+        if(array_key_exists('freshbooks_clients_people',$input)){            
+            if($input['freshbooks_clients_people']=='1')$provider->freshbooks_clients_people = 1;
+            else $provider->freshbooks_clients_people = 0;
+        }        
+        else $provider->freshbooks_clients_people = 0; 
+            
         if($provider->plan_id != $input['provider']['plan_id']){
             $provider->plan_id = $input['provider']['plan_id'];
             $provider->save();
