@@ -787,7 +787,10 @@ class AdminController extends BaseController {
     public function getFuneralhomes()
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
-        if(Sentry::getUser()->role=='provider') return Redirect::action('AdminController@getEditProvider', array('id'=>Sentry::getUser()->id));
+        if(Sentry::getUser()->role=='provider') {
+            $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
+            return Redirect::action('AdminController@getEditProvider', array('id'=>$provider->id));
+        }
         $q = Input::get('q');
         $include_deleted = Input::get('include_deleted');
         $include_only = Input::get('include_only');

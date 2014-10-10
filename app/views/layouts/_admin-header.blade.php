@@ -7,7 +7,7 @@
         <a href="https://secure.freshbooks.com/loginsearch" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/leaf.png"> Freshbooks</a>
     </div>
     <ul class="nav nav-pills">
-            <li class="{{(strpos(Request::path(),'admin/customers')!==false || strpos(Request::path(),'clients/steps')!==false?'active':'')}}"><a href="{{ action('AdminController@getCustomers') }}">Customers</a></li>
+            <li class="{{(strpos(Request::path(),'admin/customers')!==false || strpos(Request::path(),'clients/steps')!==false?'active':'')}}"><a href="{{ action('AdminController@getCustomers') }}">Clients</a></li>
             <li class="{{(strpos(Request::path(),'admin/providers')!==false || strpos(Request::path(),'admin/edit-provider')!==false?'active':'')}}"><a href="{{ action('AdminController@getProviders')}}">Providers</a></li>
             <li class="{{(strpos(Request::path(),'admin/funeralhomes')!==false || strpos(Request::path(),'admin/edit-funeralhomes')!==false?'active':'')}}"><a href="{{ action('AdminController@getFuneralhomes')}}">Funeral Homes</a></li>
             <!--<li class="{{(Request::path('admin/*')?'active':'')}}"><a href="{{ action('AdminController@getAllUser') }}">All Users</a></li>-->

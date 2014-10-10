@@ -4,11 +4,11 @@
  
 @if(Session::get('inAdminGroup')!='')
     <div class="row">
-        <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Customers</a></div> 
+        <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 
     </div>
     <fieldset>
         <div class="row">
-            <div class="col-md-6"><b style="font-size:14px;color:#999;">Customer</b></div>
+            <div class="col-md-6"><b style="font-size:14px;color:#999;">Client</b></div>
             <div class="col-md-6"><b style="font-size:14px;color:#999;">Provider</b></div>
         </div>
         <div class="row">

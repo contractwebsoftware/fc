@@ -1,7 +1,7 @@
 @section('content')
        
        
-	<h2>Customers</h2>
+	<h2>Clients</h2>
 	<hr>
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
