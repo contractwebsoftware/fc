@@ -33,16 +33,27 @@
                             {{ Form::hidden("provider[id]",$provider->id) }}
                                 
                                     <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                            <label  class="col-sm-4" for="provider_status">Provider Status</label>
-                                            <div class="col-sm-8">
-                                                <select name="provider[provider_status]" id="provider_status" class="form-control">
-                                                    <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
-                                                    <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
-                                                    <option value="2" {{ ($provider->provider_status=='2') ? ' selected' : '' }}>Deleted</option>
-                                                </select>
-                                            </div>
+                                        <label  class="col-sm-4" for="provider_status">Provider Status</label>
+                                        <div class="col-sm-8">
+                                            <select name="provider[provider_status]" id="provider_status" class="form-control">
+                                                <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
+                                                <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
+                                                <option value="2" {{ ($provider->provider_status=='2') ? ' selected' : '' }}>Deleted</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                
+                                    <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
+                                        <label  class="col-sm-4" for="freshbooks_api_token">Provider Freshbooks Authentication Token</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
+                                        <label  class="col-sm-4" for="freshbooks_api_url">Provider Freshbooks API URL</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label  class="col-sm-4" for="provider_status">Provider Plan</label>
                                         <div class="col-sm-8">
