@@ -133,7 +133,7 @@
                                     
                                     
                                     <div class="form-group" >
-                                        <label  class="col-sm-4" for="freshbooks_clients_enabled"><b style="font-size:16px">Freshbooks Integration</b></label>
+                                        <label  class="col-sm-4" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
                                         <div class="col-sm-8">
                                             <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }}" />
                                         </div>
