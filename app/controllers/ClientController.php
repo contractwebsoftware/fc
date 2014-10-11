@@ -362,9 +362,13 @@ class ClientController extends BaseController {
                 $client->fill($input['client']);
                 DB::table('clients')->where('id', $client->id)->update($input['client']);
                 
-                $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+                else $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                
+                
                 
                 $mail_data['provider'] = FProvider::find($provider_id);
+                
                 $mail_data['client'] = $client;
                 //echo '<pre>';dd($mail_data);
                 Mail::send('emails.provider-authorization', $mail_data, function($message) use($mail_data)
