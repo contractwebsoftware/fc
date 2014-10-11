@@ -200,7 +200,8 @@
                     {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
                     {{ Form::hidden("provider[id]",$provider->id) }}
                     <?php
-                        $fileNames = Array('vitals'=>"Vitals/Summary", 
+                        $fileNames = Array('pricing'=>"General Price List",
+                                            'vitals'=>"Vitals/Summary", 
                                             'hospital_release'=>"Hospital Release", 
                                             'cremation_authorization'=>'Cremation Authorization',
                                             'disposition_embalming'=>'Disposition-Embalming',

@@ -558,6 +558,7 @@
                 <div class="col-sm-12">
                     <div id="owl-example" class="owl-carousel owl-theme" data-toggle="buttons" style="max-width:600px;">    
                         @foreach( $products as $product )
+                        <?php $product->product_id = ($product->product_id==''?$product->id:$product->product_id); ?>
                             <div class="item"> 
                                 <table style="border:none;">
                                     <tr><td style="width:230px;">

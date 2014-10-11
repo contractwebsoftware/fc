@@ -211,12 +211,11 @@ class UserController extends BaseController {
 
 
             //CREATE FRESHBOOKS ENTRY
-            $admin = new AdminController();
-            $client_id = $admin->postAddBillingClient($provider->id);
-            if($client_id!='')$admin->postAddRecurringBillingToClient($provider->id);
-            // $provider = FProvider::create($input);
-             //dd($provider);
-
+            //$admin = new AdminController();
+            //$client_id = $admin->postAddBillingClient($provider->id);
+            //if($client_id!='')$admin->postAddRecurringBillingToClient($provider->id);
+            
+            
             
             DB::table('users_groups')->insert(['user_id'=>$user->id,'group_id'=>2]);
 

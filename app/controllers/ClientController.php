@@ -361,6 +361,20 @@ class ClientController extends BaseController {
                 $input['client'] = Input::get('client');
                 $client->fill($input['client']);
                 DB::table('clients')->where('id', $client->id)->update($input['client']);
+                
+                $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                
+                $mail_data['provider'] = FProvider::find($provider_id);
+                $mail_data['client'] = $client;
+                //echo '<pre>';dd($mail_data);
+                Mail::send('emails.provider-authorization', $mail_data, function($message) use($mail_data)
+                {
+                    //$message->from('us@example.com', 'Laravel');
+                    $message->to($mail_data['provider']->email);
+                    //dd($mail_data['provider']->email);
+                    //$message->attach($pathToFile);
+                });
+
             }
             return ClientController::getSteps();	  
         }
