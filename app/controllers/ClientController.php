@@ -10,8 +10,14 @@ class ClientController extends BaseController {
 	}
 	public function getSteps($goToStep=0, $jsonReturn=false, $client=null)
 	{
-            
-            if($client == null){
+            //dd(Session::get('inAdminGroup'));
+            if(Input::get('client_id')!=''){
+                //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
+                $client = Client::where('id',Input::get('client_id'))->first();
+                $client = ClientController::fillOutClientTables($client);
+                Session::put('client_id',Input::get('client_id'));
+            }
+            elseif($client == null){
                 if(Session::get('client_id')!='') {
                     //dd(Session::get('client_id'));
                     $client = Client::where('id',Session::get('client_id'))->first();
@@ -186,6 +192,9 @@ class ClientController extends BaseController {
         
 	public function postSteps2()
 	{
+            if(Session::get('client_id')==null || Session::get('client_id')=='')$plan_change = false;
+            else $plan_change = true; 
+                
             $client = ClientController::registerUser();
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
@@ -216,6 +225,21 @@ class ClientController extends BaseController {
                 $client->CremainsInfo->save(); 
             }
             
+            if($plan_change == true){
+                if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+                else {
+                    $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $mail_data['provider'] = FProvider::find($provider_id);
+                }
+                $mail_data['client'] = $client;
+                $mail_data['type'] = 'plan_change';
+                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
+                {
+                    $message->subject('A client has selected a new ForCremation plan');
+                    $message->to($mail_data['provider']->email);
+                });
+            }
+            
             //$rules = ['zip'=>'required'] ;
             // Let's validate
             //$v = Validator::make($input,$rules);
@@ -237,6 +261,8 @@ class ClientController extends BaseController {
                 $client->DeceasedInfo->fill($input['deceased_info']);
                 $client->DeceasedInfo->save(); 
             }
+            
+
             return ClientController::getSteps();	            
         }
 	public function postSteps4()
@@ -278,6 +304,10 @@ class ClientController extends BaseController {
 	public function postSteps7()
 	{
             $client = ClientController::registerUser();
+            if($client->CremainsInfo->keeper_of_cremains == "" and $client->address=='')$new_client=true;
+            else $new_client=false;
+            
+            
             if(is_array(Input::get('client'))){
                 $input['client'] = Input::get('client');
                 $client->fill($input['client']);
@@ -306,6 +336,23 @@ class ClientController extends BaseController {
                 $cliend_product_r->save();
                 
             }
+            
+            
+            if($new_client){
+                if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+                else {
+                    $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $mail_data['provider'] = FProvider::find($provider_id);
+                }
+                $mail_data['client'] = $client;
+                $mail_data['type'] = 'started';
+                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
+                {
+                    $message->subject('A new customer has started the ForCremation Registration');
+                    $message->to($mail_data['provider']->email);
+                });
+            }
+            
             return ClientController::getSteps();	   
         }
 	public function postSteps8()
@@ -368,10 +415,12 @@ class ClientController extends BaseController {
                     $mail_data['provider'] = FProvider::find($provider_id);
                 }
                 $mail_data['client'] = $client;
+                $mail_data['type'] = 'completed';
                 //echo '<pre>';dd($mail_data);
-                Mail::send('emails.provider-authorization', $mail_data, function($message) use($mail_data)
+                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
                 {
                     //$message->from('us@example.com', 'Laravel');
+                    $message->subject('New customer has completed ForCremation Registration Process');
                     $message->to($mail_data['provider']->email);
                     //dd($mail_data['provider']->email);
                     //$message->attach($pathToFile);
@@ -516,7 +565,7 @@ class ClientController extends BaseController {
                 
                 
             }
-            elseif(Sentry::getUser()){
+            elseif(Sentry::getUser() && !Session::get('inAdminGroup')){
                 $client = Client::where('user_id',Sentry::getUser()->id)->first();
                 if($client==null)$create_client = true;
                 else $client = ClientController::fillOutClientTables($client);
@@ -869,17 +918,26 @@ class ClientController extends BaseController {
      * 
      * 
      */    
-    function getCustomerDocuments($client_id='', $provider_id='',$form='customer_form_1'){
+    public function getCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
+        return ClientController::postCustomerDocuments($client_id, $provider_id, $download_forms);
+    }
+    public function postCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
+        if($client_id=='')$client_id = Input::get('client_id');
+        if($provider_id=='')$provider_id = Input::get('provider_id');
+        
         if($client_id=='')$client_id = Session::get('client_id');
         if($provider_id=='')$provider_id = Session::get('provider_id');
         
-            
+        
+        if(Input::get('download_forms')!=null)$download_forms = Input::get('download_forms');        
+        if($download_forms == '')$download_forms = array('customer_form_1'=>'Vitals');
+        if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
+           
         $client = Client::find($client_id);
         $client = ClientController::fillOutClientTables($client);
         $provider = FProvider::find($provider_id);
+        $html = '';
         
-        
-        $html = $provider->$form;
         $options = Array(
             'client_status',
             'client_first_name',
@@ -994,41 +1052,49 @@ class ClientController extends BaseController {
             'ClientProducts_note'
         );
       
-          
-        foreach($options as $val){
-           $key = substr($val, strpos($val, '_')+1, strlen($val));
-           $object = substr($val, 0, strpos($val, '_'));
-           
-           switch($object){
-               case 'client': $class = $client; break;
-               case 'provider': $class = $provider; break;
-               case 'DeceasedFamilyInfo': $class = $client->DeceasedFamilyInfo; break;
-               case 'DeceasedInfo': $class = $client->DeceasedInfo; break;
-               case 'CremainsInfo': $class = $client->CremainsInfo; break;
-               case 'DeceasedInfoPresentLoc': $class = $client->DeceasedInfoPresentLoc; break;
-               case 'ClientProducts': {
-                   $class = $client->ClientProducts; 
-                   $client_product = ProviderProducts::where('provider_id',$provider_id)->where('product_id',$class->product_id)->first();
-                   if($client_product == null) $client_product = Products::where('id',1)->first(); 
-                   $class->name = $client_product->name;
-                   $class->description = $client_product->description;
+
+        //dd($download_forms);
+        foreach($download_forms as $key=>$file_name){
+            
+            $html .= $provider->$key;
+
+            foreach($options as $val){
+               $key = substr($val, strpos($val, '_')+1, strlen($val));
+               $object = substr($val, 0, strpos($val, '_'));
+
+               switch($object){
+                   case 'client': $class = $client; break;
+                   case 'provider': $class = $provider; break;
+                   case 'DeceasedFamilyInfo': $class = $client->DeceasedFamilyInfo; break;
+                   case 'DeceasedInfo': $class = $client->DeceasedInfo; break;
+                   case 'CremainsInfo': $class = $client->CremainsInfo; break;
+                   case 'DeceasedInfoPresentLoc': $class = $client->DeceasedInfoPresentLoc; break;
+                   case 'ClientProducts': {
+                       $class = $client->ClientProducts; 
+                       $client_product = ProviderProducts::where('provider_id',$provider_id)->where('product_id',$class->product_id)->first();
+                       if($client_product == null) $client_product = Products::where('id',1)->first(); 
+                       $class->name = $client_product->name;
+                       $class->description = $client_product->description;
+                   }
+                   break;
+
+                   default:break;
                }
-               break;
-               
-               default:break;
-           }
-           
-           $html = str_replace('{{'.$val.'}}', $class->$key, $html); 
-           $html = str_replace('{{'.$val.'}}', '', $html); 
-           
+
+               $html = str_replace('{{'.$val.'}}', $class->$key, $html); 
+               $html = str_replace('{{'.$val.'}}', '', $html); 
+            }
+            $html .= '<p style="page-break-after:always;"></p>';
+
         }
-        
+
         //dd();
-        
+        //download_forms
+        //
+        //<p><!-- pagebreak --></p> 
         $pdf = App::make('dompdf');
         $pdf->loadHTML($html);
-        return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');   
-
+        return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');
     }
     
 }

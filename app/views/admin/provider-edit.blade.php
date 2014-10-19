@@ -11,14 +11,16 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="{{$current_tab==''||$current_tab=='company_info'?'active':''}}"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
+        <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Client Links</a></li>
         <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Files</a></li>
         @if(Sentry::getUser()->role=='admin')
           <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
           <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Documents</a></li>
+          <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
         @endif
         <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
         <li class="{{$current_tab=='provider_urns'?'active':''}}"><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
-        <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
+
     </ul>
 
     <!-- Tab panes -->
@@ -33,8 +35,8 @@
                             {{ Form::hidden("provider[id]",$provider->id) }}
                                 
                                     <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                        <label  class="col-sm-4" for="provider_status">Provider Status</label>
-                                        <div class="col-sm-8">
+                                        <label  class="col-sm-2" for="provider_status">Provider Status</label>
+                                        <div class="col-sm-10">
                                             <select name="provider[provider_status]" id="provider_status" class="form-control">
                                                 <option value="0" {{ ($provider->provider_status=='0') ? ' selected' : '' }}>UnApproved</option>
                                                 <option value="1" {{ ($provider->provider_status=='1') ? ' selected' : '' }}>Approved</option>
@@ -44,8 +46,8 @@
                                     </div>
                             
                                     <div class="form-group">
-                                        <label  class="col-sm-4" for="provider_status">Provider Plan</label>
-                                        <div class="col-sm-8">
+                                        <label  class="col-sm-2" for="provider_status">Provider Plan</label>
+                                        <div class="col-sm-10">
                                             <div data-toggle="buttons">
                                                 @if(Sentry::getUser()->role=='admin')
                                                     <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id || $provider->plan_id==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
@@ -60,63 +62,72 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        
                                     </div>
+                                    @if(Sentry::getUser()->role=='admin')
+                                    <div class="form-group">
+                                        <label  class="col-sm-2" for="freshbooks_billing_cost">FreshBooks Invoice Price</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Invoice Price" name="provider[freshbooks_billing_cost]" id="provider" class="form-control" value="{{ $provider->freshbooks_billing_cost }}">
+                                        </div>
+                                    </div>
+                                    @endif
 
                                     <div class="form-group">
-                                        <label  class="col-sm-4" for="provider_login">Provider Login</label>
+                                        <label  class="col-sm-2" for="provider_login">Provider Login</label>
                                         <div class="col-sm-4">
                                             <input type="text" placeholder="Login Email" name="provider_login" id="provider_login" class="form-control" value="{{ $fuser->email }}">
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <input type="text" placeholder="Login Password" name="newpassword" class="form-control" value="">
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <input type="text" placeholder="Confirm Password" name="newpassword_confirmation" class="form-control" value="">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                            <label  class="col-sm-4" for="business_name">Provider Name</label>
-                                            <div class="col-sm-8">
+                                            <label  class="col-sm-2" for="business_name">Provider Name</label>
+                                            <div class="col-sm-10">
                                                     <input type="text" placeholder="Business Name" name="provider[business_name]" id="provider" class="form-control" value="{{ $provider->business_name }}">
                                             </div>
                                     </div>
                                     <div class="form-group">
-                                            <label  class="col-sm-4" for="address">Company Address</label>
-                                            <div class="col-sm-8"><textarea placeholder="Address" name="provider[address]" id="address" class="form-control" row="3">{{ $provider->address }}</textarea></div>
+                                            <label  class="col-sm-2" for="address">Company Address</label>
+                                            <div class="col-sm-10"><textarea placeholder="Address" name="provider[address]" id="address" class="form-control" row="3">{{ $provider->address }}</textarea></div>
                                     </div>
                                     <div class="form-group">
-                                        <div class="col-sm-4"></div>
+                                        <div class="col-sm-2"></div>
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" id="city" placeholder="City" name="provider[city]" value="{{ $provider->city }}">
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="state" placeholder="State" name="provider[state]" value="{{ $provider->state }}">
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <input type="text" class="form-control" id="zip" placeholder="Zip" name="provider[zip]" value="{{ $provider->zip }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                            <label  class="col-sm-4" for="website">Website</label>
-                                            <div class="col-sm-8"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
+                                            <label  class="col-sm-2" for="website">Website</label>
+                                            <div class="col-sm-10"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
                                     </div>
                                     <div class="form-group">
-                                            <label  class="col-sm-4" for="email">Email</label>
-                                            <div class="col-sm-8"><input type="email" placeholder="Email" name="provider[email]" id="email" class="form-control" value="{{ $provider->email }}"></div>
+                                            <label  class="col-sm-2" for="email">Email</label>
+                                            <div class="col-sm-10"><input type="email" placeholder="Email" name="provider[email]" id="email" class="form-control" value="{{ $provider->email }}"></div>
                                     </div>
                                     <div class="form-group">
-                                            <label  class="col-sm-4" for="phone">Phone</label>
-                                            <div class="col-sm-8"><input type="text" placeholder="Phone" name="provider[phone]" id="phone" class="form-control" value="{{ $provider->phone }}"></div>
+                                            <label  class="col-sm-2" for="phone">Phone</label>
+                                            <div class="col-sm-10"><input type="text" placeholder="Phone" name="provider[phone]" id="phone" class="form-control" value="{{ $provider->phone }}"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label  class="col-sm-4" for="fax">Fax</label>
-                                        <div class="col-sm-8"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
+                                        <label  class="col-sm-2" for="fax">Fax</label>
+                                        <div class="col-sm-10"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
                                     </div>
 
                                     <div class="form-group"  {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                        <label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
-                                        <div class="col-sm-12">
+                                        <label for="provider_radius" class="col-sm-2">Select Provider Serviceable Area from the Above Address</label>
+                                        <div class="col-sm-10">
                                                 <select name="provider[provider_radius]" id="provider_radius" class="form-control">
                                                         <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
                                                         <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
@@ -133,34 +144,34 @@
                                     
                                     
                                     <div class="form-group" >
-                                        <label  class="col-sm-4" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
-                                        <div class="col-sm-8">
-                                            <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }}" />
+                                        <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
+                                        <div class="col-sm-10">
+                                            <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }} />
                                         </div>
                                     </div>
                                     
                                     <div id='freshbooks_settings'>
                                         <div class="form-group" >
-                                            <label  class="col-sm-4" for="freshbooks_clients_invoice">Automatically Create Invoices For My Clients</label>
-                                            <div class="col-sm-8">
-                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }}" />
+                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Automatically Create Invoices For My Clients</label>
+                                            <div class="col-sm-10">
+                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
                                             </div>
                                         </div>
                                         <div class="form-group" >
-                                            <label  class="col-sm-4" for="freshbooks_clients_people">Automatically Create Freshbooks People From My Clients</label>
-                                            <div class="col-sm-8">
-                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }}" />
+                                            <label  class="col-sm-2" for="freshbooks_clients_people">Automatically Create Freshbooks People From My Clients</label>
+                                            <div class="col-sm-10">
+                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
                                             </div>
                                         </div>
                                         <div class="form-group" >
-                                            <label  class="col-sm-4" for="freshbooks_api_url">Freshbooks API URL</label>
-                                            <div class="col-sm-8">
+                                            <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
                                             </div>
                                         </div>
                                         <div class="form-group"> 
-                                            <label  class="col-sm-4" for="freshbooks_api_token">Freshbooks Authentication Token</label>
-                                            <div class="col-sm-8">
+                                            <label  class="col-sm-2" for="freshbooks_api_token">Freshbooks Authentication Token</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
                                             </div>
                                         </div>
@@ -191,10 +202,82 @@
             </div><!--/row-->
 	</div> <!-- /END Company info tab -->
         
-        
-        
+
+
+    <div class="tab-pane {{$current_tab=='client_links'?'active':''}}" id="client_links">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+               <fieldset>
+                    <div class="form-group">
+                       <label for="provider_files" class="col-xs-3">My Cremation Registration URL</label>
+                       <div class="col-xs-9">
+                       Your Provider Registration URL
+                           <textarea class="client_url">{{ url('clients/steps/provider_id='.$provider->id) }}</textarea><br />
+                           <i>Example: {{url('clients/steps/provider_id='.$provider->id)}}</i>
+                       </div>
+                    </div>
+                    <br style="float:none;clear:both;" /><br style="float:none;clear:both;" /><br style="float:none;clear:both;" />
+
+                    <div class="form-group">
+                        <label for="provider_files" class="col-xs-3">HTML Link To My Cremation Registration</label>
+                        <div class="col-xs-9">
+                        Copy This Link HTML To Your Site
+                            <textarea class="client_url" >{{ link_to('clients/steps/provider_id='.$provider->id) }}</textarea><br />
+                            <i>Example: {{link_to('clients/steps/provider_id='.$provider->id)}}</i>
+                        </div>
+                    </div>
+                    <br style="float:none;clear:both;" /><br style="float:none;clear:both;" /><br style="float:none;clear:both;" />
+
+                    <div class="form-group">
+                        <label for="provider_files" class="col-xs-3">Cremation Registration Widget</label>
+                        <div class="col-xs-9">
+                        Add the following HTML to your site to display a widget with link
+                            <textarea class="client_url" ><iframe src="http://forcremation.com/providers/badges.php?provider_id={{$provider->id}}" style="width:100%;height:200px;overflow:hidden;margin:0px;padding:0px;" frameborder="0"></iframe></textarea><br />
+                            <i>Example: <br />
+                            <iframe src="http://forcremation.com/providers/badges.php?provider_id={{$provider->id}}" style="width:300px;height:200px;overflow:hidden;margin:0px;padding:0px;" frameborder="0"></iframe></i>
+                        </div>
+                    </div>
+               </fieldset>
+
+               <style>
+                    .client_url{margin-bottom:0px;}
+               </style>
+               <script>
+                   $('.client_url').focus(function() {
+                       var $this = $(this);
+
+                       $this.select();
+
+                       window.setTimeout(function() {
+                           $this.select();
+                       }, 1);
+
+                       // Work around WebKit's little problem
+                       function mouseUpHandler() {
+                           // Prevent further mouseup intervention
+                           $this.off("mouseup", mouseUpHandler);
+                           return false;
+                       }
+
+                       $this.mouseup(mouseUpHandler);
+                   });
+               </script>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
         <div class="tab-pane {{$current_tab=='provider_files'?'active':''}}" id="provider_files">
-            <div class="row">
+        <div class="row">
 		<div class="col-xs-12">
                     <fieldset>
                     {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
@@ -268,16 +351,8 @@
                             Editing Form:
                             <select id="edit_custom_form" name="edit_custom_form" style="font-size:16px;" >
                                 <?php
-                                    $forms[1] = 'Vitals/Summary';
-                                    $forms[2] = 'Hospital Release';
-                                    $forms[3] = 'Cremation Authorization';
-                                    $forms[4] = 'Disposition-Embalming';
-                                    $forms[5] = 'Pre-need Release';
-                                    $forms[6] = 'Corner-Medical Examiner';
-                                    $forms[7] = 'Personnel Effects';
-                                    $forms[8] = 'Transfer of Authority';
-                                    $forms[9] = 'Viewing Release';
-                                    $forms[10] = 'Other';
+                                    $forms = ProviderController::getDocumentTypes();
+                                   
                                     foreach($forms as $key=>$form_name){
                                         echo '<option value="'.$key.'" '.($custom_form_num==$key?'selected':'').' >'.$form_name.'</option>';
                                     }
@@ -614,6 +689,72 @@
         </div><!--/col-12-->
         </div><!--/row-->
     </div> <!-- /END zip info tab -->
+
+
+
+    <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
+	<div class="row">
+            <div class="col-xs-12">
+            {{ $clients->links() }}
+            <fieldset>
+            <table class="">
+                <thead>
+                    <tr>
+                        <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
+                        </th>-->
+                        <th>Customer Name</th>
+                        <th>Deceased Name</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Customer Email</th>
+                        <th class="text-right">Status</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach( $clients as $client )
+                        <tr>
+                                <!--<td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>-->
+                                <td >{{ $client->first_name.' '.$client->last_name }}</td>
+                                <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
+                                <td >{{ $client->phone }}</td>
+                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
+                                <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+                                <td class="text-right" >
+                                    <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"
+                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
+                                    <?php
+                                        switch($client->status){
+                                            case 0:echo 'Active';break;
+                                            case 1:echo 'Completed';break;
+                                            case 3:echo 'Deleted';break;
+                                        }
+                                        if($client->preneed == "y")echo '/Pre-Need';
+                                    ?>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>&nbsp;
+                                    <?php
+                                    if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                                    else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
+                                    ?>
+                                </td>
+                        </tr>
+                    @endforeach
+                    @if(count($clients)<1)
+                    <tr><td colspan="7"><center><b><i>Your clients will appear here when they register</i></b></center></td></tr>
+                    @endif
+            </tbody>
+            </table>
+            </fieldset>
+            {{ $clients->links() }}
+            </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END Client info tab -->
         
    @endif
    <div class="tab-pane {{$current_tab=='provider_pricing'?'active':''}}" id="provider_pricing">
@@ -874,70 +1015,7 @@
         </div><!--/row-->
     </div> <!-- /END Forms info tab -->    
     
-    
-    <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
-	<div class="row">
-            <div class="col-xs-12">
-            {{ $clients->links() }}
-            <fieldset>
-            <table class="">
-                <thead>
-                    <tr>
-                        <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
-                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
-                        </th>-->
-                        <th>Customer Name</th>
-                        <th>Deceased Name</th>
-                        <th>Phone</th>
-                        <th>Date</th>
-                        <th>Customer Email</th>
-                        <th class="text-right">Status</th>
-                        <th class="text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach( $clients as $client )
-                        <tr>
-                                <!--<td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>-->
-                                <td >{{ $client->first_name.' '.$client->last_name }}</td>
-                                <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
-                                <td >{{ $client->phone }}</td>
-                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
-                                <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
-                                <td class="text-right" >
-                                    <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
-                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
-                                    <?php
-                                        switch($client->status){
-                                            case 0:echo 'Active';break;
-                                            case 1:echo 'Completed';break;
-                                            case 3:echo 'Deleted';break;
-                                        }   
-                                        if($client->preneed == "y")echo '/Pre-Need';
-                                    ?>
-                                    </div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>&nbsp;
-                                    <?php
-                                    if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
-                                    else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
-                                    ?>
-                                </td>
-                        </tr>
-                    @endforeach
-                    @if(count($clients)<1)
-                    <tr><td colspan="7"><center><b><i>Your clients will appear here when they register</i></b></center></td></tr>
-                    @endif
-            </tbody>
-            </table>
-            </fieldset>
-            {{ $clients->links() }}
-            </div><!--/col-12-->
-        </div><!--/row-->
-    </div> <!-- /END Forms info tab -->
+
     
 </div><!--/end tab-content -->
 </div><!--/row-->

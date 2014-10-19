@@ -1,8 +1,14 @@
 @extends('layouts.client')
 @section('content')
 <div class="col-sm-{{(Session::get('inAdminGroup')!=''?'12':'9')}}">
- 
-@if(Session::get('inAdminGroup')!='')
+
+@if(Session::get('inAdminGroup') )
+     <style>
+        .hideInAdmin{display:none;}
+    </style>
+@endif
+
+@if(Session::get('inAdminGroup') && $client->id!='')
     <div class="row">
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 
     </div>
@@ -13,13 +19,12 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h2><a href="#edit_client_info" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+                <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
                 &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
                 &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
                 &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
                 &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
-                &nbsp; &nbsp; <a class="btn btn-primary" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array($client->id,$provider->id) ) }}">Download Forms</a>
-                    
+                &nbsp; &nbsp; <a class="btn btn-primary" href="#" onclick="$('#choose_download_forms').slideToggle();return false;">Download Forms</a>
             </div>
             <div class="col-md-6">
                 <h2>{{$provider->business_name}}</h2>
@@ -29,10 +34,34 @@
                 &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
             </div>
         </div>
+        <div style="border:1px solid #eee;height:300px;display:none;width:100%;margin-left:25px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
+            {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
+                {{ Form::hidden('client_id',$client->id) }}
+                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+                    <b>Choose the documents you would like to combine and download</b><br />
+                    <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
+                    @foreach($doc_forms as $key=>$value)
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                            <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
+                            {{$value}}
+                        </div>
+                        
+                    </div>
+                    @endforeach
+
+
+                 <div class="row form-group">
+                    <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Download</button><br class="clear" /></div>
+                </div>
+            {{ Form::close() }}   
+        </div>
     </fieldset>
-     <style>
-        .hideInAdmin{display:none;}
-    </style>
+    <script>
+        $().ready(function(){
+           location.href="#step{{Session::get('step')}}";
+        });
+    </script>
 @endif
     
 @if(Session::get('step')==1 || Session::get('inAdminGroup')!='')
@@ -42,12 +71,13 @@
         {{ Form::hidden('step',Session::get('step')) }}
         {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
         
-        <fieldset>
+        <fieldset id="step1">
             <div class="row">
                 <div class="col-md-6"><h3 class="pull-left">Cremation Plans</h3></div>
-                <div class="col-md-6"><a href="#" {{ (Session::get('inAdminGroup')=='Admin'?'':'style="display:none"') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
+                <div class="col-md-6"><a href="#" {{ (Sentry::getUser()->role=='provider'?'style="display:none"':'') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
             </div>
-            <div id="select_location" style="display:none;" class="row pull-left">
+
+            <div id="select_location" class="row pull-left" style="display:none;">
                 <div class="col-md-3">
                     <select id="state" name="state" class="pull-right">
                         <option value="">--</option>
@@ -206,7 +236,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset id="step2">
             <h3>Certificate Information <p></p></h3>
             <div class="row form-group">
                 <div class="col-sm-4"><input name="deceased_info[first_name]" type="text" placeholder="First Name" value="{{$client->DeceasedInfo->first_name}}" /></div>
@@ -317,7 +349,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset id="step3">
             <h3>Life Data <p>Additional information about the deceased</p></h3>
             
             <div class="row form-group">
@@ -404,7 +438,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps5','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset id="step4">
             <h3>Location of Pending Death <p>Please enter the location of the pending death or deceased.</p></h3>
             Location of Deceased:<br>
             <div class="row form-group">
@@ -457,7 +493,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps6','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset class="step-line-of-authority">
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset class="step-line-of-authority" id="step5">
             <h3>Line of Authority 
                 <p>Are you the right person to authorize cremation 
                     <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Some states require more than one person at the same level of authority to sign the cremation authorization. Additional signatures will be obtained by your provider through email signature systems.">?</a>
@@ -504,7 +542,8 @@
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('provider_id',$provider->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset class="step-authorized-person" id="edit_client_info">
+
+        <fieldset class="step-authorized-person" id="step6">
             <div class="row form-group">
                 <div class="col-sm-12">
                     <h3>Authorized Person <p>Person authorized to make the arrangements &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Some states refer to this person as the informant. This is the person providing the information for the Death Certificate and the one authorized to request any changes needed.">?</a></p></h3>
@@ -612,13 +651,13 @@
             }
     
             $(function(){
-                $("#owl-example").owlCarousel({
+                var carousel = $("#owl-example").owlCarousel({
                     navigation : true, // Show next and prev buttons
                     slideSpeed : 300,
                     paginationSpeed : 400,
                     singleItem:true
                 });
-
+                carousel.trigger('owl.jumpTo', {{($client_product->product_id-1) }})
                 $('#keeper_of_cremains').click(function(){ updateAddr(); });
                 $('.step-authorized-person').on('change', function(){ updateAddr() });
                 $('.step-authorized-person').on('keyup', function(){ updateAddr() });
@@ -631,7 +670,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps8','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset id="step7">
             <h3>Certified Death Certificates <p>Please tell us how you want to receive the death certificates</p></h3>
             <div class="row form-group">
                 <div class="col-sm-12">
@@ -673,7 +714,9 @@
     {{ Form::open(['action'=>'ClientController@postSteps9','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+        <fieldset id="step8">
             <h3>Shipping Information <p>Shipping Information for the cremains</p></h3>
             <div class="row form-group">
                 <div class="col-sm-5"><input type="text" placeholder="First Name" name="cremains_info[shipto_first_name]" value="{{$client->CremainsInfo->shipto_first_name}}" ></div>
@@ -719,8 +762,10 @@
     {{ Form::open(['action'=>'ClientController@postSteps10','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-        
-        <fieldset>
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+
+        <fieldset id="step9">
             
             <h3 class="hideInAdmin">FTC Disclosures <p>Legal Authorizations</p></h3>
             <div class="row form-group hideInAdmin">
@@ -761,12 +806,14 @@
     {{ Form::close() }}              
 @endif
 
-@if(Session::get('step')==10)
+@if(Session::get('step')==10 || Session::get('inAdminGroup')!='')
     {{ Form::open(['action'=>'ClientController@postSteps11','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('step',Session::get('step')) }}
-     
-        <fieldset class="step-review-print">
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+
+        <fieldset class="step-review-print" id="step10">
             <h3>Confirm/Submit <p>You're almost done!</p></h3>
             <div class="row form-group {{($errors->first('Confirmed Legal Authorization Checkbox')!=''?'has-error has-feedback':'')}}">
                 <div class="col-sm-12">
@@ -829,7 +876,7 @@
 
 @if(Session::get('step')==11)
  
-        <fieldset>
+        <fieldset id="step11">
             <h3>Thank You</h3>
             <div class="row form-group">
                 <div class="col-sm-12">

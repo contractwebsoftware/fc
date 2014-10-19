@@ -2,6 +2,21 @@
 class ProviderController extends BaseController {
 
 	protected $layout = 'layouts.provider';
+         
+        public static function getDocumentTypes(){
+            
+            return Array(1 => 'Vitals/Summary',
+                              2 => 'Hospital Release',
+                            3 => 'Cremation Authorization',
+                            4 => 'Disposition-Embalming',
+                            5 => 'Pre-need Release',
+                            6 => 'Corner-Medical Examiner',
+                            7 => 'Personnel Effects',
+                            8 => 'Transfer of Authority',
+                            9 => 'Viewing Release',
+                            10 => 'Other');
+        }
+        
 	public function getCustomers()
 	{
 		$this->layout->content = View::make('providers.customers');

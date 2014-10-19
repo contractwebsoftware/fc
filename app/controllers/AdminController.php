@@ -21,24 +21,24 @@ class AdminController extends BaseController {
         $q = Input::get('q');
         if(strlen($q)>=3)
         {
-                //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
+            //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-                if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed()->orderBy('business_name', 'asc');
-                else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->orderBy('business_name', 'asc');
-                ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%');
-                //else $providers = FProvider::with('user')->get();
-                if($providers == null){
-                    if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed();
-                    else $providers = FProvider::with('user')->orderBy('business_name', 'asc');
-                }
+            if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed();
+            else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%');
+            ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%');
+            //else $providers = FProvider::with('user')->get();
+            if($providers == null){
+                if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->withTrashed();
+                else $providers = FProvider::with('user');
+            }
 
         }
         else
         {
             if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed();
-            else $providers = FProvider::with('user')->orderBy('business_name', 'asc');
+            else $providers = FProvider::with('user');
         }
-        $providers = $providers->paginate($per_page);
+        $providers = $providers->orderBy('created_at', 'desc')->paginate($per_page);
         
         foreach($providers as $provider){
             $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
@@ -153,10 +153,10 @@ class AdminController extends BaseController {
             
 
             //CREATE FRESHBOOKS ENTRY
-            $client_id = AdminController::postAddBillingClient($provider->id);
-            if($client_id!='')AdminController::postAddRecurringBillingToClient($provider->id);
-            // $provider = FProvider::create($input);
-             //dd($provider);
+            //$client_id = AdminController::postAddBillingClient($provider->id);
+            //if($client_id!='')AdminController::postAddRecurringBillingToClient($provider->id);
+            //$provider = FProvider::create($input);
+            //dd($provider);
 
             DB::table('users_groups')->insert(['user_id'=>$user->id,'group_id'=>2]);
 
@@ -271,14 +271,44 @@ class AdminController extends BaseController {
         if($provider->plan_id != $input['provider']['plan_id']){
             $provider->plan_id = $input['provider']['plan_id'];
             $provider->save();
-            AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
+            
+            if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+            else {
+                $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                $mail_data['provider'] = FProvider::find($provider_id);
+            }
+            Mail::send('emails.provider-change-plan', $mail_data, function($message) use($mail_data)
+            {
+                $message->subject('A Provider Has Upgrade Their ForCremation Plan');
+                $message->to('bendavol@gmail.com');
+            });
+            
+            //AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
         }
+        
+        
+        //CREATE FRESHBOOKS ENTRY
+        
+        if($provider->provider_status != $input['provider']['provider_status'] && $input['provider']['provider_status']=='1')$create_billing = true;
+        else $create_billing = false;
+        
+        if($provider->freshbooks_billing_cost != $input['provider']['freshbooks_billing_cost'])$update_billing = true;
+        else $update_billing = false;
+        
+        
         
         $provider->fill($input['provider']);
         $provider->save();
 
         
-        
+        if($create_billing)
+        {
+            $client_id = AdminController::postAddBillingClient($provider->id);
+            if($client_id!='')AdminController::postAddRecurringBillingToClient($provider->id, false);
+        }
+        if($update_billing){
+            AdminController::postAddRecurringBillingToClient($provider->id);
+        }
         
         if($input['provider_login']!=""){
             $user = User::find($provider->user_id);
@@ -695,9 +725,13 @@ class AdminController extends BaseController {
             else $client->preneed = "n";
 
         }
-        $this->layout->content = View::make('admin.customers')->withClients($clients);
+        $data['clients'] = $clients;
+        $data['provider'] = FProvider::where('user_id',Sentry::getUser()->id)->first();
+        $data['providers'] = FProvider::orderBy('business_name','asc')->get();
+        $this->layout->content = View::make('admin.customers',$data);
 
     }
+
 
     public function getEditClient($id)
     {
@@ -705,6 +739,43 @@ class AdminController extends BaseController {
 
         return Redirect::action('ClientController@getSteps');
 
+    }
+
+    public function getNewclient()
+    {
+        //dd('creating user');
+        $client_input = Array(
+            'first_name' => "unregistered",
+            'last_name' => "unregistered"
+        );
+
+
+        $client = new Client();
+        $client->fill($client_input);
+        $client->save();
+        //dd( "creatd new user:".$client->id);
+
+        $user = Sentry::createUser(array(
+            'email'     => 'unregistered'.$client->id.'@user.com',
+            'password'  => 'unregistered',
+            'role'  => 'client',
+            'activated' => true
+        ));
+
+        $client->user_id = $user->id;
+        $client->update();
+
+        $client->User = User::where('id', $client->user_id)->first();
+
+
+        // Find the group using the group id
+        $clientGroup = Sentry::findGroupById(3);
+        $user->addGroup($clientGroup);
+
+        $clientController = new ClientController();
+        $client = $clientController->fillOutClientTables($client);
+
+        return Response::json(array('client_id' => $client->id));
     }
 
 
@@ -1064,13 +1135,17 @@ class AdminController extends BaseController {
             $provider->freshbooks_client_id = AdminController::postAddBillingClient($provider_id);
             //$provider = FProvider::find($provider->id);
         }
+        $billing_plan->price = $provider->freshbooks_billing_cost;
         
         if($provider->freshbooks_client_id!=''){
                 
                 if($provider->freshbooks_recurring_id=='0' || $provider->freshbooks_recurring_id=='')$create_new = true;
+                else $create_new = false;
+                
                 if($create_new){
+                    
                     $fb = new Freshbooks\FreshBooksApi('recurring.create');
-                     // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+                    // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
                     $fb->post(
                         array('recurring'=>
                             array(
@@ -1182,8 +1257,9 @@ class AdminController extends BaseController {
     }
     
     
-    
-    
+
+
+
     
 }
 

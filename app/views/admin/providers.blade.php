@@ -33,6 +33,7 @@
                                             <th>Status</th>
                                             <th>Provider Name</th>
                                             <th># Cases</th>
+                                            <th>Date Created</th>
                                             <th>Phone</th>
                                             <th>Email</th>
                                             <th>Action</th>
@@ -52,6 +53,7 @@
                                                 </td>
 						<td>{{ $provider->business_name }}</td>
 						<td>{{ $provider->client_count }}</td>
+						<td>{{ date('m/d/Y',strtotime($provider->created_at)) }}</td>
 						<td>{{ $provider->phone }}</td>
 						<td>@if($provider->user != null) {{ $provider->user->email }} @endif</td>
 						<td class="text-center">

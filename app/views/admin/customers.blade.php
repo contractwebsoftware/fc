@@ -1,8 +1,40 @@
 @section('content')
-       
-       
-	<h2>Clients</h2>
-	<hr>
+
+
+     <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <strong class="h2">Clients</strong>
+        </div>
+        <div class="col-xs-12 col-md-6 text-right">
+            @if(Sentry::getUser()->role=='admin')
+
+                <button class="btn btn-primary" type="submit" onclick="if($('#create_client_provider_id').val()==''){alert('Select A Provider First');return false;}else {create_client($('#create_client_provider_id').val())}" style="float:right;">Create Client</button>
+                <select name="provider_id" id="create_client_provider_id" style="float:right;margin-right:15px;">
+                    <option value="" selected>Choose Client's Provider</option>
+                    @foreach($providers as $this_provider)
+                        <option value="{{$this_provider->id}}">{{$this_provider->business_name}}</option>
+                    @endforeach
+                </select>
+
+            @else
+                <a href="#" onclick="create_client('{{$provider->id}}')" class="btn btn-primary">New Client</a>
+            @endif
+
+            <script>
+                function create_client(provider_id){
+                    $.getJSON( "{{action("AdminController@getNewclient")}}", function( data ) {
+                      var items = [];
+                      if(data){
+                         if(data.client_id)
+                         window.location.href="{{ action('ClientController@getSteps1')}}?provider_id="+provider_id+"&client_id="+data.client_id;
+                      }
+                    });
+                }
+            </script>
+        </div>
+    </div>
+    <hr>
+
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			<ul class="nav nav-pills">

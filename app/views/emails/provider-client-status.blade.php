@@ -6,7 +6,10 @@
     <body>
         <h2>Hello Administrator</h2>
 
-        New Customer has completed the Steps.<br /> 
+        @if($type == 'completed') New client has completed the Steps. @endif
+        @if($type == 'plan_change') A client has selected a new plan, information is below: @endif
+        @if($type == 'started') A new client has started the Steps, here are the details: @endif
+        <br /> 
         Website: http://www.forcremation.com<br /><br />
 
         Name: {{$client->first_name.' '.$client->last_name}}<br />
@@ -16,6 +19,7 @@
         State: {{$client->state}}<br />
         Services For: {{$client->DeceasedInfo->first_name.' '.$client->DeceasedInfo->last_name}} <br /><br />
 
+       
         Status: {{ucwords(str_replace('_',' ',$client->DeceasedInfo->cremation_reason))}} <br /><br />
         
         Plan Details: {{ucwords(str_replace('_',' ',$client->CremainsInfo->cremain_plan))}}<br />
@@ -35,6 +39,6 @@
                     if($client->CremainsInfo->cremation_shipping_plan=='scatter_at_sea') echo 'Scatter at Sea (non-witness, non-recoverable)';
                     if($client->CremainsInfo->cremation_shipping_plan=='ship_to_you') echo 'Ship to address via certified registered mail';                   
                 ?>
-        
+   
     </body>
 </html>
