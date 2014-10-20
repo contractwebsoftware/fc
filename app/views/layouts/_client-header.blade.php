@@ -23,7 +23,7 @@
 <?php
 if(is_object(Session::get('provider'))){
     $provider = Session::get('provider');
-    $provider_name = $provider->name;
+    $provider_name = $provider->id;
 }
 else $provider_name = '';
 
