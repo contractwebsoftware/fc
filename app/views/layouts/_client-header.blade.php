@@ -20,9 +20,14 @@
   </div>
 </nav>
 -->
+<?php
+if(is_object(Session::get('provider'))){
+    $provider = Session::get('provider');
+    $provider_name = $provider->name;
+}
+else $provider_name = '';
 
-
-       
+?>
 <div id="navigation">
         <ul id="provider_login_menu">
             <li><a href="{{action('UserController@getLogin')}}">Provider Login</a></li>
@@ -36,7 +41,7 @@
         <div class="col-sm-8">
             <ul class="nav navbar-nav navbar-right">
 
-            <li><a href="http://www.forcremation.com">home</a></li>
+            <li><a href="http://www.forcremation.com?provider={{$provider_name}}">home</a></li>
             <!--<li><a href="#">how it works</a></li>
             <li><a href="{{action('ClientController@getSteps')}}">step 1</a></li>
             <li><a href="#">info</a></li>-->
@@ -56,7 +61,6 @@
 </div>
 <?php
     if(is_object(Session::get('provider'))){
-        $provider = Session::get('provider');
         
         //echo 'Currently selected provider:'. $provider->id;
         echo '<div class="row selected-provider-box">
