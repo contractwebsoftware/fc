@@ -45,7 +45,7 @@ else $provider_name = '';
             <!--<li><a href="#">how it works</a></li>
             <li><a href="{{action('ClientController@getSteps')}}">step 1</a></li>
             <li><a href="#">info</a></li>-->
-            <li><a href="#">contact us</a></li>
+            <li><a href="http://www.forcremation.com/contact-us/" target="_blank">contact us</a></li>
             <?php
                 if(Sentry::getUser())$client = Client::where('user_id',Sentry::getUser()->id)->first();
                 else  $client = new Client();
