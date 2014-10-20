@@ -142,7 +142,7 @@
                             
                                      
                                     
-                                    
+                                    @if(Sentry::getUser()->role=='admin')
                                     <div class="form-group" >
                                         <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
                                         <div class="col-sm-10">
@@ -151,6 +151,7 @@
                                     </div>
                                     
                                     <div id='freshbooks_settings'>
+                                        <!--
                                         <div class="form-group" >
                                             <label  class="col-sm-2" for="freshbooks_clients_invoice">Automatically Create Invoices For My Clients</label>
                                             <div class="col-sm-10">
@@ -163,6 +164,7 @@
                                                 <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
                                             </div>
                                         </div>
+                                        -->
                                         <div class="form-group" >
                                             <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL</label>
                                             <div class="col-sm-10">
@@ -176,6 +178,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     <br />
                                     
                                     <div class="form-group">
