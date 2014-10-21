@@ -305,7 +305,7 @@
                                 <label for="provider_files" class="col-xs-4">Upload Provider Form To ForCremation Staff</label>
                                 <div class="col-xs-8">
                                        
-                                    File Type: 
+                                    Form Type:
                                     <select name="provider_files_type" id="provider_files_type">
                                         <option value="">Select A Type of Form</option>
                                         <?php 
