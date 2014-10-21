@@ -12,10 +12,10 @@
     <ul class="nav nav-tabs" role="tablist">
         <li class="{{$current_tab==''||$current_tab=='company_info'?'active':''}}"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
         <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Client Links</a></li>
-        <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Files</a></li>
+        <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Forms</a></li>
         @if(Sentry::getUser()->role=='admin')
           <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
-          <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Documents</a></li>
+          <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Document Builder</a></li>
           <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
         @endif
         <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
@@ -302,12 +302,12 @@
                     ?>
 
                             <div class="form-group">
-                                <label for="provider_files" class="col-xs-4">Upload Provider File To ForCremation Staff</label>
+                                <label for="provider_files" class="col-xs-4">Upload Provider Form To ForCremation Staff</label>
                                 <div class="col-xs-8">
                                        
                                     File Type: 
                                     <select name="provider_files_type" id="provider_files_type">
-                                        <option value="">Select A Type of File</option>
+                                        <option value="">Select A Type of Form</option>
                                         <?php 
                                         foreach($fileNames as $key=>$value){
                                             echo '<option value="'.$key.'">'.$value.'</option>';
@@ -317,7 +317,7 @@
                                     <input type="file" id="provider_files" name="provider_files_new" class="form-control">
                                         
                                 </div>
-                                <br style="float:none;clear:both;"/><br />&nbsp; &nbsp; <b>Current Files</b>:
+                                <br style="float:none;clear:both;"/><br />&nbsp; &nbsp; <b>Current Forms</b>:
                                 <?php
                                     if($provider_files!=null)
                                     foreach($provider_files as $key=>$file){

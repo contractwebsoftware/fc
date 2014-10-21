@@ -45,9 +45,9 @@
                             if(array_key_exists('preneed', $_GET))$preneed = $_GET['preneed'];
                             else $preneed='';
                           ?>
-			  <li {{ ($status=="" && !array_key_exists('q', $_GET)?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'2')) ) }}">All</a></li>
-                          <!-- Active=0 Completed=2 Deleted=3 -->
-                          <li {{ ($status=="0" && ($preneed=="0"||$preneed=="")?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'0')) ) }}">Active</a></li>
+			  <li {{ ($status=="2" && !array_key_exists('q', $_GET)?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'2')) ) }}">All</a></li>
+              <!-- Active=0 Completed=2 Deleted=3 -->
+              <li {{ (($status=="0"||$status=="") && ($status=="" || $preneed=="0"||$preneed=="")?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'0')) ) }}">Active</a></li>
 			  <li {{ ($status=="0" && $preneed=="1"?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'0','preneed'=>'1')) ) }}">Pre-need</a></li>
 			  <li {{ ($status=="1"?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'1')) ) }}">Completed</a></li>
 			  <li {{ ($status=="3"?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'3')) ) }}">Deleted</a></li>

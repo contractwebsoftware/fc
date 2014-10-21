@@ -280,7 +280,7 @@ class AdminController extends BaseController {
             Mail::send('emails.provider-change-plan', $mail_data, function($message) use($mail_data)
             {
                 $message->subject('A Provider Has Upgrade Their ForCremation Plan');
-                $message->to('bendavol@gmail.com');
+                $message->to('forcremation@gmail.com');
             });
             
             //AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
@@ -307,7 +307,7 @@ class AdminController extends BaseController {
             if($client_id!='')AdminController::postAddRecurringBillingToClient($provider->id, false);
         }
         if($update_billing){
-            AdminController::postAddRecurringBillingToClient($provider->id);
+            if($input['provider']['provider_status']=='1')AdminController::postAddRecurringBillingToClient($provider->id);
         }
         
         if($input['provider_login']!=""){

@@ -107,7 +107,7 @@
             
             <div class="row form-group">
                 <div class="col-sm-12">
-                    <div class="hideInAdmin">
+                    <div>
                     <strong>Cremation Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
