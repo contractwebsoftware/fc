@@ -125,22 +125,6 @@
                                         <div class="col-sm-10"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
                                     </div>
 
-                                    <div class="form-group"  {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
-                                        <label for="provider_radius" class="col-sm-2">Select Provider Serviceable Area from the Above Address</label>
-                                        <div class="col-sm-10">
-                                                <select name="provider[provider_radius]" id="provider_radius" class="form-control">
-                                                        <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
-                                                        <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
-                                                        <option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
-                                                        <option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
-                                                        <option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
-                                                        <option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
-                                                        <option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
-                                                </select>
-                                        </div>
-                                    </div>
-                            
-                                     
                                     
                                     @if(Sentry::getUser()->role=='admin')
                                     <div class="form-group" >
@@ -287,7 +271,7 @@
                     {{ Form::hidden("provider[id]",$provider->id) }}
                     <?php
                         $fileNames = Array('pricing'=>"General Price List",
-                                            'vitals'=>"Vitals/Summary", 
+                                            //'vitals'=>"Vitals/Summary",
                                             'hospital_release'=>"Hospital Release", 
                                             'cremation_authorization'=>'Cremation Authorization',
                                             'disposition_embalming'=>'Disposition-Embalming',
@@ -359,7 +343,7 @@
                                     foreach($forms as $key=>$form_name){
                                         echo '<option value="'.$key.'" '.($custom_form_num==$key?'selected':'').' >'.$form_name.'</option>';
                                     }
-                                    if($custom_form_num=='')$this_form = 'customer_form_1';
+                                    if($custom_form_num=='')$this_form = 'customer_form_2';
                                     else $this_form = 'customer_form_'.$custom_form_num;
 
                                     $custom_form = $provider->$this_form;
@@ -601,8 +585,29 @@
                 {{ Form::open(['action'=>'AdminController@postUpdateZip']) }}
                 {{ Form::hidden("provider[id]",$provider->id) }}
         
-	
-		<div class="row">
+
+
+                <div class="row">
+                    <label for="provider_radius" class="col-sm-12">Select Provider Serviceable Area from the Above Address</label>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                            <select name="provider[provider_radius]" id="provider_radius" class="form-control">
+                                    <option value="5" {{ ($provider->provider_radius=='5') ? ' selected' : '' }}>5 Miles</option>
+                                    <option value="10" {{ ($provider->provider_radius=='10') ? ' selected' : '' }}>10 Miles</option>
+                                    <option value="15" {{ ($provider->provider_radius=='15') ? ' selected' : '' }}>15 Miles</option>
+                                    <option value="20" {{ ($provider->provider_radius=='20') ? ' selected' : '' }}>20 Miles</option>
+                                    <option value="30" {{ ($provider->provider_radius=='30') ? ' selected' : '' }}>30 Miles</option>
+                                    <option value="40" {{ ($provider->provider_radius=='40') ? ' selected' : '' }}>40 Miles</option>
+                                    <option value="50" {{ ($provider->provider_radius=='50') ? ' selected' : '' }}>50 Miles</option>
+                            </select>
+                    </div>
+                </div>
+
+
+
+
+		        <div class="row">
                     <label for="provider_zip_code" class="col-xs-4">Currently Assigned Zip Codes</label><br style="float:none;clear:both;"/>
                         <script>
                             var addallchecked=true;
@@ -616,7 +621,7 @@
                                 removeallchecked = !removeallchecked;
                             }
                        </script>
-			<div class="col-xs-12 col-md-4">
+			    <div class="col-xs-12 col-md-4">
                             <div class="table-responsive">
                                 <br />
                                 <a href="#" onclick="removeall();return false;"><b>Select All</b></a>

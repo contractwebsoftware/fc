@@ -50,8 +50,16 @@ class StepController extends BaseController {
             $zip = DB::table('funeral_homes')->where('id', $city_r[1])->first();
             //dd($zip);
             //$city = DB::table('zips')->where('city', Input::get('city'))->andWhere('state', $zip->state)->get();
-            $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->orderBy('biz_name', 'asc')->get();
-            $providers = DB::table('providers')->where('zip', $zip->e_postal)->orderBy('business_name', 'asc')->get();
+            $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->whereNull('deleted_at')->orderBy('biz_name', 'asc')->get();
+
+            $providers = DB::table('providers');
+            $funeral_home_city_r = DB::table('zips')->where('city', $city_r[0])->where('state', $zip->e_state)->get();
+            if(is_array($funeral_home_city_r))
+            foreach($funeral_home_city_r as $this_fh){
+                //print_r($this_fh);
+                $providers = $providers->orWhere('zip', $this_fh->zip);
+            }
+            $providers = $providers->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
             
             //print_r(DB::getQueryLog());
             //dd($city);

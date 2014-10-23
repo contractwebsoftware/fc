@@ -5,7 +5,7 @@ class ProviderController extends BaseController {
          
         public static function getDocumentTypes(){
             
-            return Array(1 => 'Vitals/Summary',
+            return Array(//1 => 'Vitals/Summary',
                               2 => 'Hospital Release',
                             3 => 'Cremation Authorization',
                             4 => 'Disposition-Embalming',

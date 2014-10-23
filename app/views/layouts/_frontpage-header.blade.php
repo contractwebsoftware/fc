@@ -9,7 +9,8 @@
 		<li><a href="{{action('ClientController@getSteps')}}">step 1</a></li>
 		<li><a href="#">info</a></li>
 		<li><a href="#">contact us</a></li>
-                <li><a href="{{action('UserController@getLogin')}}">Provider Login</a></li>
+        <li><a href="{{action('UserController@getLogin')}}">Provider Login</a></li>
+        <li><a href="{{action('UserController@getProviderRegistration')}}">Provider Signup</a></li>
 	</ul>
 	<div class="clear"></div>
 </div>

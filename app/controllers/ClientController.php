@@ -930,7 +930,7 @@ class ClientController extends BaseController {
         
         
         if(Input::get('download_forms')!=null)$download_forms = Input::get('download_forms');        
-        if($download_forms == '')$download_forms = array('customer_form_1'=>'Vitals');
+        if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
         if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
            
         $client = Client::find($client_id);

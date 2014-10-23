@@ -358,7 +358,13 @@ class AdminController extends BaseController {
     }
 
     public function postUpdateZip(){
-            $input = Input::all();
+        $input = Input::all();
+
+
+        $provider = FProvider::find($input['provider']['id']);
+        $provider->fill($input['provider']);
+        $provider->save();
+
 
             //MASS ADD FROM READIUS
             if(array_key_exists('addzips',$input)){
