@@ -135,32 +135,33 @@
                                     </div>
                                     
                                     <div id='freshbooks_settings'>
-                                        <!--
-                                        <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Automatically Create Invoices For My Clients</label>
-                                            <div class="col-sm-10">
-                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
-                                            </div>
-                                        </div>
-                                        <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_people">Automatically Create Freshbooks People From My Clients</label>
-                                            <div class="col-sm-10">
-                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
-                                            </div>
-                                        </div>
-                                        -->
+
                                         <div class="form-group" >
                                             <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL</label>
                                             <div class="col-sm-10">
                                                 <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
                                             </div>
                                         </div>
-                                        <div class="form-group"> 
+                                        <div class="form-group">
                                             <label  class="col-sm-2" for="freshbooks_api_token">Freshbooks Authentication Token</label>
                                             <div class="col-sm-10">
                                                 <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
                                             </div>
                                         </div>
+
+                                        <div class="form-group" >
+                                            <label  class="col-sm-2" for="freshbooks_clients_people">Allow Creation of Freshbooks People</label>
+                                            <div class="col-sm-10">
+                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" >
+                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Invoices</label>
+                                            <div class="col-sm-10">
+                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
+                                            </div>
+                                        </div>
+
                                     </div>
                                     @endif
                                     <br />
@@ -686,7 +687,7 @@
 				<div class="form-group">
 					<div class="col-xs-4"></div>
 					<div class="col-xs-8">
-						<button type="submit" class="btn btn-primary btn-block" class="form-control">Add</button>
+						<button type="submit" class="btn btn-primary btn-block" class="form-control">Update Zip Info</button>
 					</div>
 				</div>
 			</div>
