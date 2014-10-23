@@ -156,7 +156,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Invoices</label>
+                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Freshbooks Invoices</label>
                                             <div class="col-sm-10">
                                                 <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
                                             </div>
