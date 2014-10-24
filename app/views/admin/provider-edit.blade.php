@@ -672,7 +672,7 @@
                                             <?php
                                                 if($zip_info!=null){
                                                     foreach($zip_info as $zip){
-                                                        if(!in_array($zip->zip,$zips_r))
+                                                        //if(!in_array($zip->zip,$zips_r))
                                                         echo '<br style="float:none;clear:both;"/><label for="addzip-'.$zip->zip.'" style="cursor:pointer;float:left;">'.$zip->zip.' </label>'
                                                                 . '&nbsp; <input type="checkbox" class="addzips" id="addzip-'.$zip->zip.'" name="addzips['.$zip->zip.']" value="'.$zip->zip.'" /> '
                                                                 . '&nbsp; ~ '.round($zip->distance,2).' miles';
