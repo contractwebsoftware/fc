@@ -62,7 +62,7 @@
 									<span class="glyphicon glyphicon-pencil"></span> Edit info
 								</a>
                                                             <?php
-                                                            if($provider->provider_status == 2)echo '<a href="'.action('AdminController@getUnDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                                                            if($provider->provider_status == 2)echo '<a href="'.action('AdminController@getUnDeleteProvider',$provider->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
                                                             else echo '<a href="'.action('AdminController@getDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> Delete</a>';
                                                             ?>
 							</div>

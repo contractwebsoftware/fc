@@ -886,47 +886,100 @@ class AdminController extends BaseController {
             $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
             return Redirect::action('AdminController@getEditProvider', array('id'=>$provider->id));
         }
-        $q = Input::get('q');
-        $include_deleted = Input::get('include_deleted');
-        $include_only = Input::get('include_only');
+        $q = trim(Input::get('q'));
+        $city = trim(Input::get('city'));
+        $state = trim(Input::get('state'));
+
+
+        $states_r['Alabama'] = 'AL';
+        $states_r['Alaska'] = 'AK';
+        $states_r['Arizona'] = 'AZ';
+        $states_r['Arkansas'] = 'AR';
+        $states_r['California'] = 'CA';
+        $states_r['Colorado'] = 'CO';
+        $states_r['Connecticut'] = 'CT';
+        $states_r['Delaware'] = 'DE';
+        $states_r['District of Columbia'] = 'DC';
+        $states_r['Florida'] = 'FL';
+        $states_r['Georgia'] = 'GA';
+        $states_r['Hawaii'] = 'HI';
+        $states_r['Idaho'] = 'ID';
+        $states_r['Illinois'] = 'IL';
+        $states_r['Indiana'] = 'IN';
+        $states_r['Iowa'] = 'IA';
+        $states_r['Kansas'] = 'KS';
+        $states_r['Kentucky'] = 'KY';
+        $states_r['Louisiana'] = 'LA';
+        $states_r['Maine'] = 'ME';
+        $states_r['Maryland'] = 'MD';
+        $states_r['Massachusetts'] = 'MA';
+        $states_r['Michigan'] = 'MI';
+        $states_r['Minnesota'] = 'MN';
+        $states_r['Mississippi'] = 'MS';
+        $states_r['Missouri'] = 'MO';
+        $states_r['Montana'] = 'MT';
+        $states_r['Nebraska'] = 'NE';
+        $states_r['Nevada'] = 'NV';
+        $states_r['New Hampshire'] = 'NH';
+        $states_r['New Jersey'] = 'NJ';
+        $states_r['New Mexico'] = 'NM';
+        $states_r['New York'] = 'NY';
+        $states_r['North Carolina'] = 'NC';
+        $states_r['North Dakota'] = 'ND';
+        $states_r['Ohio'] = 'OH';
+        $states_r['Oklahoma'] = 'OK';
+        $states_r['Oregon'] = 'OR';
+        $states_r['Pennsylvania'] = 'PA';
+        $states_r['Rhode Island'] = 'RI';
+        $states_r['South Carolina'] = 'SC';
+        $states_r['South Dakota'] = 'SD';
+        $states_r['Tennessee'] = 'TN';
+        $states_r['Texas'] = 'TX';
+        $states_r['Utah'] = 'UT';
+        $states_r['Vermont'] = 'VT';
+        $states_r['Virginia'] = 'VA';
+        $states_r['Washington'] = 'WA';
+        $states_r['West Virginia'] = 'WV';
+        $states_r['Wisconsin'] = 'WI';
+        $states_r['Wyoming'] = 'WY';
 
         
-        if(strlen($q)>=2)
+        if(strlen($q)>=2 or $city != '' or $state != '')
         {
             Session::put('fh_q', $q);
-            Session::put('fh_include_deleted', $include_deleted);
-            Session::put('fh_include_only', $include_only);
-        
-            //dd(Session::get('fh_include_only'));  
-        
-            //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
+            Session::put('fh_state', $state);
+            Session::put('fh_city', $city);
 
-            if($include_deleted==1)$FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->withTrashed()->orderBy('biz_name', 'asc');
-            else $FuneralHomes = FuneralHomes::where('biz_name','like','%'.$q.'%')->orWhere('biz_email','like','%'.$q.'%')->orWhere('biz_phone','like','%'.$q.'%')->orWhere('e_postal','like','%'.$q.'%')->orWhere('e_city','like','%'.$q.'%')->orWhere('web_meta_title','like','%'.$q.'%')->orderBy('biz_name', 'asc');
+            $FuneralHomes = FuneralHomes::orWhere(function($query) use ($q) {
+                $query->orWhere('biz_name', 'like', '%' . $q . '%')->orWhere('biz_email', 'like', '%' . $q . '%')
+                    ->orWhere('biz_phone', 'like', '%' . $q . '%')->orWhere('e_postal', 'like', '%' . $q . '%')->orWhere('web_meta_title', 'like', '%' . $q . '%');
+                });
 
-            
-            
-            if($include_only=='state')$FuneralHomes = FuneralHomes::where('e_state','like','%'.$q.'%')->orderBy('biz_name', 'asc');
-            if($include_only=='city')$FuneralHomes = FuneralHomes::where('e_city','like','%'.$q.'%')->orderBy('biz_name', 'asc');
-            
-            
-            if($FuneralHomes == null){
-                if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc')->withTrashed();
-                else $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
+            if($city != '')$FuneralHomes = $FuneralHomes->where('e_city','like','%'.$city.'%');
+            if($state != ''){
+                $FuneralHomes = $FuneralHomes->where(function($query) use ($state,$states_r) {
+                    $query->orWhere('e_state', 'like', '%' . $state . '%');
+                    if(strlen($state)>2){
+                        @$this_state = $states_r[ucwords($state)];
+                        $query->orWhere('e_state', 'like', '%' . $this_state . '%');
+                    }
+
+                });
             }
-            
-            
+
+            if($FuneralHomes == null){
+                $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
+            }
+
         }
         else
         {
-            if(Input::get('include_deleted')==1)$FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc')->withTrashed();
-            else $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
+            $FuneralHomes = FuneralHomes::orderBy('biz_name', 'asc');
         }
 
-        $FuneralHomes->orderBy('biz_name', 'asc');
-        $FuneralHomes = $FuneralHomes->paginate(100);
-        //echo '<pre>'; dd(DB::getQueryLog()); echo '</pre>';  
-        $data['funeral_homes'] = $FuneralHomes;
+        $data['funeral_homes'] = $FuneralHomes->orderBy('biz_name', 'asc')->withTrashed()->paginate(100);
+        //echo '<pre>'; dd(DB::getQueryLog()); echo '</pre>';
+
         $this->layout->content = View::make('admin.funeralhomes', $data);		
     } 
 

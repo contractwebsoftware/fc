@@ -14,23 +14,36 @@
         <div class="row">
                 <div class="col-xs-12 col-md-6 text-right">
                         {{ Form::open(['action'=>'AdminController@getFuneralhomes','method'=>'GET']) }}
-                        <div class="input-group">
-                                <input type="text" class="form-control" name="q" value="{{Input::get('q')}}" />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="submit" >Search</button>
-                                </span>
-
+                        <div class="form-group">
+                                <label for="q" class="col-xs-3">Search</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="q" value="{{Input::get('q')}}" />
+                                </div>
                         </div>
+                        <div class="form-group">
+                                <label for="city" class="col-xs-3">City</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="city" value="{{Input::get('city')}}" />
+                                </div>
+                        </div>
+                        <div class="form-group">
+                                <label for="state" class="col-xs-3">State</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="state" value="{{Input::get('state')}}" />
+                                </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit" >Search</button>
+                        <!--
                         <input type="checkbox" name="include_deleted" value="1" {{(Input::get('include_deleted')=='1'?'checked':'')}} />Include Deleted
                         &nbsp; <input type="radio" name="include_only" value="state" {{(Input::get('include_only')=='state'?'checked':'')}} />Search Only State
                         &nbsp; <input type="radio" name="include_only" value="city" {{(Input::get('include_only')=='city'?'checked':'')}} />Search Only City
-                        
+                        -->
                         {{ Form::close() }}
                 </div>
         </div>
         <hr>
 
-     {{ $funeral_homes->appends(array('q' => Input::get('q'),'include_only' => Input::get('include_only'), 'include_deleted'=>Input::get('include_deleted')))->links() }}
+     {{ $funeral_homes->appends(array('q' => Input::get('q'),'state' => Input::get('state'), 'city'=>Input::get('city')))->links() }}
 
      {{ Form::open(['action'=>'AdminController@postMassUpdateFuneralHomes','class'=>'form-horizontal','role'=>'form']) }}
 
@@ -61,7 +74,7 @@
         </thead>
         <tbody>
             @foreach( $funeral_homes as $home )
-            <tr>
+            <tr class="status-{{$home->status}}">
                 <td ><input type="checkbox" class="clients_mass_action" name="edit_funeralhomes[{{$home->id}}]" value="{{$home->id}}" /></td>
                 <!--<td><?php
                     switch($home->status){
@@ -86,7 +99,7 @@
                             <span class="glyphicon glyphicon-pencil"></span> Edit info
                         </a>
                         <?php
-                        if($home->status == 2)echo '<a href="'.action('AdminController@getUnDeleteFuneralhome',$home->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                        if($home->status == 2)echo '<a href="'.action('AdminController@getUnDeleteFuneralhome',$home->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
                         else echo '<a href="'.action('AdminController@getDeleteFuneralhome',$home->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> Delete</a>';
                         ?>
                     </div>
@@ -98,9 +111,12 @@
 
 
     {{ Form::close() }}
-    {{ $funeral_homes->appends(array('q' => Input::get('q'),'include_only' => Input::get('include_only'), 'include_deleted'=>Input::get('include_deleted')))->links() }}
+    {{ $funeral_homes->appends(array('q' => Input::get('q'),'state' => Input::get('state'), 'city'=>Input::get('city') ))->links() }}
 
     </div>
+    <style>
+        tr.status-2 td{background-color:#00a7d7!important;color:#000!important;font-weight:bold;}
+    </style>
     <script>
         var allchecked=true;
         function checkall(){

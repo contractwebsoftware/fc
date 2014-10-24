@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Forcremation</title>
 	<link rel="stylesheet" href="{{ asset('packages/Bootflat/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/client.css') }}">
@@ -80,41 +80,43 @@
         
 	<script src="{{ asset('packages/Bootflat/js/bootstrap.min.js') }}"></script>
 	<script>
+	    $('#current_total_price').html('{{$client->sale_summary_r['total'] > $provider->pricing_options->basic_cremation ? $client->sale_summary_r['total']:$provider->pricing_options->basic_cremation}}');
+
 		$(function(){
-                    $('.tooltips').tooltip();
-                    
-                    $('.step_back_btn').click(function(){ window.history.back(); });
-                    
-                    $('#login_btn').click(function(){
-                        $.getJSON( "{{ action('ClientController@getLoginJson') }}", 
-                                { login_email: $('#login_email').val(), login_password: $('#login_password').val() } )
-                                .done(function( data ) {
-                                    if(data){
-                                        if(data.fail)alert(data.fail);
-                                        else window.location.reload();
-                                    }
-                                    else alert('Login Failed, please try again');
-                                })
-                                .fail(function( jqxhr, textStatus, error ) {
-                                    alert('Login Failed, please try again');
-                                });
+            $('.tooltips').tooltip();
+
+            $('.step_back_btn').click(function(){ window.history.back(); });
+
+            $('#login_btn').click(function(){
+                $.getJSON( "{{ action('ClientController@getLoginJson') }}",
+                        { login_email: $('#login_email').val(), login_password: $('#login_password').val() } )
+                        .done(function( data ) {
+                            if(data){
+                                if(data.fail)alert(data.fail);
+                                else window.location.reload();
+                            }
+                            else alert('Login Failed, please try again');
+                        })
+                        .fail(function( jqxhr, textStatus, error ) {
+                            alert('Login Failed, please try again');
+                        });
+            });
+
+            $('#register_btn').click(function(){
+                $.getJSON( "{{ action('ClientController@getCreationAccountJson') }}",
+                    { register_name: $('#register_name').val(), register_email: $('#register_email').val(),
+                        register_password: $('#register_password').val(), register_phone: $('#register_phone').val() } )
+                    .done(function( data ) {
+                        if(data){
+                            if(data.fail)alert(data.fail);
+                            else window.location.reload();
+                        }else alert('Account creation Failed, please try again');
+                    })
+                    .fail(function( jqxhr, textStatus, error ) {
+                        alert('Registration failed, you may have already registered with that email address');
                     });
-                    
-                    $('#register_btn').click(function(){
-                        $.getJSON( "{{ action('ClientController@getCreationAccountJson') }}", 
-                            { register_name: $('#register_name').val(), register_email: $('#register_email').val(), 
-                                register_password: $('#register_password').val(), register_phone: $('#register_phone').val(), } )
-                            .done(function( data ) {
-                                if(data){
-                                    if(data.fail)alert(data.fail);
-                                    else window.location.reload();                                    
-                                }else alert('Account creation Failed, please try again');
-                            })
-                            .fail(function( jqxhr, textStatus, error ) {
-                                alert('Registration failed, you may have already registered with that email address');
-                            });
-                    });
-                    
+            });
+
 		});
 	</script>
 	@show

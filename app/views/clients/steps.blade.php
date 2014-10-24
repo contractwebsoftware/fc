@@ -46,7 +46,6 @@
                             <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
                             {{$value}}
                         </div>
-                        
                     </div>
                     @endforeach
 
