@@ -68,7 +68,7 @@ else $provider_name = '';
                     <br>Address: {{$provider->address}}, {{$provider->city}}, {{$provider->state}} {{$provider->zip}}
                 </td>
                 <td align="right">
-                    <b style="font-size: 20px;color:#0E7DB6 !important;">Prices Starting At: $<span id="current_total_price"></span></b>
+                    <b style="font-size: 20px;color:#0E7DB6 !important;">Estimated Cost: $<span id="current_total_price"></span></b>
                     <br><span>Phone: {{$provider->phone}}</span>
                      @if($provider->ProviderPriceSheet!=null)
                         <Br /><a style="font-weight:bold;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)}}">Download Pricing Sheet</a>
