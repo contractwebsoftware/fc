@@ -344,7 +344,7 @@
                                     foreach($forms as $key=>$form_name){
                                         echo '<option value="'.$key.'" '.($custom_form_num==$key?'selected':'').' >'.$form_name.'</option>';
                                     }
-                                    if($custom_form_num=='')$this_form = 'customer_form_2';
+                                    if($custom_form_num=='')$this_form = 'customer_form_1';
                                     else $this_form = 'customer_form_'.$custom_form_num;
 
                                     $custom_form = $provider->$this_form;
