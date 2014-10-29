@@ -53,13 +53,24 @@ class StepController extends BaseController {
             $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->whereNull('deleted_at')->orderBy('biz_name', 'asc')->get();
 
             $providers = DB::table('providers');
+            $providers_with_zips = DB::table('provider_zips');
+
+
             $funeral_home_city_r = DB::table('zips')->where('city', $city_r[0])->where('state', $zip->e_state)->get();
+
             if(is_array($funeral_home_city_r))
             foreach($funeral_home_city_r as $this_fh){
                 //print_r($this_fh);
                 $providers = $providers->orWhere('zip', $this_fh->zip);
+                $providers_with_zips = $providers_with_zips->orWhere('zip', $this_fh->zip);
+
             }
+
+
+
+
             $providers = $providers->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
+            $providers_with_zips = $providers_with_zips->whereNull('deleted_at')->get();
             
             //print_r(DB::getQueryLog());
             //dd($city);
@@ -70,6 +81,12 @@ class StepController extends BaseController {
             foreach($providers as $key=>$row){
                 $json_r['provider-'.$row->id] = $row->business_name;
             }
+            foreach($providers_with_zips as $key=>$row){
+                $this_provider = Fprovider::find($row->provider_id);
+                if($this_provider != null)$json_r['provider-'.$this_provider->id] = $this_provider->business_name;
+            }
+            //asort($json_r);
+
             return Response::json($json_r);
         }
 }
