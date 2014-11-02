@@ -409,7 +409,7 @@ class AdminController extends BaseController {
             elseif(array_key_exists('removezips',$input)){
                 foreach($input['removezips'] as $key=>$value){
                     $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$value)->first();
-                    $zip->delete();
+                    if($zip!=null)$zip->delete();
                 }
             }
             Session::flash('success','Zips Updated Successfully');

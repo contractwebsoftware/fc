@@ -117,43 +117,98 @@ class ClientController extends BaseController {
             else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider, 'products'=>$products,'client_product'=>$client_product]);
             
 	}
-        /*
-        public function saveClientInfo($input){
-            
-            // IF LOGGED IN THEN SAVE DATA TO THE ACCOUNT AS WELL AS SESSION
-            if(Sentry::getUser())$client = Client::where('user_id',Sentry::getUser()->id)->first();
-            
-            if(isarray($input))
-            foreach($input as $key=>$value){
-                Session::put($key, $value);
-                if($client != null)$client->$$key
-                
-            } 
-        }*/
-        
-        public function updateProvider($provider_id='', $client=''){
-            $provider = DB::table('providers')->where('id', $provider_id)->first();
-            $provider->pricing_options = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
-           
-            $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
-            if($provider->ProviderFiles == null)$provider->ProviderFiles = new ProviderFiles();  
-            $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
-               
-            
-            
-            if(is_object($client)){
-                $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
-                if(count($client_provider)>0){
-                    DB::table('clients_providers')->where('client_id', $client->id)->update(array('provider_id'=>$provider_id));
-                }
-                else DB::table('clients_providers')->insert(array('provider_id'=>$provider_id, 'client_id'=>$client->id));
-            }
-            Session::put('provider', $provider);
-            Session::put('provider_pricing_options', $provider->pricing_options);
-            
-            
-            return $provider;
+
+    public function getProviderLocation(){
+
+        $states = DB::table('state')->distinct()->get();
+        $html = '<html><body style="background-color: #FFF;background-image: none;">
+                <h3 >Select Your Location To Find Providers in Your Area</h3>
+                <div id="select_location" class="row pull-left">
+                 <div class="col-md-3">
+                    <select id="state" name="state" class="pull-right">
+                        <option value="">--</option>';
+
+                        foreach($states as $key=>$row){
+                            $html .= '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
+                        }
+
+        $html .= ' </select>
+            </div>
+                <div class="col-md-3"><select id="city" name="city"><option value="">--</option></select></div>
+                <div class="col-md-3"><select id="new_provider" name="new_provider"><option value="">--</option></select></div>
+                <div class="col-md-2"><button class="btn btn-primary" id="choose_provider">Select Provider</button></div>
+            <br style="float:none;clear:both;" /><Br />
+            </div>
+            <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
+            <link rel="stylesheet" href="'. asset('css/client.css') .'">
+            <!--[if IE]>
+            <link rel="stylesheet" type="text/css" href="'. asset('css/ie-only.css') .'" />
+            <![endif]-->
+            <script src="'. asset('packages/Bootflat/js/jquery-1.11.1.min.js') .'"></script>
+            <script src="'. asset('js/jquery.chained.remote.min.js') .'"></script>
+            <script>
+
+                $("#city").remoteChained("#state", "'.action('StepController@getCities').'");
+                $("#new_provider").remoteChained("#city", "'.action('StepController@getProvidersByCity').'");
+                $("#new_provider").on("change", function(){
+                    $("#new_provider option:contains(\'funeralhome-\')").attr("disabled",true);
+                    $("#new_provider option[value*=\'funeralhome-\']").attr("disabled", true );
+
+                    var val = $(this).val();
+                    if(val == "" || val.toLowerCase().indexOf("funeralhome-") >= 0){
+                        $("#new_provider option:contains(\'provider-\')").attr("selected",true);
+                        $("#new_provider option[value*=\'provider-\']").attr("selected", true );
+                    }
+                });
+
+                $("#choose_provider").click(function(){
+                    window.top.location.href = "'.action('ClientController@getSteps1').'?provider_id="+$("#new_provider").val();
+                    return false;
+                });
+
+                </script>
+            </body></html>';
+            echo $html;
+        die();
+    }
+
+    /*
+    public function saveClientInfo($input){
+
+        // IF LOGGED IN THEN SAVE DATA TO THE ACCOUNT AS WELL AS SESSION
+        if(Sentry::getUser())$client = Client::where('user_id',Sentry::getUser()->id)->first();
+
+        if(isarray($input))
+        foreach($input as $key=>$value){
+            Session::put($key, $value);
+            if($client != null)$client->$$key
+
         }
+    }*/
+        
+    public function updateProvider($provider_id='', $client=''){
+        $provider = DB::table('providers')->where('id', $provider_id)->first();
+        $provider->pricing_options = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
+
+        $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
+        if($provider->ProviderFiles == null)$provider->ProviderFiles = new ProviderFiles();
+        $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
+
+
+
+        if(is_object($client)){
+            $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            if(count($client_provider)>0){
+                DB::table('clients_providers')->where('client_id', $client->id)->update(array('provider_id'=>$provider_id));
+            }
+            else DB::table('clients_providers')->insert(array('provider_id'=>$provider_id, 'client_id'=>$client->id));
+        }
+        Session::put('provider', $provider);
+        Session::put('provider_pricing_options', $provider->pricing_options);
+
+
+        return $provider;
+    }
         
 	public function getSaveZip(){ 
             Session::put('zip',Input::get('set_zip'));
@@ -165,30 +220,30 @@ class ClientController extends BaseController {
             ClientController::updateProvider($provider_id);
             //print_r(Session::all());
             
-            return ClientController::getSteps(1); 
-        }
+            return ClientController::getSteps(1);
+    }
         
-        public function getSteps1(){ return ClientController::getSteps(1); }
-        public function getSteps2(){ return ClientController::getSteps(2); }
-        public function getSteps3(){ return ClientController::getSteps(3); }
-        public function getSteps4(){ return ClientController::getSteps(4); }
-        public function getSteps5(){ return ClientController::getSteps(5); }
-        public function getSteps6(){ return ClientController::getSteps(6); }
-        public function getSteps7(){ return ClientController::getSteps(7); }
-        public function getSteps8(){ return ClientController::getSteps(8); }
-        public function getSteps9(){ return ClientController::getSteps(9); }
-        public function getSteps10(){ return ClientController::getSteps(10); }
-        public function getSteps11(){ return ClientController::getSteps(11); }
-        public function getSteps12(){ return ClientController::getSteps(12); }
-        public function getSteps13(){ return ClientController::getSteps(13); }
-        public function getSteps14(){ return ClientController::getSteps(14); }
-        public function getSteps15(){ return ClientController::getSteps(15); }
-        
-        public function getStepsAsClient(){ 
-            
-            return ClientController::getSteps(1,false); 
-        }
-        
+    public function getSteps1(){ return ClientController::getSteps(1); }
+    public function getSteps2(){ return ClientController::getSteps(2); }
+    public function getSteps3(){ return ClientController::getSteps(3); }
+    public function getSteps4(){ return ClientController::getSteps(4); }
+    public function getSteps5(){ return ClientController::getSteps(5); }
+    public function getSteps6(){ return ClientController::getSteps(6); }
+    public function getSteps7(){ return ClientController::getSteps(7); }
+    public function getSteps8(){ return ClientController::getSteps(8); }
+    public function getSteps9(){ return ClientController::getSteps(9); }
+    public function getSteps10(){ return ClientController::getSteps(10); }
+    public function getSteps11(){ return ClientController::getSteps(11); }
+    public function getSteps12(){ return ClientController::getSteps(12); }
+    public function getSteps13(){ return ClientController::getSteps(13); }
+    public function getSteps14(){ return ClientController::getSteps(14); }
+    public function getSteps15(){ return ClientController::getSteps(15); }
+
+    public function getStepsAsClient(){
+
+        return ClientController::getSteps(1,false);
+    }
+
         
 	public function postSteps2()
 	{
