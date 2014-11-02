@@ -6,28 +6,73 @@
             <strong class="h2">Clients</strong>
         </div>
         <div class="col-xs-12 col-md-6 text-right">
-            @if(Sentry::getUser()->role=='admin')
 
-                <button class="btn btn-primary" type="submit" onclick="if($('#create_client_provider_id').val()==''){alert('Select A Provider First');return false;}else {create_client($('#create_client_provider_id').val())}" style="float:right;">Create Client</button>
-                <select name="provider_id" id="create_client_provider_id" style="float:right;margin-right:15px;">
-                    <option value="" selected>Choose Client's Provider</option>
-                    @foreach($providers as $this_provider)
-                        <option value="{{$this_provider->id}}">{{$this_provider->business_name}}</option>
-                    @endforeach
-                </select>
+            <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#myModal" style="float:right;">Create Client</button>
 
-            @else
-                <a href="#" onclick="create_client('{{$provider->id}}')" class="btn btn-primary">New Client</a>
-            @endif
+
+            <div class="modal fade" id="myModal">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="text-align:left;">Create A New Client</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" id="first_name" placeholder="First Name"/>
+                        <input type="text" id="last_name" placeholder="Last Name"/>
+                        <input type="text" id="new_client_email" placeholder="Login Email"/>
+                        <input type="text" id="new_client_password" placeholder="Login Password"/>
+
+
+                        @if(Sentry::getUser()->role=='admin')
+
+                            <select id="create_client_provider_id" >
+                                <option value="" selected>Choose Client's Provider</option>
+                                @foreach($providers as $this_provider)
+                                    <option value="{{$this_provider->id}}">{{$this_provider->business_name}}</option>
+                                @endforeach
+                            </select>
+
+                        @else
+                            <input type="hidden" id="create_client_provider_id" value="{{$provider->id}}"/>
+                        @endif
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" onclick="return create_client();">Save Client</button>
+
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+
+
 
             <script>
-                function create_client(provider_id){
-                    $.getJSON( "{{action("AdminController@getNewclient")}}", function( data ) {
-                      var items = [];
-                      if(data){
-                         if(data.client_id)
-                         window.location.href="{{ action('ClientController@getSteps1')}}?provider_id="+provider_id+"&client_id="+data.client_id;
-                      }
+                function create_client(){
+                    if($('#first_name').val()==''){alert('Please Enter A First Name');$('#first_name').focus().css('border','1px solid red');return false;}
+                    if($('#last_name').val()==''){alert('Please Enter A Last Name');$('#last_name').focus().css('border','1px solid red');return false;}
+                    if($('#new_client_email').val()==''){alert('Please Enter An Email Address');$('#new_client_email').focus().css('border','1px solid red');return false;}
+                    if($('#new_client_password').val()==''){alert('Please Enter A Password');$('#new_client_password').focus().css('border','1px solid red');return false;}
+                    if($('#create_client_provider_id').val()==''){alert('Select A Provider First');$('#create_client_provider_id').focus().css('border','1px solid red');return false;}
+
+                    $.getJSON( "{{action("AdminController@getNewclient")}}",
+                     {
+                         provider_id:$('#create_client_provider_id').val(),
+                         first_name: $('#first_name').val(),
+                         last_name: $('#last_name').val(),
+                         email: $('#new_client_email').val(),
+                         password: $('#new_client_password').val()
+                     },
+                     function( data )
+                     {
+                        var items = [];
+                        if(data){
+                            if(data.client_id)
+                            window.location.href="{{ action('ClientController@getSteps1')}}?provider_id="+$('#create_client_provider_id').val()+"&client_id="+data.client_id;
+                        }
                     });
                 }
             </script>

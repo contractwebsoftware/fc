@@ -750,9 +750,23 @@ class AdminController extends BaseController {
     public function getNewclient()
     {
         //dd('creating user');
+        //first_name
+        //last_name
+        //email
+        //password
+        //provider_id
+        $first_name = "unregistered";
+        $last_name = "unregistered";
+        $password = "unregistered";
+
+        if(Input::get('first_name')!='')$first_name = Input::get('first_name');
+        if(Input::get('last_name')!='')$last_name = Input::get('last_name');
+        if(Input::get('password')!='')$password = Input::get('password');
+        if(Input::get('first_name')!='')$first_name = Input::get('first_name');
+
         $client_input = Array(
-            'first_name' => "unregistered",
-            'last_name' => "unregistered"
+            'first_name' => $first_name,
+            'last_name' => $last_name
         );
 
 
@@ -761,9 +775,13 @@ class AdminController extends BaseController {
         $client->save();
         //dd( "creatd new user:".$client->id);
 
+        $login = "unregistered".$client->id."@user.com";
+        if(Input::get('email')!='')$login = Input::get('email');
+
+
         $user = Sentry::createUser(array(
-            'email'     => 'unregistered'.$client->id.'@user.com',
-            'password'  => 'unregistered',
+            'email'     => $login,
+            'password'  => $password,
             'role'  => 'client',
             'activated' => true
         ));

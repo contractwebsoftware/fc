@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
-                &nbsp; &nbsp; <b>Email</b>: {{$client->User->email }}<br />
+                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a><br />
                 &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
                 &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
                 &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
@@ -28,7 +28,7 @@
             </div>
             <div class="col-md-6">
                 <h2>{{$provider->business_name}}</h2>
-                &nbsp; &nbsp; <b>Email</b>: {{$provider->email }}<br />
+                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{$provider->email }}">{{$provider->email }}</a><br />
                 &nbsp; &nbsp; <b>Phone</b>: {{$provider->phone }} &nbsp; &nbsp; <b>Fax</b>: {{$provider->fax }}<br />
                 &nbsp; &nbsp; <b>Address</b>: {{$provider->address }} {{$provider->city }}, {{$provider->state }}, {{$provider->zip }}<br />
                 &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
