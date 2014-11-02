@@ -124,8 +124,10 @@ class ClientController extends BaseController {
         $html = '<html><body style="background-color: #FFF;background-image: none;">
                 <h3 >Select Your Location To Find Providers in Your Area</h3>
                 <div id="select_location" class="row pull-left">
-                 <div class="col-md-3">
-                    <select id="state" name="state" class="pull-right">
+
+                 <div class="col-md-12">
+                    <b>Select State</b>:<br />
+                    <select id="state" name="state">
                         <option value="">--</option>';
 
                         foreach($states as $key=>$row){
@@ -133,11 +135,13 @@ class ClientController extends BaseController {
                         }
 
         $html .= ' </select>
-            </div>
-                <div class="col-md-3"><select id="city" name="city"><option value="">--</option></select></div>
-                <div class="col-md-3"><select id="new_provider" name="new_provider"><option value="">--</option></select></div>
-                <div class="col-md-2"><button class="btn btn-primary" id="choose_provider">Select Provider</button></div>
-            <br style="float:none;clear:both;" /><Br />
+                    <br /><b>Select City</b>:<br />
+                    <select id="city" name="city"><option value="">--</option></select>
+                    <br /><b>Select Provider</b>:<br />
+                    <select id="new_provider" name="new_provider"><option value="">--</option></select>
+                    <br />
+                    <button class="btn btn-primary" id="choose_provider">Select Provider</button>
+                    <br style="float:none;clear:both;" /><Br />
             </div>
             <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
             <link rel="stylesheet" href="'. asset('css/client.css') .'">
