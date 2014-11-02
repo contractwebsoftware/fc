@@ -122,7 +122,6 @@ class ClientController extends BaseController {
 
         $states = DB::table('state')->distinct()->get();
         $html = '<html><body style="background-color: #FFF;background-image: none;">
-                <h3 >Find A Provider in Your Area</h3>
                 <div id="select_location" class="row pull-left">
 
                  <div class="col-md-12">
