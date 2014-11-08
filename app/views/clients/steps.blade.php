@@ -55,7 +55,23 @@
                 </div>
             {{ Form::close() }}   
         </div>
+
     </fieldset>
+    <div class="row">
+        <div class="col-md-12" style="font-size:12px!important;text-align:center;">
+        <b>Goto:</b>
+            <a href="#step1">Cremation Plans</a>
+            | <a href="#step2">Certificate Information</a>
+            | <a href="#step3">Life Data</a>
+            | <a href="#step4">Location of Pending Death</a>
+            | <a href="#step5">Line of Authority</a><br />
+            <a href="#step6">Authorized Person</a>
+            | <a href="#step7">Certified Death Certificates</a>
+            | <a href="#step8">Shipping Information</a>
+            | <a href="#step9">Payment Summary</a>
+            | <a href="#step10">Confirm/Submit</a>
+        </div>
+    </div>
     <script>
         $().ready(function(){
            //location.href="#step{{Session::get('step')}}";
