@@ -79,11 +79,12 @@ class StepController extends BaseController {
                 $json_r['funeralhome-'.$row->id] = $row->biz_name;
             }
             foreach($providers as $key=>$row){
-                $json_r['provider-'.$row->id] = $row->business_name;
+                if($row->status=='1')$json_r['provider-'.$row->id] = $row->business_name;
             }
             foreach($providers_with_zips as $key=>$row){
                 $this_provider = Fprovider::find($row->provider_id);
-                if($this_provider != null)$json_r['provider-'.$this_provider->id] = $this_provider->business_name;
+                if($this_provider != null)
+                    if($this_provider->status=='1')$json_r['provider-'.$this_provider->id] = $this_provider->business_name;
             }
             //asort($json_r);
 

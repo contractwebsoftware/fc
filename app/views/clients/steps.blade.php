@@ -839,6 +839,13 @@
 
                 </div>
             </div>
+
+            <div class="row form-group">
+                <div class="col-sm-12"><br>
+                    <label for="ssn" >Please enter the last 4 digits of your social security number</label>
+                    Type Last 4 of SSN here: <input type="text" class="form-control" id="ssn" name="client[ssn]" value="{{$client->ssn}}">
+                </div>
+            </div>
             <Br /><Br />
             <div class="row form-group">
                 <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
@@ -861,6 +868,10 @@
                 }
                 if($('#confirmed_correct_info_initial').val()==""){
                     alert('Please Enter Your Initials'); 
+                    return false;
+                }
+                if($('#ssn').val()==""){
+                    alert('Please Enter The Last 4 Digits of Your Social Security Number');
                     return false;
                 }
             }
