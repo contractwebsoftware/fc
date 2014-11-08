@@ -316,6 +316,9 @@ class ClientController extends BaseController {
             $client = ClientController::registerUser();
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
+
+                if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+                //echo '<pre>';dd($input['deceased_info']);
                 $client->DeceasedInfo->fill($input['deceased_info']);
                 $client->DeceasedInfo->save(); 
             }

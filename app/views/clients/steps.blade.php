@@ -58,7 +58,7 @@
     </fieldset>
     <script>
         $().ready(function(){
-           location.href="#step{{Session::get('step')}}";
+           //location.href="#step{{Session::get('step')}}";
         });
     </script>
 @endif
@@ -266,7 +266,7 @@
                 <div class="col-sm-6"><input name="deceased_info[yrs_in_county]" type="text" placeholder="Yrs In County" value="{{$client->DeceasedInfo->yrs_in_county}}"/></div>
             </div>
             <div class="row form-group"> 
-                <div class="col-sm-6"><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth YYYY-MM-DD" value="{{$client->DeceasedInfo->dob}}" /></div>
+                <div class="col-sm-6"><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
                 <div class="col-sm-6">
                     <select name="deceased_info[gender]" class="form-control">
                         <option selected="selected" value="">Gender</option>
@@ -335,11 +335,12 @@
         <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
     
         <script>
+        /*
             $("#dob").datepicker( {
-                dateFormat: "yy-mm-dd",
+                dateFormat: "yyyy-mm-dd",
                 changeMonth: true,
                 changeYear: true
-            });
+            });*/
         </script>
     {{ Form::close() }}
 
@@ -503,25 +504,25 @@
             <div class="row form-group">
                 <div class="col-sm-12">
                     <input type="radio" id="relationship0" name="client[relationship]" value="" {{ ($client->relationship==""?'checked="checked"':'') }} >
-                        <label for="relationship0" class="">(Select One)</label>
+                        <label for="relationship0" class="">(Select One)</label><br style="float:none;clear:both;"/>
                     <input type="radio" id="relationship1" name="client[relationship]" value="Making arrangements for myself" {{ ($client->relationship=="Making arrangements for myself"?'checked="checked"':'') }} >
-                        <label for="relationship1">Making arrangements for myself</label>
+                        <label for="relationship1">Making arrangements for myself</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship2" name="client[relationship]" value="Agent or durable power of attorney" {{ ($client->relationship=="Agent or durable power of attorney"?'checked="checked"':'') }}>
-                        <label for="relationship2">Agent or durable power of attorney</label>
+                        <label for="relationship2">Agent or durable power of attorney</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship3" name="client[relationship]" value="Spouse (legally married)" {{ ($client->relationship=="Spouse (legally married)"?'checked="checked"':'') }}>
-                        <label for="relationship3">Spouse (legally married)</label>
+                        <label for="relationship3">Spouse (legally married)</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship4" name="client[relationship]" value="Majority of surviving children" {{ ($client->relationship=="Majority of surviving children"?'checked="checked"':'') }}>
-                        <label for="relationship4">Majority of surviving children</label>
+                        <label for="relationship4">Majority of surviving children</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship5" name="client[relationship]" value="Surviving parents" {{ ($client->relationship=="Surviving parents"?'checked="checked"':'') }}>
-                        <label for="relationship5">Surviving parents</label>
+                        <label for="relationship5">Surviving parents</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship6" name="client[relationship]" value="Majority of surviving brothers and sisters" {{ ($client->relationship=="Majority of surviving brothers and sisters"?'checked="checked"':'') }}>
-                        <label for="relationship6">Majority of surviving brothers and sisters</label>
+                        <label for="relationship6">Majority of surviving brothers and sisters</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship7" name="client[relationship]" value="Majority of surviving nieces and nephews" {{ ($client->relationship=="Majority of surviving nieces and nephews"?'checked="checked"':'') }}>
-                        <label for="relationship7">Majority of surviving nieces and nephews</label>
+                        <label for="relationship7">Majority of surviving nieces and nephews</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship8" name="client[relationship]" value="Majority of surviving next of kin" {{ ($client->relationship=="Majority of surviving next of kin"?'checked="checked"':'') }}>
-                        <label for="relationship8">Majority of surviving next of kin</label>
+                        <label for="relationship8">Majority of surviving next of kin</label><br style="float:none;clear:both;" />
                     <input type="radio" id="relationship9" name="client[relationship]" value="None of these, but have legal right to authorize" {{ ($client->relationship=="None of these, but have legal right to authorize"?'checked="checked"':'') }}>
-                        <label for="relationship9">None of these, but have legal right to authorize</label>
+                        <label for="relationship9">None of these, but have legal right to authorize</label><br  style="float:none;clear:both;"/>
                     <input type="radio" id="relationship10" name="client[relationship]" value="None of these - just helping a friend" {{ ($client->relationship=="None of these - just helping a friend"?'checked="checked"':'') }}>
                         <label for="relationship10">None of these - just helping a friend</label>	
                 </div>
