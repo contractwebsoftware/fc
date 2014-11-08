@@ -10,8 +10,11 @@
         <h2>Cremation Provider Signup</h2>
         <hr>
         <center>
+        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/travis.png" style="height:63px;width:auto;">
         <a href="http://youtu.be/zFpbwTJhN10?rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="fancybox-youtube" style="font-weight:bold;font-size:16px;">Watch the video about becoming a Provider</a> <br/>
-        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/susan.png" style="height:63px;width:30px;"> <a title="Meet-Susan" href="http://www.youtube.com/watch?v=k4EueEuaDAQ&amp;feature=youtu.be&amp;rel=0;HD=1;showinfo=0;controls=0;autoplay=1" style="margin-right: 30px;font-weight:bold;font-size:16px;" class="fancybox-youtube">Meet Susan</a>
+
+        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/susan.png" style="height:63px;width:auto;">
+        <a title="Meet-Susan" href="http://www.youtube.com/watch?v=k4EueEuaDAQ&amp;feature=youtu.be&amp;rel=0;HD=1;showinfo=0;controls=0;autoplay=1" style="margin-right: 30px;font-weight:bold;font-size:16px;" class="fancybox-youtube">Meet Susan</a>
         </center>
 
     </div>

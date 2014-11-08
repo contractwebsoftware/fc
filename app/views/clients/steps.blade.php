@@ -114,7 +114,7 @@
                     {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
                     </div>                  
                     
-                    <strong><u>Pick A Plan</u></strong><br />
+                    <strong><u>Select Your Plan</u></strong><br />
                     Please select a package from the drop down below:<br />
                     <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
                         <option value="0" {{ ($client->CremainsInfo->package_plan=="0"?'selected':'') }}>Select A Plan</option>
@@ -853,6 +853,7 @@
             </div>
         </fieldset> 
         <script>
+        @if(!Session::get('inAdminGroup') || $client->id=='')
             function validate(){
                 if(!$('#confirmed_legal_auth').prop('checked')){
                     alert('Please Mark The Confirm Legal Authorization Checkbox'); 
@@ -880,6 +881,7 @@
                     return validate();
                 });
             });
+        @endif
         </script>
     {{ Form::close() }}
 @endif
