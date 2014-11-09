@@ -434,7 +434,12 @@
                     <li>{{DeceasedFamilyInfo_mthr_first_name}}</li>
                     <li>{{DeceasedFamilyInfo_mthr_middle_name}}</li>
                     <li>{{DeceasedFamilyInfo_mthr_last_name}}</li>            
-                    <li>{{DeceasedFamilyInfo_mthr_birth_city}}</li></ul>
+                    <li>{{DeceasedFamilyInfo_mthr_birth_city}}<Br /><br /></li>
+
+                    <li><b>Payment Summary Sheet</b></li>
+                    <li>{{sales_summary_sheet}}</li>
+
+                    </ul>
                     </td><td align=left style="vertical-align: top;">
 
                     <ul class="form_keys">

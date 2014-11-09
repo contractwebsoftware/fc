@@ -870,8 +870,8 @@ class ClientController extends BaseController {
         public function getSaleTotals($client, $provider){
             $TOTAL_PRICE = 0;
             //dd();
-            
-            
+
+            //echo '<pre>';dd($provider);
             if($client->CremainsInfo->package_plan == "1") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->basic_cremation;
             elseif($client->CremainsInfo->package_plan == "2") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->premium_cremation;
             else $saleSummary['report']['package_plan']['price'] = '';
@@ -971,7 +971,25 @@ class ClientController extends BaseController {
             elseif($custom_included == 3)return true;
             else return false;
 	}   
-        
+
+    public function getCustomerPaymentSummary($client, $provider)
+    {
+
+        if(!is_array($client->sale_summary_r['report']))$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+
+        if(is_array($client->sale_summary_r['report'])){
+
+            $html = '<table width="100%" ><tr><td style="border-bottom:1px solid #999;"><b>Description</b></td><td style="border-bottom:1px solid #999;"><b>Price</b></td></tr>';
+
+            foreach($client->sale_summary_r['report'] as $key=>$value){
+                $html .= '<tr><td>'.$value['desc'].' </td><td>'.$value['price'].' </td></tr>';
+            }
+            $html .= '<tr><td style="border-top:1px solid #999;" align=right><b>Total Summary</b>:&nbsp;</td><td style="border-top:1px solid #999;">$'.$client->sale_summary_r['total'].'</td></tr>';
+            $html .= '</table>';
+        }
+        return $html;
+
+    }
         
      
     /*
@@ -996,7 +1014,8 @@ class ClientController extends BaseController {
            
         $client = Client::find($client_id);
         $client = ClientController::fillOutClientTables($client);
-        $provider = FProvider::find($provider_id);
+        //$provider = FProvider::find($provider_id);
+        $provider = ClientController::updateProvider($provider_id);
         $html = '';
         
         $options = Array(
@@ -1048,6 +1067,8 @@ class ClientController extends BaseController {
             'DeceasedFamilyInfo_mthr_middle_name',
             'DeceasedFamilyInfo_mthr_last_name',            
             'DeceasedFamilyInfo_mthr_birth_city',
+
+            'sales_summary_sheet',
             
             'DeceasedInfo_first_name',
             'DeceasedInfo_middle_name',
@@ -1112,44 +1133,63 @@ class ClientController extends BaseController {
             'ClientProducts_description',
             'ClientProducts_note'
         );
-      
+
 
         //dd($download_forms);
         foreach($download_forms as $key=>$file_name){
             
             $html .= $provider->$key;
+            //dd($key.':'.$html);
+            foreach($options as $val) {
+                $key = substr($val, strpos($val, '_') + 1, strlen($val));
+                $object = substr($val, 0, strpos($val, '_'));
 
-            foreach($options as $val){
-               $key = substr($val, strpos($val, '_')+1, strlen($val));
-               $object = substr($val, 0, strpos($val, '_'));
+                switch ($object) {
+                    case 'client':
+                        $class = $client;
+                        break;
+                    case 'provider':
+                        $class = $provider;
+                        break;
+                    case 'DeceasedFamilyInfo':
+                        $class = $client->DeceasedFamilyInfo;
+                        break;
+                    case 'DeceasedInfo':
+                        $class = $client->DeceasedInfo;
+                        break;
+                    case 'CremainsInfo':
+                        $class = $client->CremainsInfo;
+                        break;
+                    case 'DeceasedInfoPresentLoc':
+                        $class = $client->DeceasedInfoPresentLoc;
+                        break;
+                    case 'ClientProducts':
+                        $class = $client->ClientProducts;
+                        $client_product = ProviderProducts::where('provider_id', $provider_id)->where('product_id', $class->product_id)->first();
+                        if ($client_product == null) $client_product = Products::where('id', 1)->first();
+                        $class->name = $client_product->name;
+                        $class->description = $client_product->description;
 
-               switch($object){
-                   case 'client': $class = $client; break;
-                   case 'provider': $class = $provider; break;
-                   case 'DeceasedFamilyInfo': $class = $client->DeceasedFamilyInfo; break;
-                   case 'DeceasedInfo': $class = $client->DeceasedInfo; break;
-                   case 'CremainsInfo': $class = $client->CremainsInfo; break;
-                   case 'DeceasedInfoPresentLoc': $class = $client->DeceasedInfoPresentLoc; break;
-                   case 'ClientProducts': {
-                       $class = $client->ClientProducts; 
-                       $client_product = ProviderProducts::where('provider_id',$provider_id)->where('product_id',$class->product_id)->first();
-                       if($client_product == null) $client_product = Products::where('id',1)->first(); 
-                       $class->name = $client_product->name;
-                       $class->description = $client_product->description;
-                   }
-                   break;
+                        break;
+                    case 'sales':
+                        $class = $client;
+                        $class->summary_sheet = ClientController::getCustomerPaymentSummary($client, $provider);
 
-                   default:break;
-               }
+                        break;
 
-               $html = str_replace('{{'.$val.'}}', $class->$key, $html); 
-               $html = str_replace('{{'.$val.'}}', '', $html); 
+                    default:
+                        break;
+                }
+
+                $html = str_replace('{{' . $val . '}}', $class->$key, $html);
+                $html = str_replace('{{' . $val . '}}', '', $html);
+
             }
             $html .= '<p style="page-break-after:always;"></p>';
 
         }
 
-        //dd();
+        //echo '<pre>';dd($html);
         //download_forms
         //
         //<p><!-- pagebreak --></p> 

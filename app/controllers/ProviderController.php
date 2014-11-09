@@ -14,7 +14,9 @@ class ProviderController extends BaseController {
                             7 => 'Personnel Effects',
                             8 => 'Transfer of Authority',
                             9 => 'Viewing Release',
-                            10 => 'Other');
+                            11 => 'Payment Summary',
+                            10 => 'Other'
+                            );
         }
         
 	public function getCustomers()
