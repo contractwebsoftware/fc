@@ -40,7 +40,7 @@
                     </div>
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick="return create_client();">Save Client</button>
+                    <button class="btn btn-primary" type="submit" id="save_new_client" onclick="return create_client();">Save Client</button>
 
                   </div>
                 </div><!-- /.modal-content -->
@@ -52,11 +52,12 @@
 
             <script>
                 function create_client(){
-                    if($('#first_name').val()==''){alert('Please Enter A First Name');$('#first_name').focus().css('border','1px solid red');return false;}
-                    if($('#last_name').val()==''){alert('Please Enter A Last Name');$('#last_name').focus().css('border','1px solid red');return false;}
-                    if($('#new_client_email').val()==''){alert('Please Enter An Email Address');$('#new_client_email').focus().css('border','1px solid red');return false;}
-                    if($('#new_client_password').val()==''){alert('Please Enter A Password');$('#new_client_password').focus().css('border','1px solid red');return false;}
-                    if($('#create_client_provider_id').val()==''){alert('Select A Provider First');$('#create_client_provider_id').focus().css('border','1px solid red');return false;}
+                    $('#save_new_client').prop('disabled',true).fadeTo(.5);
+                    if($('#first_name').val()==''){return validdate('first_name');}
+                    if($('#last_name').val()==''){return validdate('last_name');}
+                    if($('#new_client_email').val()==''){return validdate('new_client_email');}
+                    if($('#new_client_password').val()==''){return validdate('new_client_password');}
+                    if($('#create_client_provider_id').val()==''){return validdate('create_client_provider_id');}
 
                     $.getJSON( "{{action("AdminController@getNewclient")}}",
                      {
@@ -74,6 +75,12 @@
                             window.location.href="{{ action('ClientController@getSteps1')}}?provider_id="+$('#create_client_provider_id').val()+"&client_id="+data.client_id;
                         }
                     });
+                }
+                function validdate(el){
+                    $('#save_new_client').prop('disabled',false).fadeTo(1);
+                    alert('Please Enter All Information');
+                    $('#'+el).focus().css('border','1px solid red');
+                    return false;
                 }
             </script>
         </div>
