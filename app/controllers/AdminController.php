@@ -763,6 +763,7 @@ class AdminController extends BaseController {
         if(Input::get('last_name')!='')$last_name = Input::get('last_name');
         if(Input::get('password')!='')$password = Input::get('password');
         if(Input::get('first_name')!='')$first_name = Input::get('first_name');
+        if(Input::get('provider_id')!='')$provider_id = Input::get('provider_id');
 
         $client_input = Array(
             'first_name' => $first_name,
@@ -773,6 +774,16 @@ class AdminController extends BaseController {
         $client = new Client();
         $client->fill($client_input);
         $client->save();
+
+
+        $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+        if(count($client_provider)>0){
+            DB::table('clients_providers')->where('client_id', $client->id)->update(array('provider_id'=>$provider_id));
+        }
+        else DB::table('clients_providers')->insert(array('provider_id'=>$provider_id, 'client_id'=>$client->id));
+
+
+
         //dd( "creatd new user:".$client->id);
 
         $login = "unregistered".$client->id."@user.com";
