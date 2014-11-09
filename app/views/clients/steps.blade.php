@@ -133,7 +133,7 @@
                     <strong><u>Select Your Plan</u></strong><br />
                     Please select a package from the drop down below:<br />
                     <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
-                        <option value="0" {{ ($client->CremainsInfo->package_plan=="0"?'selected':'') }}>Select A Plan</option>
+                        <option value="0" {{ ($client->CremainsInfo->package_plan=="0"?'selected':'') }}>Select Plan</option>
                         <option value="1" {{ ($client->CremainsInfo->package_plan=="1"?'selected':'') }}>Plan A</option>
                         <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
                     </select><br />
@@ -796,7 +796,7 @@
             
             <br />
             <h3>Payment Summary <p>Itemization of goods and services <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="If you need to change a choice that affects the summary then return to the page and change the selection your summary will update.">?</a></p></h3>
-
+            <a href="http://www.californiacremationservices.com/pricelist.pdf" target="_blank">PRINTABLE COPY OF GENERAL PRICE LIST</a>
             <div class="row ">
                 <div class="col-sm-12" style="background-color:#fff;">            
                     <table style="width:100%;empty-cells:show;">
