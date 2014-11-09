@@ -71,7 +71,7 @@ else $provider_name = '';
                     <b style="font-size: 20px;color:#0E7DB6 !important;">Estimated Cost: $<span id="current_total_price"></span></b>
                     <br><span>Phone: {{$provider->phone}}</span>
                      @if($provider->ProviderPriceSheet!=null)
-                        <Br /><a style="font-weight:bold;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)}}">Download Pricing Sheet</a>
+                        <Br /><a style="font-weight:bold;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)}}" target="_blank">Download Pricing Sheet</a>
                      @endif
                 </td></tr>
            </table>

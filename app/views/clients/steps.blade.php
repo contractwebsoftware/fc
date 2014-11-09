@@ -795,8 +795,10 @@
             </div>
             
             <br />
-            <h3>Payment Summary <p>Itemization of goods and services <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="If you need to change a choice that affects the summary then return to the page and change the selection your summary will update.">?</a></p></h3>
-            <a href="http://www.californiacremationservices.com/pricelist.pdf" target="_blank">PRINTABLE COPY OF GENERAL PRICE LIST</a>
+            <h3>Payment Summary <p>Itemization of goods and services <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="If you need to change a choice that affects the summary then return to the page and change the selection your summary will update.">?</a></p>
+            <a style="font-weight:bold;font-size:12px;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)!=''?asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name):'href="http://www.californiacremationservices.com/pricelist.pdf"'}}" target="_blank" >Download Pricing Sheet</a>
+            </h3>
+
             <div class="row ">
                 <div class="col-sm-12" style="background-color:#fff;">            
                     <table style="width:100%;empty-cells:show;">
