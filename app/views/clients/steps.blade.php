@@ -12,51 +12,7 @@
     <div class="row">
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 
     </div>
-    <fieldset>
-        <div class="row">
-            <div class="col-md-6"><b style="font-size:14px;color:#999;">Client</b></div>
-            <div class="col-md-6"><b style="font-size:14px;color:#999;">Provider</b></div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
-                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a><br />
-                &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
-                &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
-                &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
-                &nbsp; &nbsp; <a class="btn btn-primary" href="#" onclick="$('#choose_download_forms').slideToggle();return false;">Download Forms</a>
-            </div>
-            <div class="col-md-6">
-                <h2>{{$provider->business_name}}</h2>
-                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{$provider->email }}">{{$provider->email }}</a><br />
-                &nbsp; &nbsp; <b>Phone</b>: {{$provider->phone }} &nbsp; &nbsp; <b>Fax</b>: {{$provider->fax }}<br />
-                &nbsp; &nbsp; <b>Address</b>: {{$provider->address }} {{$provider->city }}, {{$provider->state }}, {{$provider->zip }}<br />
-                &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
-            </div>
-        </div>
-        <div style="border:1px solid #eee;height:300px;display:none;width:100%;margin-left:25px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
-            {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
-                {{ Form::hidden('client_id',$client->id) }}
-                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                    <b>Choose the documents you would like to combine and download</b><br />
-                    <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
-                    @foreach($doc_forms as $key=>$value)
-                    <div class="row form-group">
-                        <div class="col-sm-12">
-                            <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
-                            {{$value}}
-                        </div>
-                    </div>
-                    @endforeach
 
-
-                 <div class="row form-group">
-                    <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Download</button><br class="clear" /></div>
-                </div>
-            {{ Form::close() }}   
-        </div>
-
-    </fieldset>
     <div class="row">
         <div class="col-md-12" style="font-size:12px!important;text-align:center;">
         <b>Goto:</b>
@@ -72,6 +28,96 @@
             | <a href="#step10">Confirm/Submit</a>
         </div>
     </div>
+    <fieldset>
+        <div class="row">
+            <div class="col-md-6"><b style="font-size:14px;color:#999;">Client</b></div>
+            <div class="col-md-6"><b style="font-size:14px;color:#999;">Provider</b></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
+                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a><br />
+                &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
+                &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
+                &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
+                &nbsp; &nbsp;
+
+            </div>
+            <div class="col-md-6">
+                <b>{{$provider->business_name}}</b><br />
+                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{$provider->email }}">{{$provider->email }}</a><br />
+                &nbsp; &nbsp; <b>Phone</b>: {{$provider->phone }}<br />
+                &nbsp; &nbsp; <b>Fax</b>: {{$provider->fax }}<br />
+                &nbsp; &nbsp; <b>Address</b>: {{$provider->address }} {{$provider->city }}, {{$provider->state }}, {{$provider->zip }}<br />
+                &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <div class="row">
+        <div class="col-md-2" >
+           <button class="pull-left" onclick="$('#choose_download_forms').slideToggle();return false;">Download Forms</button>
+        </div><div class="col-md-4" >
+           @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+               {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
+               {{ Form::hidden('client_id',$client->id) }}
+               {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+               <button class="pull-left" style="margin-left:15px;" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update Existing':'Create')?> Client In Freshbooks</button>
+               {{ Form::close() }}
+
+               <?php
+               if($client->fb_client_id  != ''){
+                   $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+                   $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+
+                   echo '<br /><a class="pull-left" style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showUser?userid='.$client->fb_client_id.'" target="_blank">View Client In Freshbooks</a>';
+
+               }
+               ?>
+           @endif
+        </div><div class="col-md-6" style="padding-left:0px;">
+           @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+               {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
+               {{ Form::hidden('client_id',$client->id) }}
+               {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+               <button class="pull-left" style="margin-left:15px;" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update Existing':'Create')?> Invoice In Freshbooks</button>
+               {{ Form::close() }}
+                <?php
+                      if($client->fb_invoice_id  != ''){
+                          $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+                          $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+
+                          echo '<br /><a class="pull-left" style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">View Invoice In Freshbooks</a>';
+
+                      }
+                 ?>
+           @endif
+
+       </div>
+   </div>
+<br />
+   <div style="border:1px solid #eee;height:300px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
+       {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
+           {{ Form::hidden('client_id',$client->id) }}
+           {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+           <b>Choose the documents you would like to combine and download</b><br />
+           <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
+           @foreach($doc_forms as $key=>$value)
+           <div class="row form-group">
+               <div class="col-sm-12">
+                   <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
+                   {{$value}}
+               </div>
+           </div>
+           @endforeach
+            <div class="row form-group">
+               <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Download</button><br class="clear" /></div>
+           </div>
+       {{ Form::close() }}
+
+   </div>
+
     <script>
         $().ready(function(){
            //location.href="#step{{Session::get('step')}}";
@@ -804,12 +850,12 @@
 
             <div class="row ">
                 <div class="col-sm-12" style="background-color:#fff;">            
-                    <table style="width:100%;empty-cells:show;">
-                        <th>Description</th><th >Price</th>
+                    <table style="width:100%;empty-cells:show;" align=right>
+                        <th width="45%">Name</th><th width="45%">Description</th><th width="50">Price</th>
                         <?php
                             if(is_array($client->sale_summary_r['report']))
                             foreach($client->sale_summary_r['report'] as $key=>$value){
-                                echo '<tr><td>'.$value['desc'].'</td><td>'.$value['price'].'</td></tr>';
+                                echo '<tr><td>'.$value['name'].'</td><td>'.$value['desc'].'</td><td >'.$value['price'].'</td></tr>';
                             }
                         ?>                       
                             

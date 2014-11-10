@@ -1294,7 +1294,7 @@ class AdminController extends BaseController {
                 $fb->request();
 
                 if($fb->success()) {
-                    Session::flash('success','Successful!ly Set Recurring Freshbooks entry');
+                    Session::flash('success','Successfully Set Recurring Freshbooks entry');
                     //dd($fb->getResponse());
                     
                     $res = $fb->getResponse();

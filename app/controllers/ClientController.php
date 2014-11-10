@@ -276,13 +276,13 @@ class ClientController extends BaseController {
                 if($provider->pricing_options->custom1_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom1'] = '0';
                 if($provider->pricing_options->custom2_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom2'] = '0';
                 if($provider->pricing_options->custom3_included=='2' && $input['cremains_info']['package_plan']=='1')$input['cremains_info']['custom3'] = '0';
-                
-               
-                    
+
+
+
                 $client->CremainsInfo->fill($input['cremains_info']);
-                $client->CremainsInfo->save(); 
+                $client->CremainsInfo->save();
             }
-            
+
             if($plan_change == true){
                 if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
                 else {
@@ -875,7 +875,10 @@ class ClientController extends BaseController {
             if($client->CremainsInfo->package_plan == "1") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->basic_cremation;
             elseif($client->CremainsInfo->package_plan == "2") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->premium_cremation;
             else $saleSummary['report']['package_plan']['price'] = '';
-            $saleSummary['report']['package_plan']['desc'] = "Cremation Plan: " . ($client->CremainsInfo->package_plan==1?'Package A':'Package B');
+
+            $saleSummary['report']['package_plan']['name'] = 'Cremation Plan';
+            $saleSummary['report']['package_plan']['qnt'] = '1';
+            $saleSummary['report']['package_plan']['desc'] = $client->CremainsInfo->package_plan==1?'Package A':'Package B';
             $TOTAL_PRICE += $saleSummary['report']['package_plan']['price'];
            
 
@@ -884,14 +887,19 @@ class ClientController extends BaseController {
             elseif($client->DeceasedInfo->weight == "weight_lt_350") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_lt_350;
             elseif($client->DeceasedInfo->weight == "weight_gt_350") $saleSummary['report']['weight']['price'] = $provider->pricing_options->weight_gt_350;
             else $saleSummary['report']['weight']['price'] = '';
-            $saleSummary['report']['weight']['desc'] = "Weight: " . $client->DeceasedInfo->weight;
+
+            $saleSummary['report']['weight']['name'] = 'Weight';
+            $saleSummary['report']['weight']['qnt'] = '1';
+            $saleSummary['report']['weight']['desc'] = $client->DeceasedInfo->weight;
             $TOTAL_PRICE += $saleSummary['report']['weight']['price'];
             
             
 
             if($client->DeceasedInfo->has_pace_maker == "1") $saleSummary['report']['has_pace_maker']['price'] = $provider->pricing_options->pacemaker;
-            else $saleSummary['report']['has_pace_maker']['price'] = ''; 
-            $saleSummary['report']['has_pace_maker']['desc'] = "Has Pacemaker: " . ($client->DeceasedInfo->has_pace_maker?'Yes':'No');
+            else $saleSummary['report']['has_pace_maker']['price'] = '';
+            $saleSummary['report']['has_pace_maker']['name'] = 'Has Pacemaker';
+            $saleSummary['report']['has_pace_maker']['qnt'] = '1';
+            $saleSummary['report']['has_pace_maker']['desc'] = $client->DeceasedInfo->has_pace_maker?'Yes':'No';
             $TOTAL_PRICE += $saleSummary['report']['has_pace_maker']['price'];
             
             /*
@@ -906,41 +914,55 @@ class ClientController extends BaseController {
             elseif($client->CremainsInfo->cremation_shipping_plan == "scatter_at_sea") $saleSummary['report']['cremation_shipping_plan']['price'] = $provider->pricing_options->scatter_at_sea;
             elseif($client->CremainsInfo->cremation_shipping_plan == "ship_to_you") $saleSummary['report']['cremation_shipping_plan']['price'] = $provider->pricing_options->ship_to_you;
             else $saleSummary['report']['cremation_shipping_plan']['price'] = '';
-            $saleSummary['report']['cremation_shipping_plan']['desc'] = "Plan For Cremation Remains: " . $client->CremainsInfo->cremation_shipping_plan;
+            $saleSummary['report']['cremation_shipping_plan']['name'] = 'Plan For Cremation Remains';
+            $saleSummary['report']['cremation_shipping_plan']['qnt'] = '1';
+            $saleSummary['report']['cremation_shipping_plan']['desc'] = $client->CremainsInfo->cremation_shipping_plan;
             $TOTAL_PRICE += $saleSummary['report']['cremation_shipping_plan']['price'];
             
 
             if($client->CremainsInfo->cert_plan == "deathcert_wurn") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_wurn; $desc = "Mail certificate(s) with urn";}
             elseif($client->CremainsInfo->cert_plan == "deathcert_cep") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_cep; $desc = "Mail certificate(s) seperately";}
             elseif($client->CremainsInfo->cert_plan == "deathcert_pickup") {$saleSummary['report']['cert_plan']['price'] = $provider->pricing_options->deathcert_pickup; $desc = "Pick up certificate(s) at our office";}
-            else { $saleSummary['report']['cert_plan']['price'] = $desc = ''; }            
-            $saleSummary['report']['cert_plan']['desc'] = "Certificate Shipping: " . $desc;
+            else { $saleSummary['report']['cert_plan']['price'] = $desc = ''; }
+            $saleSummary['report']['cert_plan']['name'] = 'Certificate Shipping';
+            $saleSummary['report']['cert_plan']['qnt'] = '1';
+            $saleSummary['report']['cert_plan']['desc'] = $desc;
             
             $TOTAL_PRICE += $saleSummary['report']['cert_plan']['price'];
             //echo '<pre>';print_r($client->CremainsInfo); print_r($provider->pricing_options); echo '</pre>'; die();
             
             //dd($cremain_info);
+            $saleSummary['report']['number_of_certs']['name'] = 'Certificates';
             $saleSummary['report']['number_of_certs']['desc'] = 'Number of Certificates ($'.$provider->pricing_options->deathcert_each." each): " . $client->CremainsInfo->number_of_certs;
+            $saleSummary['report']['number_of_certs']['qnt'] = '1';
             $saleSummary['report']['number_of_certs']['price'] = number_format((float)$provider->pricing_options->deathcert_each * ($client->CremainsInfo->number_of_certs?$client->CremainsInfo->number_of_certs:0), 2, '.', '');
             $TOTAL_PRICE += $saleSummary['report']['number_of_certs']['price'];
-            
-            
-            $saleSummary['report']['filing_fee']['desc'] = "Filing Fee: " . $provider->pricing_options->filing_fee;
+
+
+            $saleSummary['report']['filing_fee']['name'] = 'Filing Fee';
+            $saleSummary['report']['filing_fee']['qnt'] = '1';
+            $saleSummary['report']['filing_fee']['desc'] = '';
             $saleSummary['report']['filing_fee']['price'] = $provider->pricing_options->filing_fee;
             $TOTAL_PRICE += $saleSummary['report']['filing_fee']['price'];
 
             if($provider->pricing_options->custom1_text != "" and ($client->CremainsInfo->custom1==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom1_included)) {
-                $saleSummary['report']['custom1']['desc'] = $provider->pricing_options->custom1_text;
+                $saleSummary['report']['custom1']['desc'] = '';
+                $saleSummary['report']['custom1']['qnt'] = '1';
+                $saleSummary['report']['custom1']['name'] = $provider->pricing_options->custom1_text;
                 $saleSummary['report']['custom1']['price'] = $provider->pricing_options->custom1;
                 $TOTAL_PRICE += $saleSummary['report']['custom1']['price'];
             }
             if($provider->pricing_options->custom2_text != "" and ($client->CremainsInfo->custom2==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom2_included)) {
-                $saleSummary['report']['custom2']['desc'] = $provider->pricing_options->custom2_text;
+                $saleSummary['report']['custom2']['desc'] = '';
+                $saleSummary['report']['custom2']['qnt'] = '1';
+                $saleSummary['report']['custom2']['name'] = $provider->pricing_options->custom2_text;
                 $saleSummary['report']['custom2']['price'] = $provider->pricing_options->custom2;
                 $TOTAL_PRICE += $saleSummary['report']['custom2']['price'];
             }
             if($provider->pricing_options->custom3_text != "" and ($client->CremainsInfo->custom3==1) and ClientController::customerCustomPlanOptions($client->CremainsInfo->package_plan, $provider->pricing_options->custom3_included)) {
-                $saleSummary['report']['custom3']['desc'] = $provider->pricing_options->custom3_text;
+                $saleSummary['report']['custom3']['desc'] = '';
+                $saleSummary['report']['custom3']['qnt'] = '1';
+                $saleSummary['report']['custom3']['name'] = $provider->pricing_options->custom3_text;
                 $saleSummary['report']['custom3']['price'] = $provider->pricing_options->custom3;
                 $TOTAL_PRICE += $saleSummary['report']['custom3']['price'];
             }
@@ -952,9 +974,11 @@ class ClientController extends BaseController {
             else $this_product = $client_choosen_product->product_id;            
              
             $client_product = ProviderProducts::where('provider_id',$provider->id)->where('product_id',$this_product)->first();
-            if($client_product == null || count($client_product)<1)$client_product = Products::where('id',$this_product)->first();            
-           
-            $saleSummary['report']['urn_product']['desc'] = 'Urn: '. $client_product->name;
+            if($client_product == null || count($client_product)<1)$client_product = Products::where('id',$this_product)->first();
+
+            $saleSummary['report']['urn_product']['name'] = 'Urn';
+            $saleSummary['report']['urn_product']['qnt'] = '1';
+            $saleSummary['report']['urn_product']['desc'] = $client_product->name;
             $saleSummary['report']['urn_product']['price'] = $client_product->price;
             $TOTAL_PRICE += $saleSummary['report']['urn_product']['price'];
             
@@ -979,12 +1003,12 @@ class ClientController extends BaseController {
 
         if(is_array($client->sale_summary_r['report'])){
 
-            $html = '<table width="100%" ><tr><td style="border-bottom:1px solid #999;"><b>Description</b></td><td style="border-bottom:1px solid #999;"><b>Price</b></td></tr>';
+            $html = '<table width="100%" ><tr><td style="border-bottom:1px solid #999;"><b>Name</b></td><td style="border-bottom:1px solid #999;"><b>Description</b></td><td style="border-bottom:1px solid #999;width:80px;"><b>Price</b></td></tr>';
 
             foreach($client->sale_summary_r['report'] as $key=>$value){
-                $html .= '<tr><td>'.$value['desc'].' </td><td>'.$value['price'].' </td></tr>';
+                $html .= '<tr><td>'.$value['name'].' </td><td>'.$value['desc'].' </td><td>'.$value['price'].' </td></tr>';
             }
-            $html .= '<tr><td style="border-top:1px solid #999;" align=right><b>Total Summary</b>:&nbsp;</td><td style="border-top:1px solid #999;">$'.$client->sale_summary_r['total'].'</td></tr>';
+            $html .= '<tr><td colspan="2" style="border-top:1px solid #999;" align=right><b>Total Summary</b>:&nbsp;</td><td style="border-top:1px solid #999;">$'.$client->sale_summary_r['total'].'</td></tr>';
             $html .= '</table>';
         }
         return $html;
@@ -1197,5 +1221,208 @@ class ClientController extends BaseController {
         $pdf->loadHTML($html);
         return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');
     }
-    
+
+
+
+    //FRESHBOOKS BILLING INTEGRATION FOR A PROVIDERS CLIENTS
+    public function postAddBillingClient($provider_id='', $client_id='', $return_client_id=false)
+    {
+        if($client_id=='')$client_id = Input::get('client_id');
+        if($provider_id=='')$provider_id = Input::get('provider_id');
+
+        if($client_id=='')$client_id = Session::get('client_id');
+        if($provider_id=='')$provider_id = Session::get('provider_id');
+
+        $provider = FProvider::find($provider_id);
+        $client = Client::find($client_id);
+        $client_user = User::find($client->user_id);
+
+
+        if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+
+            $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+            $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+
+            /* FRESHBOOKS API */
+            //$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+            $token = $provider->freshbooks_api_token; // your api token found in your account
+            Freshbooks\FreshBooksApi::init($domain, $token);
+
+
+            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+            $fb_client_info = array(
+                'first_name' => $client->first_name,
+                'last_name' => $client->last_name,
+                'email' => $client->User->email,
+                //'username' => $provider->email,
+                'work_phone' => $client->phone,
+                'fax' => $client->fax,
+                'p_street1' => $client->address . ' ' . $client->apt,
+                'p_city' => $client->city,
+                'p_state' => $client->state,
+                'p_country' => 'United States',
+                'p_code' => $client->zip
+            );
+            if ($client->fb_client_id == '') {
+                $fb = new Freshbooks\FreshBooksApi('client.create');
+                $type = 'Created';
+            }
+            else {
+                $fb = new Freshbooks\FreshBooksApi('client.update');
+                $fb_client_info['client_id'] = $client->fb_client_id;
+                $type = 'Updated';
+            }
+
+            $fb->post( array('client' => $fb_client_info ) );
+
+            //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+            $fb->request();
+
+            if($fb->success()) {
+                Session::flash('success','Successfully '.$type.' Freshbooks entry');
+                //dd($fb->getResponse());
+                $res = $fb->getResponse();
+                if($type == 'Created'){
+                    $fb_client_id = $res['client_id'];
+                    $client->fb_client_id = $fb_client_id;
+                    $client->save();
+                }
+
+                //freshbooks_client_id
+                //freshbooks_recurring_id
+                //return $fb_client_id;
+            } else {
+                echo $fb->getError();
+                Session::flash('error','Errors Creating Freshbooks Entry');
+
+                var_dump($fb->getResponse());
+            }
+
+
+        }
+        else Session::flash('Please Enter All Provider Freshbooks Information');
+
+        if($return_client_id) return $client->fb_client_id;
+        else return Redirect::action('ClientController@getSteps');
+
+    }
+
+
+    function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=false)
+    {
+            if($client_id=='')$client_id = Input::get('client_id');
+            if($provider_id=='')$provider_id = Input::get('provider_id');
+
+            if($client_id=='')$client_id = Session::get('client_id');
+            if($provider_id=='')$provider_id = Session::get('provider_id');
+
+            $provider = FProvider::find($provider_id);
+            $provider = ClientController::updateProvider($provider_id);
+
+            $client = Client::find($client_id);
+            $clientData = ClientController::fillOutClientTables(Client::find($client_id));
+            //$client_user = User::find($client->user_id);
+
+
+            //$bill = Billing::first();
+
+
+            if($client == null)return;
+
+            if($client->fb_client_id=='' || $client->fb_client_id=='0'){
+                $client->fb_client_id = ClientController::postAddBillingClient($provider_id, $client_id, true);
+                //$provider = FProvider::find($provider->id);
+            }
+
+
+            if(!is_array($clientData->sale_summary_r['report']))$clientData->sale_summary_r = ClientController::getSaleTotals($clientData, $provider);
+
+            if(is_array($clientData->sale_summary_r['report'])){
+                $invoice['invoice']['client_id'] = $client->fb_client_id;
+                $invoice['invoice']['lines']['line'] = array();
+
+                foreach($clientData->sale_summary_r['report'] as $key=>$value){
+
+                    array_push($invoice['invoice']['lines']['line'], array(
+                                            'name'=>$value['name'],
+                                            'description'=>$value['desc'],
+                                            'unit_cost'=>$value['price'],
+                                            'quantity'=>($value['qnt']==''?'1':$value['qnt']),
+                                            'tax1_name'=>'',
+                                            'tax2_name'=>'',
+                                            'tax1_percent'=>'',
+                                            'tax2_percent'=>''
+                                        )
+
+
+                    );
+
+                }
+                //$client->sale_summary_r['total']
+
+            }
+        //echo '<pre>';dd($line_items_r);
+
+
+            if($client->fb_invoice_id=='0' || $client->fb_invoice_id=='')$create_new = true;
+            else $create_new = false;
+
+
+
+       //echo '<pre>';dd($invoice); // You can view what the XML looks like that we're about to send over the wire
+
+
+            if($create_new)$fb = new Freshbooks\FreshBooksApi('invoice.create');
+            else {
+                $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
+                $fb = new Freshbooks\FreshBooksApi('invoice.update');
+            }
+
+
+            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+            $fb->post( $invoice );
+
+
+
+
+
+            //echo '<pre>';dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+            $fb->request();
+
+            if($fb->success()) {
+                Session::flash('success','Successfully Created Freshbooks Invoice');
+                //dd($fb->getResponse());
+
+                $res = $fb->getResponse();
+                //dd($res);
+
+
+                if($create_new){
+                    $invoice_id = $res['invoice_id'];
+                    $client->fb_invoice_id = $invoice_id;
+                    $client->save();
+                }
+
+            } else {
+                //echo $fb->getError();
+                Session::flash('error','Errors Setting Freshbooks Recurring Entry, Has the Person or Invoice Been Deleted From Freshbooks?<br />'
+                    . 'The Freshbook Integration Has been Reset for this client, the next time you change plans and save it will create a new setup in freshbooks for them. '
+                    . 'Make sure to login to Freshbooks to double check everything is ok and no duplicates exist '.$fb->getError());
+
+                $client->fb_client_id = '';
+                $client->fb_recurring_id = '';
+                $client->fb_invoice_id = '';
+                //echo '<pre>';dd($client);
+                $client->save();
+                //dd($fb->getResponse());
+            }
+
+        if($return_invoice_id) return $client->fb_invoice_id;
+        else return Redirect::action('ClientController@getSteps');
+
+    }
+
+
 }
