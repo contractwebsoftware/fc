@@ -521,10 +521,13 @@
                  
                 <script>
                   
-                    CKEDITOR.replace( 'custom_provider_form', { height: '500px' }); 
-                    
+
+
                     $().ready( function() {
-                       $('.form_keys li').click(function() { 
+                       var editor = CKEDITOR.replace( 'custom_provider_form', { height: '500px' });
+                       editor.config.enterMode = CKEDITOR.ENTER_BR;
+
+                       $('.form_keys li').click(function() {
                          //alert('awesome'+$(this).text()); 
                          //$(".cke_source:first").insertAtCaret($(this).text());
                          //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
@@ -1007,7 +1010,7 @@
                             <script>    
                                 $().ready(function(){
                                     var editor = CKEDITOR.replace( 'urn_description{{ $product->id }}', {height: '120px'});
-
+                                    editor.config.enterMode = CKEDITOR.ENTER_BR;
                                     editor.config.toolbarGroups = [
                                         { name: 'links' },
                                         { name: 'basicstyles', groups: [ 'basicstyles'] },
