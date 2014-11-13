@@ -235,8 +235,8 @@
             </div>
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Save</button><br class="clear" /></div>
             </div>
         </fieldset>
         <style>
@@ -387,10 +387,9 @@
                 </div>                        
             </div>
             <br />
-                    
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset> 
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
@@ -489,8 +488,8 @@
                   
                
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>        
     {{ Form::close() }}
@@ -544,8 +543,8 @@
     
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>        
     {{ Form::close() }}
@@ -591,8 +590,8 @@
             </div>
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>        
     {{ Form::close() }}
@@ -693,8 +692,8 @@
             
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>
         
@@ -765,8 +764,8 @@
             </div>
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>        
     {{ Form::close() }}
@@ -812,8 +811,8 @@
             
             
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset> 
                 
@@ -866,8 +865,8 @@
                 
             </div>
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Save</button><br class="clear" /></div>
             </div>
         </fieldset>        
     {{ Form::close() }}              
@@ -916,8 +915,8 @@
             </div>
             <Br /><Br />
             <div class="row form-group">
-                <div class="col-sm-6"><button type="button" name="back" class="step_back_btn">Back</button><br class="clear" /></div>
-                <div class="col-sm-6"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
+                <div class="col-sm-10 warn-login-text"></div>
+                <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
             </div>
         </fieldset> 
         <script>

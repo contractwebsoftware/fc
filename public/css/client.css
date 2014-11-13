@@ -109,3 +109,4 @@ nav.client-nav-bar{margin-bottom:0px;}
 
 #select_location select{min-width:100px!important;}
 
+.warn-login-text,.warning-text{font-size:13px;color: #ff000e!important;text-align:right;}

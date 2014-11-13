@@ -49,7 +49,7 @@ else $provider_name = '';
             <?php
                 if(Sentry::getUser())$client = Client::where('user_id',Sentry::getUser()->id)->first();
                 else  $client = new Client();
-                    $name = $client->first_name;
+                $name = $client->first_name;
                 //print_r($name);
             ?>
             <li @if($name =="unregistered" or $name =='')style="display:none;"@endif id="logout_link"><a href="{{ action('ClientController@getLogout') }}">Logout</a></li>

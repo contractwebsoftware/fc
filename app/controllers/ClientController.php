@@ -92,7 +92,7 @@ class ClientController extends BaseController {
             
             
             if($goToStep != 0)Session::put('step', $goToStep);
-            elseif(Input::get('submit')=="submit"){
+            elseif(Input::get('submit')=="submit" || Input::get('submit')=="save"){
                 
                 $current_step = Step::where('step_number', '=', Input::get('step',1))->firstOrFail();
                 Session::put('step', $current_step->next_step_number);
