@@ -38,7 +38,7 @@
                     width: 270,
                     primary: 'flash',
                     <?=(Session::get('step')==11?'autostart: true,':'')?>
-                    image: "{{ asset('http://app.forcremation.com/images/forcremation-video-start.jpg') }}"
+                    image: "{{ asset('img/forcremation-video-start.jpg') }}"
                 });
             </script>
 
