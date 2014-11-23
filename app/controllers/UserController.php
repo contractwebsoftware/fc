@@ -1,6 +1,8 @@
 <?php
 
 class UserController extends BaseController {
+    protected $layout = 'layouts.admin';
+
 
     public function getLogin()
     {
@@ -66,39 +68,6 @@ class UserController extends BaseController {
             Sentry::logout();
             //return Redirect::to('/users/login');
             return Redirect::action('UserController@getLogin');
-    }
-    public function getCreateUser() {
-            try
-            {
-                // Create the user
-                $user = Sentry::createUser(array(
-                    'email'     => 'bendavol@gmail.com',
-                    'password'  => 'testing',
-                    'activated' => true,
-                ));
-
-                // Find the group using the group id
-                $adminGroup = Sentry::findGroupById(1);
-
-                // Assign the group to the user
-                $user->addGroup($adminGroup);
-            }
-            catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
-            {
-                echo 'Login field is required.';
-            }
-            catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
-            {
-                echo 'Password field is required.';
-            }
-            catch (Cartalyst\Sentry\Users\UserExistsException $e)
-            {
-                echo 'User with this login already exists.';
-            }
-            catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
-            {
-                echo 'Group was not found.';
-            }
     }
 
 
@@ -248,5 +217,174 @@ class UserController extends BaseController {
         echo $admin_settings->setting_value;
         die();
     }
-        
+
+
+
+
+
+    /*    MANAGE USERS TABLE
+     *      Crud Functions
+     *
+     *
+     *
+     */
+    public function getManageUsers() {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+
+
+        $per_page = 50;
+        if(Input::get('per'))$per_page = Input::get('per');
+
+        $q = Input::get('q');
+        if(strlen($q)>=3)
+        {
+            $users = User::where('email','like','%'.$q.'%')->orWhere('first_name','like','%'.$q.'%')
+                ->orWhere('last_name','like','%'.$q.'%')
+                ->orderBy('created_at', 'desc');
+        }
+        else $users = User::orderBy('created_at', 'desc');
+
+        $users = $users->where('role','=','admin')->paginate($per_page);
+
+        //dd($users);
+        $data['users'] = $users;
+
+
+        $this->layout->content = View::make('admin.manage-users', $data);
+    }
+
+    public function getNewUser(){
+        $data['user'] = new User;
+        $data['title'] = "Add New";
+        $this->layout->content = View::make('admin.edit-users', $data);
+    }
+
+    public function getEditUser($id){
+        $data['user'] = User::find($id);
+        $data['title'] = "Edit";
+
+        $this->layout->content = View::make('admin.edit-users', $data);
+    }
+
+    public function postUpdateUser($user_id=''){
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+
+        $input = Input::all();
+        if($user_id != '')$input['user']['id'] = $user_id;
+
+        $user = User::find($input['user']['id']);
+
+        if(!array_key_exists('activated', $input['user']))$input['user']['activated']='0';
+
+        if($user == null) {
+            $user = UserController::getCreateUser($input['user']);
+            Session::flash('success','User Created Successfully');
+        }
+        else {
+            Session::flash('success','User Updated Successfully');
+            $user->fill($input['user']);
+            $user->save();
+
+            // Okay all validation passed, we change the password
+            if($input['user']['password']!=''){
+                try {
+                    $user->password = Hash::make($input['user']['password']);
+                    $user->save();
+                    Session::flash('success','Password Updated');
+                } catch (Exception $e) {
+                    Session::flash('error','Password Update Failed');
+                }
+            }
+
+        }
+
+        return Redirect::action('UserController@getManageUsers');
+    }
+
+    public function getUnDeleteUser($id){
+        $user = User::withTrashed()->find($id);
+        if($user!=null){
+            $user->restore();
+            Session::flash('success','User UnDeleted Successfully');
+        }
+        return Redirect::action('UserController@getManageUsers');
+    }
+
+    public function getDeleteUser($id){
+        $user = User::find($id);
+        if($user!=null){
+            $user->delete();
+        }
+        Session::flash('success','User Soft Deleted Successfully');
+        return Redirect::action('UserController@getManageUsers');
+    }
+
+
+
+    public function getCreateUser($user_info='') {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+        try
+        {
+            $input = Input::all();
+            if($user_info == '')$user_info = $input['user'];
+            //dd('test');
+            // Create the user
+            $user = Sentry::createUser(array(
+                'email'     => $user_info['email'],
+                'password'  => $user_info['password'],
+                'first_name'  => $user_info['first_name'],
+                'last_name'  => $user_info['last_name'],
+                'role'  => 'admin',
+                'activated' => true,
+            ));
+            // Find the group using the group id
+            $adminGroup = Sentry::findGroupById(1);
+            // Assign the group to the user
+            $user->addGroup($adminGroup);
+
+            $input = [
+                'business_name' => $user_info['first_name'].' '.$user_info['last_name'],
+                'email' => $user_info['email'],
+                'plan_id' => 1,
+                'admin_provider' => '1',
+                'user_id' => $user->id,
+                'provider_status'  => '0'
+            ];
+
+
+            // dd($input);
+            //$new_provider = DB::table('providers')->insert($input);
+
+            $provider = new FProvider();
+            $provider->fill($input);
+            $provider->save();
+
+            $zips = new ProviderZip();
+            $zips->fill( Array('zip'=>'97520', 'provider_id'=>$provider->id) );
+            $zips->save();
+
+            $pricing = new ProviderPricingOptions();
+            $pricing->fill( Array('provider_id'=>$provider->id) );
+            $pricing->save();
+        }
+        catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+        {
+            echo 'Login field is required.';
+        }
+        catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
+        {
+            echo 'Password field is required.';
+        }
+        catch (Cartalyst\Sentry\Users\UserExistsException $e)
+        {
+            echo 'User with this login already exists.';
+        }
+        catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+        {
+            echo 'Group was not found.';
+        }
+        return $user;
+    }
+
+
 }

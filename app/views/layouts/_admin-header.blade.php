@@ -13,6 +13,7 @@
             <!--<li class="{{(Request::path('admin/*')?'active':'')}}"><a href="{{ action('AdminController@getAllUser') }}">All Users</a></li>-->
             <li class="{{(strpos(Request::path(),'admin/billing-page')!==false?'active':'')}}"><a href="{{ action('AdminController@getBillingPage') }}">Billings</a></li>
             <li class="{{(strpos(Request::path(),'admin/setting')!==false?'active':'')}}"><a href="{{ action('AdminController@getSetting') }}">Settings</a></li>
+            <li class="{{(strpos(Request::path(),'users/manage-users')!==false?'active':'')}}"><a href="{{ action('UserController@getManageUsers') }}">Admin Users</a></li>
             <li ><a href="{{ action('UserController@getLogout')}}">Logout</a></li>
     </ul>
     <div class="clear"></div>

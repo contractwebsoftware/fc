@@ -38,7 +38,7 @@ class AdminController extends BaseController {
             if(Input::get('include_deleted')==1)$providers = FProvider::with('user')->orderBy('business_name', 'asc')->withTrashed();
             else $providers = FProvider::with('user');
         }
-        $providers = $providers->orderBy('created_at', 'desc')->paginate($per_page);
+        $providers = $providers->where('admin_provider',0)->orderBy('created_at', 'desc')->paginate($per_page);
         
         foreach($providers as $provider){
             $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
