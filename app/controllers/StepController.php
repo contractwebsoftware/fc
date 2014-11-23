@@ -52,7 +52,7 @@ class StepController extends BaseController {
             //$city = DB::table('zips')->where('city', Input::get('city'))->andWhere('state', $zip->state)->get();
             $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->whereNull('deleted_at')->orderBy('biz_name', 'asc')->get();
 
-            $providers = DB::table('providers');
+            $providers = DB::table('providers')->where('admin_provider',0);
             $providers_with_zips = DB::table('provider_zips');
 
 

@@ -23,8 +23,8 @@ class AdminController extends BaseController {
         {
             //$users = DB::table('users')->where('email','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->lists('id');
 
-            if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed();
-            else $providers = FProvider::where('email','like','%'.$q.'%')->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%');
+            if(Input::get('include_deleted')==1)$providers = FProvider::where('email','like','%'.$q.'%')->where('admin_provider',0)->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%')->withTrashed();
+            else $providers = FProvider::where('email','like','%'.$q.'%')->where('admin_provider',0)->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')->orWhere('business_name','like','%'.$q.'%');
             ////if($providers!=null)$providers = FProvider::where('email','like','%'.$q.'%');
             //else $providers = FProvider::with('user')->get();
             if($providers == null){

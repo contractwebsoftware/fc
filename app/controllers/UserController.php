@@ -238,13 +238,12 @@ class UserController extends BaseController {
         $q = Input::get('q');
         if(strlen($q)>=3)
         {
-            $users = User::where('email','like','%'.$q.'%')->orWhere('first_name','like','%'.$q.'%')
-                ->orWhere('last_name','like','%'.$q.'%')
-                ->orderBy('created_at', 'desc');
+            $users = User::where('email','like','%'.$q.'%')->where('role','admin')->orWhere('first_name','like','%'.$q.'%')
+                ->orWhere('last_name','like','%'.$q.'%');
         }
-        else $users = User::orderBy('created_at', 'desc');
+        else $users = User::where('role','admin');
 
-        $users = $users->where('role','=','admin')->paginate($per_page);
+        $users = $users->orderBy('created_at', 'desc')->paginate($per_page);
 
         //dd($users);
         $data['users'] = $users;
