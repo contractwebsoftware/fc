@@ -31,6 +31,13 @@
                     <label for="activated">Account is Active</label>
                     <input type="checkbox" class="form-control input-sm" name="user[activated]" id="activated" value="1" {{$user->activated==1 || $user->id==''?'checked':''}} >
                 </div>
+
+                <div class="form-group">
+                    <label for="super_admin">Super Admin Account - <i style="font-weight:normal;">Allowed to edit other admin users</i></label>
+
+                    <input type="checkbox" class="form-control input-sm" name="user[super_admin]" id="super_admin" value="1" {{ $user->super_admin==1 ? 'checked':'' }} >
+                </div>
+
                 <div class="form-group">
                     Created: {{date('m/d/Y h:i a',strtotime($user->created_at))}}<br />
                     Last Logged In: {{date('m/d/Y h:i a',strtotime($user->last_login))}}<br />

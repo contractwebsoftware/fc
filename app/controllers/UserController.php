@@ -274,6 +274,8 @@ class UserController extends BaseController {
         $user = User::find($input['user']['id']);
 
         if(!array_key_exists('activated', $input['user']))$input['user']['activated']='0';
+        if(!array_key_exists('super_admin', $input['user']))$input['user']['super_admin']='0';
+
 
         if($user == null) {
             $user = UserController::getCreateUser($input['user']);
