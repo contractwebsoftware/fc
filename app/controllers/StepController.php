@@ -52,7 +52,7 @@ class StepController extends BaseController {
             //$city = DB::table('zips')->where('city', Input::get('city'))->andWhere('state', $zip->state)->get();
             $funeral_homes = DB::table('funeral_homes')->where('e_city', $zip->e_city)->where('e_state', $zip->e_state)->whereNull('deleted_at')->orderBy('biz_name', 'asc')->get();
 
-            $providers = DB::table('providers')->where('admin_provider',0);
+            $providers = DB::table('providers');
             $providers_with_zips = DB::table('provider_zips');
 
 
@@ -79,7 +79,7 @@ class StepController extends BaseController {
                 $json_r['funeralhome-'.$row->id] = $row->biz_name;
             }
             foreach($providers as $key=>$row){
-                if($row->provider_status=='1')$json_r['provider-'.$row->id] = $row->business_name;
+                if($row->provider_status=='1' and $row->admin_provider=='0')$json_r['provider-'.$row->id] = $row->business_name;
             }
             foreach($providers_with_zips as $key=>$row){
                 $this_provider = Fprovider::find($row->provider_id);
