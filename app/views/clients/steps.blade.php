@@ -36,7 +36,18 @@
         <div class="row">
             <div class="col-md-6">
                 <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
-                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a><br />
+                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a>
+                &nbsp; [<i><a href="#" onclick="$('#edit-client-email').slideToggle();return false;"> Edit </a></i>]<br />
+                <div id="edit-client-email" style="display:none;clear:both;float:none;margin-bottom:15px;width:100%;padding-left:35px;margin-top:15px;">
+                    Edit Client Email and Username:<br />
+                    {{ Form::open(['action'=>'ClientController@postUpdateEmail','class'=>'form-horizontal','role'=>'form']) }}
+                    {{ Form::hidden('client_id',$client->id) }}
+                    {{ Form::hidden('client[id]',$client->id) }}
+                        <input name="client[email]" type="text" placeholder="Client Email" value="{{ $client->User->email }}"/>
+                        <button class="pull-left"  type="submit" name="submit" value="submit" style="">Save</button>
+                    {{ Form::close() }}
+                    <br style="clear:both;float:none;"/>
+                </div>
                 &nbsp; &nbsp; <b>Phone</b>: {{$client->phone }}<br />
                 &nbsp; &nbsp; <b>Address</b>: {{$client->address }} {{$client->apt }} {{$client->city }}, {{$client->state }}, {{$client->zip }}<br />
                 &nbsp; &nbsp; <b>Created</b>: {{ date('m/d/Y', strtotime($client->User->created_at)) }}<br /><br />
@@ -52,6 +63,7 @@
                 &nbsp; &nbsp; <b>Website</b>: <a href="{{$provider->website }}" target="_blank">{{$provider->website }}</a>
             </div>
         </div>
+
 
     </fieldset>
 

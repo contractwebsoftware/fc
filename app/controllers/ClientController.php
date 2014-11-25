@@ -190,22 +190,21 @@ class ClientController extends BaseController {
         }
     }*/
         
-    public function updateProvider($provider_id='', $client=''){
+    public function updateProvider($provider_id='', $client='')
+    {
         $provider = DB::table('providers')->where('id', $provider_id)->first();
         $provider->pricing_options = DB::table('provider_pricing_options')->where('provider_id', $provider_id)->first();
 
-        $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
-        if($provider->ProviderFiles == null)$provider->ProviderFiles = new ProviderFiles();
-        $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type','pricing')->first();
+        $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type', 'pricing')->first();
+        if ($provider->ProviderFiles == null) $provider->ProviderFiles = new ProviderFiles();
+        $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type', 'pricing')->first();
 
 
-
-        if(is_object($client)){
+        if (is_object($client)) {
             $client_provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
-            if(count($client_provider)>0){
-                DB::table('clients_providers')->where('client_id', $client->id)->update(array('provider_id'=>$provider_id));
-            }
-            else DB::table('clients_providers')->insert(array('provider_id'=>$provider_id, 'client_id'=>$client->id));
+            if (count($client_provider) > 0) {
+                DB::table('clients_providers')->where('client_id', $client->id)->update(array('provider_id' => $provider_id));
+            } else DB::table('clients_providers')->insert(array('provider_id' => $provider_id, 'client_id' => $client->id));
         }
         Session::put('provider', $provider);
         Session::put('provider_pricing_options', $provider->pricing_options);
@@ -491,7 +490,36 @@ class ClientController extends BaseController {
             }
             return ClientController::getSteps();	  
         }
-	
+
+    public function postUpdateEmail()
+    {
+        if(is_array(Input::get('client'))) {
+            $input['client'] = Input::get('client');
+
+            //$existing_client = Client::where('email', strtolower($input['client']['email']))->first();
+            $existing_user = User::where('email', strtolower($input['client']['email']))->first();
+
+            if($existing_user != null){
+                Session::flash('error','A Client with that Email and Login already exists');
+            }
+            else {
+                $client = Client::where('id', strtolower($input['client']['id']))->first();
+                //$client->email = $input['client']['email'];
+                //$client->save();
+
+                $user = User::where('id', strtolower($client->user_id))->first();
+                if($user != null){
+                    $user->email = $input['client']['email'];
+                    $user->save();
+                }
+
+                Session::flash('success','Clients\'s Email and Login have been updated');
+
+            }
+        }
+        return Redirect::action('ClientController@getSteps');
+
+    }
         
 	public function postLogin()
 	{
