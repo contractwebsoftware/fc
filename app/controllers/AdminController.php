@@ -1164,6 +1164,7 @@ class AdminController extends BaseController {
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb->post(array('client'=>
                 array(
+                    'organization' => $provider->business_name,
                     'first_name' => $provider->contact_first_name,
                     'last_name' => $provider->contact_last_name,
                     'email' => $provider->email,
