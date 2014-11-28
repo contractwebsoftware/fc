@@ -86,6 +86,17 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="form-group">
+                                        <label  class="col-sm-2" for="provider_login">Provider Contact Info</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" placeholder="Contact First Name" name="contact_first_name" id="contact_first_name" class="form-control" value="{{ $provider->contact_first_name }}">
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <input type="text" placeholder="Contact Last Name" name="contact_last_name" class="form-control" value="{{ $provider->contact_last_name }}">
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                             <label  class="col-sm-2" for="business_name">Provider Name</label>
                                             <div class="col-sm-10">
