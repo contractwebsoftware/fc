@@ -94,6 +94,9 @@ class UserController extends BaseController {
         $input = [
                 'plan_id' => Input::get('plan_id'),
                 'business_name' => Input::get('business_name'),
+                'contact_first_name' => Input::get('contact_first_name'),
+                'contact_last_name' => Input::get('contact_last_name'),
+                'contact_email' => Input::get('contact_email'),
                 'address' => Input::get('address'),
                 'city' => Input::get('city'),
                 'state' => Input::get('state'),
@@ -142,6 +145,9 @@ class UserController extends BaseController {
             $input = [
                 'plan_id' => Input::get('plan_id'),
                 'business_name' => Input::get('business_name'),
+                'contact_first_name' => Input::get('contact_first_name'),
+                'contact_last_name' => Input::get('contact_last_name'),
+                'contact_email' => Input::get('contact_email'),
                 'email' => Input::get('email'),
                 'address' => Input::get('address'),
                 'city' => Input::get('city'),

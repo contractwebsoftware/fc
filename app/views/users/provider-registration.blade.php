@@ -130,8 +130,8 @@
             <fieldset>
                     <legend>User Information</legend>
                     <div class="form-group">
-                            <label  class="sr-only col-sm-12" for="email">Email Address</label>
-                            <div class="col-sm-12"><input type="email" placeholder="Email Address" name="email" id="email" class="form-control" value="{{Input::get('email')}}" /></div>
+                            <label  class="sr-only col-sm-12" for="email">Login Email Address</label>
+                            <div class="col-sm-12"><input type="email" placeholder="Login Email Address" name="email" id="email" class="form-control" value="{{Input::get('email')}}" /></div>
                     </div>
                     <div class="form-group">
                             <label  class="sr-only col-sm-12" for="password">Password</label>
@@ -141,7 +141,20 @@
                             <label  class="sr-only col-sm-12" for="confirm-password">Confirm Password</label>
                             <div class="col-sm-12"><input type="password" placeholder="Confirm Password" name="password_confirmation" id="confirm-password" class="form-control"  value="" /></div>
                     </div>
-                    
+                    <div class="form-group">
+                            <label  class="sr-only col-sm-12" for="contact_first_name">Contact First Name</label>
+                            <div class="col-sm-12"><input type="text" placeholder="Contact First Name" name="contact_first_name" id="contact_first_name" class="form-control" value="{{Input::get('contact_first_name')}}" /></div>
+                    </div>
+                    <div class="form-group">
+                            <label  class="sr-only col-sm-12" for="contact_last_name">Contact Last Name</label>
+                            <div class="col-sm-12"><input type="text" placeholder="Contact Last Name" name="contact_last_name" id="contact_last_name" class="form-control" value="{{Input::get('contact_last_name')}}" /></div>
+                    </div>
+                    <!--
+                    <div class="form-group">
+                            <label  class="sr-only col-sm-12" for="contact_email">Contact Email Address</label>
+                            <div class="col-sm-12"><input type="text" placeholder="Contact Email Address" name="contact_email" id="contact_email" class="form-control" value="{{Input::get('contact_email')}}" /></div>
+                    </div>-->
+
                     <div class="form-group">
                             <label  class="sr-only col-sm-12" for="agreement">Agreement</label>
                             <div class="col-sm-12"><input type="checkbox" name="agreement" id="agreement" class="form-control"  value="1" />
