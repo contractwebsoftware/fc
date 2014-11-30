@@ -122,11 +122,16 @@ class UserController extends BaseController {
                 'email' => 'required|email',
                 //'email' => 'required',
                 'password' => 'required|confirmed',
+                'contact_first_name' => 'required',
+                'contact_last_name' => 'required'
         ];
 
         // validate the input
         $v = Validator::make($input,$rules);
-        if( $v->fails() ) return Redirect::back()->withErrors($v);
+        if( $v->fails() )
+            return Redirect::action('UserController@getProviderRegistration', $input)
+            ->withErrors($v);
+            //return Redirect::back()->withInput($input)->withErrors($v);
 
         $users = User::where('email', Input::get('email'))->first();
         if($users!=null)return Redirect::back()->withErrors("User already exists");

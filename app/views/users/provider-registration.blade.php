@@ -62,7 +62,7 @@
                     </div>
                     <div class="form-group">
                         <label  class="sr-only" for="address">Company Address</label>
-                        <div class="col-sm-12"><textarea placeholder="Address" name="address" id="address" class="form-control" row="3" value="{{Input::get('address')}}" /></textarea></div>
+                        <div class="col-sm-12"><textarea placeholder="Address" name="address" id="address" class="form-control" row="3" />{{Input::get('address')}}</textarea></div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-6">
