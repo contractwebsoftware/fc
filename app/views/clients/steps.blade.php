@@ -975,11 +975,11 @@
 
                         I understand your loss, and I hope that this simple process has made it easier as you pass through this very difficult time.<br /><br />
 
-                        Funeral and Cremation Svc. of Orange Co. FD1567 <br />
-                        Phone: 714-667-7991<br />
-                        Fax: 714-639-8862<br /><br />
+                        {{$provider->business_name}} <br />
+                        Phone: {{$provider->phone}}<br />
+                        Fax: {{$provider->fax}}<br /><br />
 
-                        Email: <a href="mailto:forcremationsca@gmail.com">forcremationsca@gmail.com</a>
+                        Email: <a href="mailto:{{$provider->email}}">{{$provider->email}}</a>
                 </div>
             </div>            
         </fieldset>      
