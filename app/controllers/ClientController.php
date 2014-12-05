@@ -98,7 +98,8 @@ class ClientController extends BaseController {
                 Session::put('step', $current_step->next_step_number);
             } 
             else Session::put('step', Input::get('step',1));
-            
+            if(Session::get('step')>11) Session::put('step',11);
+
             $client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
             //if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
             //else $client->sale_summary_r = Array();
