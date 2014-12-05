@@ -6,7 +6,9 @@ class UserController extends BaseController {
 
     public function getLogin()
     {
-            return View::make('users.login');
+        Session::flush();
+        Sentry::logout();
+        return View::make('users.login');
     }
 
     public function postLogin()

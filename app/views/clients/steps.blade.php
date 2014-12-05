@@ -43,7 +43,12 @@
                     {{ Form::open(['action'=>'ClientController@postUpdateEmail','class'=>'form-horizontal','role'=>'form']) }}
                     {{ Form::hidden('client_id',$client->id) }}
                     {{ Form::hidden('client[id]',$client->id) }}
+                    {{ Form::hidden('old_client_email', $client->User->email) }}
+
                         <input name="client[email]" type="text" placeholder="Client Email" value="{{ $client->User->email }}"/>
+                        Edit Password:<br />
+                        <input name="password" type="password" placeholder="Client Password" value=""/>
+                        <input name="confirm_password" type="password" placeholder="Confirm Password" value=""/>
                         <button class="pull-left"  type="submit" name="submit" value="submit" style="">Save</button>
                     {{ Form::close() }}
                     <br style="clear:both;float:none;"/>

@@ -500,23 +500,35 @@ class ClientController extends BaseController {
             //$existing_client = Client::where('email', strtolower($input['client']['email']))->first();
             $existing_user = User::where('email', strtolower($input['client']['email']))->first();
 
-            if($existing_user != null){
-                Session::flash('error','A Client with that Email and Login already exists');
-            }
-            else {
-                $client = Client::where('id', strtolower($input['client']['id']))->first();
-                //$client->email = $input['client']['email'];
-                //$client->save();
 
-                $user = User::where('id', strtolower($client->user_id))->first();
-                if($user != null){
-                    $user->email = $input['client']['email'];
-                    $user->save();
+                if($existing_user != null){
+                    if(strtolower($input['client']['email']) != strtolower(Input::get('old_client_email') ))
+                    Session::flash('error','A Client with that Email and Login already exists');
+                }
+                else {
+                    $client = Client::where('id', strtolower($input['client']['id']))->first();
+                    //$client->email = $input['client']['email'];
+                    //$client->save();
+
+                    $user = User::where('id', strtolower($client->user_id))->first();
+                    if($user != null){
+                        $user->email = $input['client']['email'];
+                        $user->save();
+                    }
+
+                    Session::flash('success','Clients\'s Email and Login have been updated');
+
                 }
 
-                Session::flash('success','Clients\'s Email and Login have been updated');
+            if(Input::get('password')!='' and (Input::get('password') == Input::get('confirm_password'))){
+                $client = Client::where('id', strtolower($input['client']['id']))->first();
+                $user = User::where('id', strtolower($client->user_id))->first();
 
+                $user->password = Hash::make( Input::get('password') );
+                $user->save();
+                Session::flash('success','Login Updated');
             }
+
         }
         return Redirect::action('ClientController@getSteps');
 
