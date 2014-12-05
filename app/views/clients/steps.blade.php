@@ -36,7 +36,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h2><a href="#step6" >{{$client->first_name.' '.$client->last_name}}</a></h2>
-                &nbsp; &nbsp; <b>Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a>
+                &nbsp; &nbsp; <b>Login Email</b>: <a href="mailto:{{ $client->User->email }}">{{ $client->User->email }}</a>
                 &nbsp; [<i><a href="#" onclick="$('#edit-client-email').slideToggle();return false;"> Edit </a></i>]<br />
                 <div id="edit-client-email" style="display:none;clear:both;float:none;margin-bottom:15px;width:100%;padding-left:35px;margin-top:15px;">
                     Edit Client Email and Username:<br />
