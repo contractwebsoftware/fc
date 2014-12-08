@@ -114,7 +114,7 @@
        </div>
    </div>
 <br />
-   <div style="border:1px solid #eee;height:300px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
+   <div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
        {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
            {{ Form::hidden('client_id',$client->id) }}
            {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
