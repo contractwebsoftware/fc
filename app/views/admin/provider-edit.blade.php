@@ -295,7 +295,11 @@
                                             'personnel_effects'=>'Personnel Effects',
                                             'transfer_of_authority'=>'Transfer of Authority',
                                             'viewing_release'=>'Viewing Release',
-                                            'other'=>'Other...');
+                                            'other'=>'Other 1',
+                                            'other2'=>'Other 2',
+                                            'other3'=>'Other 3',
+                                            'other4'=>'Other 4',
+                                            'other5'=>'Other 5');
 
 
                     ?>

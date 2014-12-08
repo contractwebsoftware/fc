@@ -16,10 +16,10 @@ class ProviderController extends BaseController {
                             9 => 'Viewing Release',
                             11 => 'Payment Summary',
                             10 => 'Other 1',
-                            11 => 'Other 2',
-                            12 => 'Other 3',
-                            13 => 'Other 4',
-                            14 => 'Other 5'
+                            12 => 'Other 2',
+                            13 => 'Other 3',
+                            14 => 'Other 4',
+                            15 => 'Other 5'
                          );
         }
         
