@@ -1,5 +1,5 @@
 @section('content')
-
+    <!--
 	{{ Form::open(['action'=>'AdminController@postSetting']) }}
 		<fieldset>
 			<legend>Change your password</legend>
@@ -21,9 +21,9 @@
                         
 		</fieldset>
 	{{ Form::close() }}
-        
+    -->
         @if(Sentry::getUser()->role=='admin')
-                        
+
         {{ Form::open(['action'=>'AdminController@postAdminSetting']) }}
         <fieldset>
             <legend>Administrator Settings</legend>
@@ -41,7 +41,7 @@
             </p>
         </fieldset>                
         {{ Form::close() }}
-        
+
         
         <script src="//cdn.ckeditor.com/4.4.4/full/ckeditor.js"></script>
         <script>

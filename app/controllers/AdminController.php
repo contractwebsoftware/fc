@@ -193,7 +193,8 @@ class AdminController extends BaseController {
         if($data['fuser'] == null) $data['fuser'] = new User;
         $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
-        $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->get();
+        $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_slide_%')->get();
+        $provider_homepage_files = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_slide_%')->get();
         $data['provider_products'] = ProviderProducts::where('provider_id', $data['provider']->id)->get();
         if(count($data['provider_products'])<1)$data['provider_products'] = Products::get();
         //dd($data['provider_products']);
@@ -208,6 +209,13 @@ class AdminController extends BaseController {
         if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
         else $data['zip_info'] = null;
 
+        if($provider_homepage_files != null and count($provider_homepage_files)>0) {
+            foreach ($provider_homepage_files as $key => $file) {
+                $data['provider_homepage_files'][$file->file_type] = $file;
+            }
+        }
+        else $data['provider_homepage_files'] = array();
+        //echo '<pre>';dd($data);
         $data['clients'] = AdminController::getProviderCustomers($id);
         //dd($data['clients']);
 
@@ -459,33 +467,55 @@ class AdminController extends BaseController {
             $file = ProviderFiles::where('provider_id',$provider_id)->where('id',$fileid)->first();
             $file->delete();
         }
+        $tab = Request::segment(5)!='' ? Request::segment(5):'provider_files';
         Session::flash('success','File Removed Successfully');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $provider_id,'tab'=>'provider_files'));
+        return Redirect::action('AdminController@getEditProvider', array('id' => $provider_id,'tab'=>$tab));
     }
 
     public function postUpdateFiles()
     {
         $input = Input::all();
 
-        if (array_key_exists('provider_files_new',$input))
-        {
+        if (array_key_exists('provider_files_new', $input)) {
             //dd($input['provider_files']);
             $file = Input::file('provider_files_new');
             //dd($file);
-            $destinationPath = public_path()."/provider_files/".$input['provider']['id'];
+            $destinationPath = public_path() . "/provider_files/" . $input['provider']['id'];
             $file->move($destinationPath, $file->getClientOriginalName());
+
             $name = $file->getClientOriginalName();
 
             $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
-            if($provider_file==null || $provider_file=="")$provider_file = new ProviderFiles();
+            if ($provider_file == null || $provider_file == "") $provider_file = new ProviderFiles();
             $provider_file->provider_id = $input['provider']['id'];
             $provider_file->file_name = $name;
             $provider_file->file_type = $input['provider_files_type'];
             $provider_file->save();
         }
 
+        for ($x = 1; $x <= 3; $x++){
+
+            if (array_key_exists('provider_slide_'.$x, $input)){
+                $file = Input::file('provider_slide_'.$x);
+                if($file != null) {
+                    $destinationPath = public_path() . "/provider_files/" . $input['provider']['id'];
+                    $file_name = 'provider_slide_' . $x.'.'.$file->getClientOriginalExtension();
+                    $file->move($destinationPath, $file_name);
+
+                    $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', 'provider_slide_' . $x)->first();
+                    if ($provider_file == null || $provider_file == "") $provider_file = new ProviderFiles();
+                    $provider_file->provider_id = $input['provider']['id'];
+                    $provider_file->file_name = $file_name;
+                    $provider_file->file_type = 'provider_slide_' . $x;
+                    $provider_file->save();
+                }
+            }
+
+        }
+        $tab = $input['tab'];
+
         Session::flash('success','Provider Files Added Successfully');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_files'));
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>$tab));
     }
     
     

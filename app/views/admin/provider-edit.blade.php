@@ -11,7 +11,7 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="{{$current_tab==''||$current_tab=='company_info'?'active':''}}"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
-        <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Client Links</a></li>
+        <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Provider Home Page</a></li>
         <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Forms</a></li>
         @if(Sentry::getUser()->role=='admin')
           <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
@@ -207,10 +207,63 @@
 
 
     <div class="tab-pane {{$current_tab=='client_links'?'active':''}}" id="client_links">
+        <br /><br />
+        @if(Sentry::getUser()->role=='admin')
 
+            <div class="row">
+                <div class="col-xs-4">
+                    <h4>Customize my provider homepage</h4>
+                </div>
+                <div class="col-xs-8">
+                    <label for="provider_files" class="col-xs-9 pull-right text-right">My Homepage URL: &nbsp;
+                        <a class="pull-right" href="http://www.forcremation.com/?provider={{urlencode($provider->business_name)}}" target="_blank">http://www.forcremation.com/?provider={{urlencode($provider->business_name)}}</a>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                        {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
+                        {{ Form::hidden("provider[id]",$provider->id) }}
+                        {{ Form::hidden("tab", 'client_links') }}
+
+                        <div class="form-group">
+                            <label for="provider_files" class="col-xs-3">Homepage Slideshow Images <i class="pull-left">&nbsp; &nbsp; *Images should be 1000px wide by 300px tall</i></label>
+
+
+
+                            <br style="float:none;clear:both;"/><br style="float:none;clear:both;"/>
+                            <div class="row">
+                            @for($x=1; $x<=3; $x++)
+                                <div class="col-xs-4">
+                                    <br style="float:none;clear:both;" /><br />
+                                    Slide {{$x}}:
+                                    <input type="file" id="provider_files_{{$x}}" name="provider_slide_{{$x}}" class="form-control" /> <br />
+                                    &nbsp; &nbsp; &nbsp;
+                                        @if(array_key_exists('provider_slide_'.$x, $provider_homepage_files))
+                                            <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_homepage_files['provider_slide_'.$x]->file_name) }}" style="max-width:350px;width:100%;height:auto;"/> &nbsp;
+                                            <br />&nbsp; &nbsp; &nbsp; [ <i>{{link_to_action('AdminController@getRemoveFiles', "Delete", array('fileid'=>$provider_homepage_files['provider_slide_'.$x]->id,'provider_id'=>$provider->id,'tab'=>'client_links'), $attributes = array('onclick'=>'return confirm("Are you sure you want to delete this file?")',"style"=>"color:red!important;"))}}</i> ]<br />
+                                        @endif
+
+                                </div>
+                            @endfor
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                            </div>
+                        </div>
+                        {{ Form::close() }}
+                    </fieldset>
+                </div>
+            </div>
+            <br />
+        @endif
+
+        <h4>Links to my provider homepage</h4>
         <div class="row">
             <div class="col-xs-12">
-
                <fieldset>
                     <div class="form-group">
                        <label for="provider_files" class="col-xs-3">My Cremation Registration URL</label>
@@ -284,7 +337,9 @@
                     <fieldset>
                     {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
                     {{ Form::hidden("provider[id]",$provider->id) }}
-                    <?php
+                    {{ Form::hidden("tab", 'provider_files') }}
+
+                        <?php
                         $fileNames = Array('pricing'=>"General Price List",
                                             //'vitals'=>"Vitals/Summary",
                                             'hospital_release'=>"Hospital Release", 
@@ -336,7 +391,6 @@
                                             <button type="submit" class="btn btn-primary btn-block" onclick="if($('#provider_files_type').val()==''){alert('Please Select A File Type');return false;}">Upload</button>
                                     </div>
                             </div>
-                        </fieldset>
 			{{ Form::close() }}
                         </fieldset>
 		</div><!--/col-12-->
