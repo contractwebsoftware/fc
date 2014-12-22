@@ -234,7 +234,7 @@
 
                             <br style="float:none;clear:both;"/><br style="float:none;clear:both;"/>
                             <div class="row">
-                            @for($x=1; $x<=4; $x++)
+                            @for($x=1; $x<=3; $x++)
                                 <div class="col-xs-3">
                                     <br style="float:none;clear:both;" /><br />
                                     Slide {{$x}}:
