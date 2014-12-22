@@ -493,7 +493,7 @@ class AdminController extends BaseController {
             $provider_file->save();
         }
 
-        for ($x = 1; $x <= 3; $x++){
+        for ($x = 1; $x <= 4; $x++){
 
             if (array_key_exists('provider_slide_'.$x, $input)){
                 $file = Input::file('provider_slide_'.$x);

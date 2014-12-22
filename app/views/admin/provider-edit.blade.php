@@ -234,14 +234,14 @@
 
                             <br style="float:none;clear:both;"/><br style="float:none;clear:both;"/>
                             <div class="row">
-                            @for($x=1; $x<=3; $x++)
-                                <div class="col-xs-4">
+                            @for($x=1; $x<=4; $x++)
+                                <div class="col-xs-3">
                                     <br style="float:none;clear:both;" /><br />
                                     Slide {{$x}}:
                                     <input type="file" id="provider_files_{{$x}}" name="provider_slide_{{$x}}" class="form-control" /> <br />
                                     &nbsp; &nbsp; &nbsp;
                                         @if(array_key_exists('provider_slide_'.$x, $provider_homepage_files))
-                                            <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_homepage_files['provider_slide_'.$x]->file_name) }}" style="max-width:350px;width:100%;height:auto;"/> &nbsp;
+                                            <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_homepage_files['provider_slide_'.$x]->file_name) }}" style="max-width:250px;width:100%;height:auto;"/> &nbsp;
                                             <br />&nbsp; &nbsp; &nbsp; [ <i>{{link_to_action('AdminController@getRemoveFiles', "Delete", array('fileid'=>$provider_homepage_files['provider_slide_'.$x]->id,'provider_id'=>$provider->id,'tab'=>'client_links'), $attributes = array('onclick'=>'return confirm("Are you sure you want to delete this file?")',"style"=>"color:red!important;"))}}</i> ]<br />
                                         @endif
 
