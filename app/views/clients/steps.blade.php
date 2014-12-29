@@ -8,6 +8,15 @@
     </style>
 @endif
 
+
+@if(Input::get('login')=='y')
+    <script>
+        $().ready(function() {
+            $('#login_to_save').click();
+        });
+    </script>
+@endif
+
 @if(Session::get('inAdminGroup') && $client->id!='')
     <div class="row">
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 

@@ -56,12 +56,21 @@ class UserController extends BaseController {
                 //dd(Session::get('provider'));
 
                 return Redirect::action('AdminController@getProviders');
-            }else{
+            }elseif(Sentry::getUser()->role=='provider') {
 
                 $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
                 Session::put('logged_in_provider_id',$provider->id);
                 Session::put('provider',$provider);
                 return Redirect::action('AdminController@getCustomers');
+            }
+            elseif(Sentry::getUser()->role=='client') {
+
+                //
+                //dd($user);
+                $client = Client::where('user_id',$user->id)->first();
+                Session::put('client_id',$client->id);
+
+                return Redirect::action('ClientController@getSteps');
             }
     }
 
