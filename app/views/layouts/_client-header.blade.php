@@ -53,7 +53,7 @@ else $provider_name = '';
                 //print_r($name);
             ?>
             <li @if($name =="unregistered" or $name =='')style="display:none;"@endif id="logout_link"><a href="{{ action('ClientController@getLogout') }}">Logout</a></li>
-            <li @if(Sentry::check() and $name !='unregistered' and $name !='')style="display:none;"@endif id="login_link"><a href="#" id="login_to_save" data-toggle="modal" data-target="#loginModal">Login to save your file</a></li>
+            <li @if(Sentry::check() and $name !='unregistered' and $name !='')style="display:none;"@endif id="login_link"><a href="#" id="login_to_save" data-toggle="modal" data-target="#loginModal">Register to Save your File</a></li>
 
             </ul>
         </div>
