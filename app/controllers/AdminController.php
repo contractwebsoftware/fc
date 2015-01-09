@@ -710,12 +710,24 @@ class AdminController extends BaseController {
         $q = Input::get('q');
         if(strlen($q)>=3)
         {
-            $clients = Client::where('zip','like','%'.$q.'%')->orWhere('phone','like','%'.$q.'%')->orWhere('state','like','%'.$q.'%')
-                    ->orWhere('address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
-                    ->orWhere('zip','like','%'.$q.'%')->orWhere('city','like','%'.$q.'%')
-                    ->orWhere('first_name','like','%'.$q.'%')->orWhere('last_name','like','%'.$q.'%')
-                    ->orWhere('created_at','like','%'.$q.'%');
+            $clients = Client::select('clients.*')
+                    ->join('deceased_info', function($join)
+                    {
+                        $join->on('clients.id', '=', 'deceased_info.client_id');
+                    })
+                    ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
+                    ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
+                    ->orWhere('clients.zip','like','%'.$q.'%')->orWhere('clients.city','like','%'.$q.'%')
+                    ->orWhere('clients.first_name','like','%'.$q.'%')->orWhere('clients.last_name','like','%'.$q.'%')
+                    ->orWhere('clients.created_at','like','%'.$q.'%')
+                    ->orWhere('deceased_info.first_name','like','%'.$q.'%')->orWhere('deceased_info.last_name','like','%'.$q.'%')
+                    ->orWhere('deceased_info.city','like','%'.$q.'%')->orWhere('deceased_info.state','like','%'.$q.'%')
+                    ->orWhere('deceased_info.address','like','%'.$q.'%')->orWhere('deceased_info.phone','like','%'.$q.'%')
+                    ->orWhere('deceased_info.zip','like','%'.$q.'%');
+
+
             if($clients == null)$clients = Client::with('user');
+
         }
         elseif(Input::get('status')!="")
         {
@@ -740,7 +752,7 @@ class AdminController extends BaseController {
                       ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
             });
         }
-        $clients = $clients->orderBy('created_at', 'desc')->paginate($per_page);
+        $clients = $clients->orderBy('clients.created_at', 'desc')->paginate($per_page);
         //$queries = DB::getQueryLog();
         //print_r( end($queries)); 
 
