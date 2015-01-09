@@ -120,7 +120,7 @@
                     <tr><td>Signature Certificate</td><td><i class="glyphicon glyphicon-ok"></i></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
                     <tr><td>Custom Documents</td><td>$65 set up</td><td><i class="glyphicon glyphicon-ok"></i> &nbsp; Included</td></tr>
                     <tr><td>Product Support</td><td><i class="glyphicon glyphicon-ok"></i></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
-                    <tr><td>Providers Website Link</td><td></td><i class="glyphicon glyphicon-ok"></i><<td><i class="glyphicon glyphicon-ok"></i></td></tr>
+                    <tr><td>Providers Website Link</td><td><i class="glyphicon glyphicon-ok"></i></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
                     <tr><td>Google Places Link</td><td><i class="glyphicon glyphicon-ok"></i></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
                     <tr><td>Freshbooks Integration</td><td></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
                     <tr><td>Custom Platform Home Page</td><td></td><td><i class="glyphicon glyphicon-ok"></i></td></tr>
