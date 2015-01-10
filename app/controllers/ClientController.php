@@ -125,7 +125,7 @@ class ClientController extends BaseController {
         $html = '<html><body style="background-color: #FFF;background-image: none;">
                 <div id="select_location" class="row pull-left">
 
-                 <div class="col-md-12">
+                 <div class="col-md-6">
                     <b>Select State</b>:<br />
                     <select id="state" name="state">
                         <option value="">--</option>';
@@ -142,6 +142,10 @@ class ClientController extends BaseController {
                     <br />
                     <button class="btn btn-primary" id="choose_provider">Select Provider</button>
                     <br style="float:none;clear:both;" /><Br />
+                </div>
+                <div class="col-md-6">
+                    <iframe style="width:250px;height:400px;" src="/slides/v_welcome.swf"></iframe>
+                </div>
             </div>
             <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
             <link rel="stylesheet" href="'. asset('css/client.css') .'">
