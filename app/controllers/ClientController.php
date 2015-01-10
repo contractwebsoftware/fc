@@ -122,10 +122,10 @@ class ClientController extends BaseController {
     public function getProviderLocation(){
 
         $states = DB::table('state')->distinct()->get();
-        $html = '<html><body style="background-color: #FFF;background-image: none;">
-                <div id="select_location" class="row pull-left">
+        $html = '<html><body style="background-color: #FFF;background-image: none;width:650px;">
+                <div id="select_location" class="row pull-left" >
 
-                 <div class="col-md-6">
+                 <table><tr><td>
                     <b>Select State</b>:<br />
                     <select id="state" name="state">
                         <option value="">--</option>';
@@ -142,10 +142,10 @@ class ClientController extends BaseController {
                     <br />
                     <button class="btn btn-primary" id="choose_provider">Select Provider</button>
                     <br style="float:none;clear:both;" /><Br />
-                </div>
-                <div class="col-md-6">
+                </td>
+                <td>
                     <iframe style="width:200px;height:350px;border:none;" src="http://www.forcremation.com/slides/v_welcome.swf" frameborder="0"></iframe>
-                </div>
+               </td></tr></table>
             </div>
             <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
             <link rel="stylesheet" href="'. asset('css/client.css') .'">
