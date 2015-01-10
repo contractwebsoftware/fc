@@ -144,7 +144,7 @@ class ClientController extends BaseController {
                     <br style="float:none;clear:both;" /><Br />
                 </div>
                 <div class="col-md-6">
-                    <iframe style="width:250px;height:400px;" src="http://www.forcremation.com/slides/v_welcome.swf"></iframe>
+                    <iframe style="width:200px;height:350px;border:none;" src="http://www.forcremation.com/slides/v_welcome.swf" frameborder="0"></iframe>
                 </div>
             </div>
             <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
