@@ -125,7 +125,7 @@ class ClientController extends BaseController {
         $html = '<html><body style="background-color: #FFF;background-image: none;padding-top:0px;">
                 <div id="select_location" class="row pull-left" style="margin-left:5px;margin-right:0px;">
 
-                 <table ><tr><td align=left style="width:205px;">
+                 <table ><tr><td align=left style="width: 265px;padding-left: 30px;">
                     <b>Select State</b>:<br />
                     <select id="state" name="state">
                         <option value="">--</option>';
