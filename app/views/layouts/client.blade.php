@@ -93,7 +93,7 @@
                         .done(function( data ) {
                             if(data){
                                 if(data.fail)alert(data.fail);
-                                else window.location.reload();
+                                else window.location.href = "{{ url('clients/steps') }}";
                             }
                             else alert('Login Failed, please try again');
                         })
@@ -109,7 +109,7 @@
                     .done(function( data ) {
                         if(data){
                             if(data.fail)alert(data.fail);
-                            else window.location.reload();
+                            else window.location.href = "{{ url('clients/steps') }}";
                         }else alert('Account creation Failed, please try again');
                     })
                     .fail(function( jqxhr, textStatus, error ) {
