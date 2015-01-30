@@ -1251,6 +1251,13 @@ class ClientController extends BaseController {
                         break;
                 }
 
+                //has_pace_maker
+
+                switch($class->$key){
+                    case '0': $class->$key = 'No'; break;
+                    case '1': $class->$key = 'Yes'; break;
+                    default: break;
+                }
                 $html = str_replace('{{' . $val . '}}', $class->$key, $html);
                 $html = str_replace('{{' . $val . '}}', '', $html);
 
