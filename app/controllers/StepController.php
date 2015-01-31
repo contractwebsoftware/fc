@@ -71,7 +71,7 @@ class StepController extends BaseController {
 
             $providers = $providers->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
             $providers_with_zips = $providers_with_zips->get();
-            dd($providers_with_zips);
+            //dd($providers_with_zips);
             dd(DB::getQueryLog());
 
             $json_r = array(''=>'Select A Provider');
