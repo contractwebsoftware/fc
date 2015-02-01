@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtpout.secureserver.net',
+	'host' => 'smtp.mailgun.org',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => 'info@forcremation.com',
+	'username' => 'postmaster@sandbox8cf07f866a56449cac052de1ab26fbbe.mailgun.org',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => '19Cremation45',
+	'password' => '16c741e10a44162670b4b52cc8c9ab5f',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -106,7 +106,7 @@ return array(
 	|
 	*/
 
-	'sendmail' => "",
+	'sendmail' => '/usr/sbin/sendmail -bs',
 
 	/*
 	|--------------------------------------------------------------------------
