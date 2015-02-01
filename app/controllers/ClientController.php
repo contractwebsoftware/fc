@@ -302,12 +302,7 @@ class ClientController extends BaseController {
                     $message->to($mail_data['provider']->email);
                     Log::info('Emailed A client has selected a new ForCremation plan to '.$mail_data['provider']->email);
                 });
-                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
-                {
-                    $message->subject('A client has selected a new ForCremation plan');
-                    $message->to('bendavol@gmail.com');
-                    Log::info('Emailed A client has selected a new ForCremation plan to bendavol@gmail.com');
-                });
+
 
             }
             
