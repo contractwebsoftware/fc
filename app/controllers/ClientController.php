@@ -306,8 +306,9 @@ class ClientController extends BaseController {
                 {
                     $message->subject('A client has selected a new ForCremation plan');
                     $message->to('bendavol@gmail.com');
+                    Log::info('Emailed A client has selected a new ForCremation plan to bendavol@gmail.com');
                 });
-                Log::info('Emailed to finished');
+
             }
             
             //$rules = ['zip'=>'required'] ;
