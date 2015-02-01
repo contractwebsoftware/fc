@@ -106,7 +106,7 @@ return array(
 	|
 	*/
 
-	'sendmail' => 'c:\\xampp\sendmail\sendmail.exe',
+	'sendmail' => "\"C:\xampp\sendmail\sendmail.exe\" -t",
 
 	/*
 	|--------------------------------------------------------------------------
