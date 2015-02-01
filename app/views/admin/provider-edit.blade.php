@@ -20,6 +20,7 @@
         @endif
         <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
         <li class="{{$current_tab=='provider_urns'?'active':''}}"><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
+        <li class="{{$current_tab=='provider_help'?'active':''}}"><a href="#provider_help" role="tab" data-toggle="tab" style="color:green;">Help</a></li>
 
     </ul>
 
@@ -1103,8 +1104,62 @@
                </fieldset>
             </div><!--/col-12-->
         </div><!--/row-->
-    </div> <!-- /END Forms info tab -->    
-    
+    </div> <!-- /END Forms info tab -->
+
+<div class="tab-pane {{$current_tab=='provider_help'?'active':''}}" id="provider_help">
+    <div class="row">
+        <div class="col-xs-12">
+            <fieldset>
+
+                <h3>Provder Help</h3>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer">Provider Login</a>
+
+                        <br /><br />
+                    </div>
+                </div>
+
+                <h3>RightSignature Help</h3>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <a href="http://player.vimeo.com/video/58565515" target="_blank" class="vimeo">RightSignature Quick Start</a><br />
+                        <a href="http://player.vimeo.com/video/44946281" target="_blank" class="vimeo">Send Document for Signature</a><br />
+                        <a href="http://player.vimeo.com/video/44946438" target="_blank" class="vimeo">Create A Template</a><br />
+                        <a href="http://player.vimeo.com/video/68087812" target="_blank" class="vimeo">How To Use Template Overlays</a><br />
+                        <a href="http://player.vimeo.com/video/77429248" target="_blank" class="vimeo">How To Group Boxes</a><br />
+                        <a href="http://player.vimeo.com/video/41097282" target="_blank" class="vimeo">How To Use Google Drive with Righsignature</a><br />
+                        <a href="http://player.vimeo.com/video/89738082" target="_blank" class="vimeo">Requesting Attachments</a><br />
+                        <a href="http://player.vimeo.com/video/33310103" target="_blank" class="vimeo">RightSignature and Freshbooks</a><br /><br />
+                    </div>
+                </div>
+
+                <h3>Freshbooks Help</h3>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <a href="http://www.youtube.com/embed/ySHC-ffp0bQ?rel=0&amp;wmode=transparent" target="_blank" class="youtube">Say Hello To Fresbooks</a><br />
+                        <a href="http://www.youtube.com/embed/gur9VYXDkz8?rel=0&amp;wmode=transparent" target="_blank" class="youtube">Your First Invoice</a><br />
+                        <a href="http://player.vimeo.com/video/83720440" target="_blank" class="vimeo">Creating a Client ( use organization to create client )</a><br />
+                        <a href="http://player.vimeo.com/video/88883845" target="_blank" class="vimeo">Full Tutorial Instructions</a><br />
+                        <a href="http://player.vimeo.com/video/83720439" target="_blank" class="vimeo">Tracking Exspnses</a><br />
+                    </div>
+                </div>
+
+            </fieldset>
+        </div><!--/col-12-->
+    </div><!--/row-->
+</div> <!-- /END Help1 info tab -->
+
+
+
+<script>
+    $().ready(function(){
+        $('.video_layer').colorbox({iframe:true, innerWidth:640, innerHeight:344});
+        $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:390});
+        $(".vimeo").colorbox({iframe:true, innerWidth:500, innerHeight:409});
+    });
+
+</script>
 
     
 </div><!--/end tab-content -->

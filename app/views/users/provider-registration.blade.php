@@ -10,12 +10,30 @@
         <h2>Cremation Provider Signup</h2>
         <hr>
         <center>
-        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/travis.png" style="height:63px;width:auto;">
-        <a href="http://youtu.be/zFpbwTJhN10?rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="fancybox-youtube" style="font-weight:bold;font-size:16px;">Watch the video about becoming a Provider</a> <br/>
+            <table width="100%" align=center>
+                <tr>
+                    <td valign=top style="vertical-align:top;" align=center>
+                        <a href="http://www.youtube.com/embed/zFpbwTJhN10?rel=0&amp;wmode=transparent&rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="youtube" style="vertical-align:top;font-weight:bold;font-size:16px;">Watch the video about<br />becoming a Provider</a> <br/>
+                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/travis.png" style="height:63px;width:auto;"><br />
 
-        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/susan.png" style="height:63px;width:auto;">
-        <a title="Meet-Susan" href="http://www.youtube.com/watch?v=k4EueEuaDAQ&amp;feature=youtu.be&amp;rel=0;HD=1;showinfo=0;controls=0;autoplay=1" style="margin-right: 30px;font-weight:bold;font-size:16px;" class="fancybox-youtube">Meet Susan</a>
+                    </td>
+                    <td valign=top style="vertical-align:top;" align=center>
+                        <a href="http://www.youtube.com/embed/k4EueEuaDAQ?rel=0&amp;wmode=transparent&rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="youtube" style="vertical-align:top;font-weight:bold;font-size:16px;" >Meet Susan</a><br />
+                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/susan.png" style="height:63px;width:auto;"><br />
+
+
+                    </td>
+                    <td valign=top style="vertical-align:top;" align=center>
+                        <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer" style="vertical-align:top;font-weight:bold;font-size:16px;">Provider Tutorial</a><br />
+                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/icon-video.png" alt="It’s Easy" style="height:45px;width:auto;"><br />
+
+                    </td>
+                </tr>
+
+            </table><br />
+
         </center>
+
 
     </div>
    
@@ -189,6 +207,11 @@
     $('#provider-reg-table label.btn-primary').click(function(){
         $('#provider-reg-table label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
         $(this).find('b').html('<i class="glyphicon glyphicon-check"  style="color:#77CA77;"></i> &nbsp; Selected');
+    });
+    $().ready(function(){
+        $('.video_layer').colorbox({iframe:true, innerWidth:640, innerHeight:344});
+        $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:390});
+        $(".vimeo").colorbox({iframe:true, innerWidth:500, innerHeight:409});
     });
 </script>
 @stop

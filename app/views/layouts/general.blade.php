@@ -5,6 +5,7 @@
 	<title>Forcremation</title>
 	<link rel="stylesheet" href="{{ asset('packages/Bootflat/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/colorbox.css') }}">
 	<!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
 	<![endif]-->
@@ -37,7 +38,8 @@
 		<div id="footer"></div>
 	</div>
 	@section('footer')
-	<script>
+		<script src="{{ asset('js/jquery.colorbox-min.js') }}"></script>
+		<script>
 		$(function(){
 
 		})

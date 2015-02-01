@@ -8,6 +8,7 @@
 	<!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
 	<![endif]-->
+	<link rel="stylesheet" href="{{ asset('css/colorbox.css') }}">
 	@section('header')
 	@show
 </head>
@@ -36,6 +37,7 @@
 	@section('footer')
 	<script src="{{ asset('packages/Bootflat/js/jquery-1.10.1.min.js') }}"></script>
 	<script src="{{ asset('packages/Bootflat/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('js/jquery.colorbox.js') }}"></script>
 	<script>
 		$(function(){
 			

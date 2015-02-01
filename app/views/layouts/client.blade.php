@@ -6,7 +6,8 @@
 	<title>Forcremation</title>
 	<link rel="stylesheet" href="{{ asset('packages/Bootflat/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/client.css') }}">
-	<!--[if IE]>
+    <link rel="stylesheet" href="{{ asset('css/colorbox.css') }}">
+    <!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
 	<![endif]-->
         <script src="{{ asset('packages/Bootflat/js/jquery-1.11.1.min.js') }}"></script>
@@ -153,5 +154,7 @@
                 <img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/1019102063/?value=0&amp;guid=ON&amp;script=0"/>
             </div>
         </noscript>
+        <script src="{{ asset('js/jquery.colorbox-min.js') }}"></script>
+
 </body>
 </html>

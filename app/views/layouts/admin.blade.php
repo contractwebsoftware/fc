@@ -5,10 +5,12 @@
 	<title>Forcremation</title>
 	<link rel="stylesheet" href="{{ asset('packages/Bootflat/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/colorbox.css') }}">
 	<!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
 	<![endif]-->
 	<script src="{{ asset('packages/Bootflat/js/jquery-1.10.1.min.js') }}"></script>
+
 	@section('header')
 	@show
 </head>
@@ -36,6 +38,7 @@
 	</div>
 	@section('footer')
 	<script src="{{ asset('packages/Bootflat/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('js/jquery.colorbox-min.js') }}"></script>
 	<script>
 		$(function(){
                     $('.tooltips').tooltip();
