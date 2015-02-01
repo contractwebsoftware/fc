@@ -300,7 +300,14 @@ class ClientController extends BaseController {
                 {
                     $message->subject('A client has selected a new ForCremation plan');
                     $message->to($mail_data['provider']->email);
+                    Log::info('Emailed A client has selected a new ForCremation plan to '.$mail_data['provider']->email);
                 });
+                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
+                {
+                    $message->subject('A client has selected a new ForCremation plan');
+                    $message->to('bendavol@gmail.com');
+                });
+                Log::info('Emailed to finished');
             }
             
             //$rules = ['zip'=>'required'] ;
@@ -417,6 +424,7 @@ class ClientController extends BaseController {
                 {
                     $message->subject('A new customer has started the ForCremation Registration');
                     $message->to($mail_data['provider']->email);
+                    Log::info('A new customer has started the ForCremation Registration Emailed: '.$mail_data['provider']->email);
                 });
             }
             
@@ -491,6 +499,7 @@ class ClientController extends BaseController {
                     $message->to($mail_data['provider']->email);
                     //dd($mail_data['provider']->email);
                     //$message->attach($pathToFile);
+                    Log::info('New customer has completed ForCremation Registration Process Emailed: '.$mail_data['provider']->email);
                 });
 
             }
@@ -906,6 +915,8 @@ class ClientController extends BaseController {
                     //$message->from('us@example.com', 'Laravel');
                     $message->to($input['user']['email'])->cc('forcremation@gmail.com');
                     //$message->attach($pathToFile);
+
+                    Log::info('New customer Registered Emailed: '.$input['user']['email']);
                 });
                 
                 return Response::json($client);

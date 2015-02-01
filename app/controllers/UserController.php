@@ -224,6 +224,7 @@ class UserController extends BaseController {
                 //$message->from('us@example.com', 'Laravel');
                 $message->to($mail_data['provider']->email)->cc('forcremation@gmail.com');
                 //$message->attach($pathToFile);
+                Log::info('New Provider Registration Emailed: '.$mail_data['provider']->email);
             });
             
             //Session::put('new_provider_data',array());

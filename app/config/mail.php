@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.mailgun.org',
+	'host' => 'localhost',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return array(
 	|
 	*/
 
-	'port' => 587,
+	'port' => 25,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'forcremation@gmail.com', 'name' => 'ForCremation Support'),
+	'from' => array('address' => 'info@forcremation.com', 'name' => 'ForCremation Support'),
 
 	/*
 	|--------------------------------------------------------------------------
