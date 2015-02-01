@@ -183,12 +183,12 @@
     }
     $('#provider-reg-table label.btn-primary').each(function(){
         $('#provider-reg-table label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
-        $('#provider-reg-table label.btn-primary.active').find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+        $('#provider-reg-table label.btn-primary.active').find('b').html('<i class="glyphicon glyphicon-check"  style="color:#77CA77;"></i> &nbsp; Selected');
     });
 
     $('#provider-reg-table label.btn-primary').click(function(){
         $('#provider-reg-table label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
-        $(this).find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+        $(this).find('b').html('<i class="glyphicon glyphicon-check"  style="color:#77CA77;"></i> &nbsp; Selected');
     });
 </script>
 @stop

@@ -1154,6 +1154,7 @@ class ClientController extends BaseController {
             'DeceasedInfo_county',
             'DeceasedInfo_phone',
             'DeceasedInfo_dob',
+            'DeceasedInfo_dod',
             'DeceasedInfo_gender',
             'DeceasedInfo_race',
             'DeceasedInfo_weight',

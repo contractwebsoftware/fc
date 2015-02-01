@@ -530,6 +530,8 @@
                     <li>{{DeceasedInfo_county}}</li>
                     <li>{{DeceasedInfo_phone}}</li>
                     <li>{{DeceasedInfo_dob}}</li>
+                    <li>{{DeceasedInfo_dod}}</li>
+                    <li>{{DeceasedInfo_dod}}</li>
                     <li>{{DeceasedInfo_gender}}</li>
                     <li>{{DeceasedInfo_race}}</li>
                     <li>{{DeceasedInfo_weight}}</li>

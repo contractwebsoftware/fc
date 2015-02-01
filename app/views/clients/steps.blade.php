@@ -336,7 +336,14 @@
                 <div class="col-sm-12"><input name="deceased_info[aka]" type="text" placeholder="Also Known As (First/Middle/Last)" value="{{$client->DeceasedInfo->aka}}"/></div>
             </div>
             <div class="row form-group"> 
-                <div class="col-sm-12"><input name="deceased_info[ssn]" type="text" placeholder="Social Security Number (SSN) - Optional" value="{{$client->DeceasedInfo->ssn}}"/></div>
+                <div class="col-sm-6"><input name="deceased_info[ssn]" type="text" placeholder="Social Security Number (SSN) - Optional" value="{{$client->DeceasedInfo->ssn}}"/></div>
+                <div class="col-sm-6">
+                    <select name="deceased_info[gender]" class="form-control">
+                        <option selected="selected" value="">Gender</option>
+                        <option value="Male" {{ ($client->DeceasedInfo->gender=="Male"?'selected':'') }}>Male</option>
+                        <option value="Female" {{ ($client->CremainsInfo->gender=="Female"?'selected':'') }}>Female</option>
+                    </select>
+                </div>
             </div>
             <div class="row form-group"> 
                 <div class="col-sm-12"><input name="deceased_info[address]" type="text" placeholder="Street Address" value="{{$client->DeceasedInfo->address}}"/></div>
@@ -353,16 +360,7 @@
                 <div class="col-sm-6"><input name="deceased_info[county]" type="text" placeholder="County of Residence" value="{{$client->DeceasedInfo->county}}"/></div>
                 <div class="col-sm-6"><input name="deceased_info[yrs_in_county]" type="text" placeholder="Yrs In County" value="{{$client->DeceasedInfo->yrs_in_county}}"/></div>
             </div>
-            <div class="row form-group"> 
-                <div class="col-sm-6"><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
-                <div class="col-sm-6">
-                    <select name="deceased_info[gender]" class="form-control">
-                        <option selected="selected" value="">Gender</option>
-                        <option value="Male" {{ ($client->DeceasedInfo->gender=="Male"?'selected':'') }}>Male</option>
-                        <option value="Female" {{ ($client->CremainsInfo->gender=="Female"?'selected':'') }}>Female</option>
-                    </select>
-                </div>
-            </div>
+
             <div class="row form-group"> 
                 <div class="col-sm-12"><input name="deceased_info[birth_city_state]" type="text" placeholder="City and State of Birth" value="{{$client->DeceasedInfo->birth_city_state}}"/></div>
             </div>
@@ -393,6 +391,14 @@
                     </select>
                 </div>
             </div>
+
+            <div class="row form-group">
+                @if(Session::get('inAdminGroup') && $client->id!='')
+                    <div class="col-sm-6">Date of Death<br /><input name="deceased_info[dod]" id="dod" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dod))}}" /></div>
+                @endif
+                <div class="col-sm-6">Date of Birth<br /><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
+            </div>
+
             <div class="row form-group"> 
                 <div class="col-sm-6">
                     Items with potential additional fees<br />
