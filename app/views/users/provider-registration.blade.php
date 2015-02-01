@@ -106,11 +106,11 @@
             <Br />
             <fieldset>
                 <legend style="margin-bottom: 0px;">Plan Options</legend>
-                <table data-toggle="buttons"  style="margin-top: 0px;">
+                <table data-toggle="buttons"  style="margin-top: 0px;" id="provider-reg-table">
                     <thead >
                         <th></th>
-                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'active':'')}}" for="plan_basic"><input type="radio" name="plan_id" id="plan_basic" value="{{$provider_plan_basic->id}}" {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label></th>
-                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_premium->id?'active':'')}}" for="plan_premium"><input type="radio" name="plan_id" id="plan_premium" value="{{$provider_plan_premium->id}}" {{(Input::get('plan_id')==$provider_plan_premium->id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label></th>
+                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'active':'')}}" for="plan_basic"><input type="radio" style="display:none;" name="plan_id" id="plan_basic" value="{{$provider_plan_basic->id}}" {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label></th>
+                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_premium->id?'active':'')}}" for="plan_premium"><input type="radio"style="display:none;" name="plan_id" id="plan_premium" value="{{$provider_plan_premium->id}}" {{(Input::get('plan_id')==$provider_plan_premium->id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label></th>
                     </thead>
                     <tr><td>Cases Per Month</td><td>Ten</td><td>Unlimited</td></tr>
                     <tr><td>Certified Signatures</td><td>Ten</td><td>Unlimited</td></tr>
@@ -181,5 +181,14 @@
         }
         return true;
     }
+    $('#provider-reg-table label.btn-primary').each(function(){
+        $('#provider-reg-table label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+        $('#provider-reg-table label.btn-primary.active').find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+    });
+
+    $('#provider-reg-table label.btn-primary').click(function(){
+        $('#provider-reg-table label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+        $(this).find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+    });
 </script>
 @stop

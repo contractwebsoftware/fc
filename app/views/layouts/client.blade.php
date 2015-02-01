@@ -82,6 +82,7 @@
 	<script>
 	    $('#current_total_price').html('{{$client->sale_summary_r['total'] > $provider->pricing_options->basic_cremation ? $client->sale_summary_r['total']:$provider->pricing_options->basic_cremation}}');
 
+
 		$(function(){
             $('.tooltips').tooltip();
 
@@ -121,6 +122,15 @@
                 $('.warn-login-text').html('<a href="#" class="warning-text" data-toggle="modal" data-target="#loginModal">To permanently save the file for your access, please create a login and password here</a>');
             }
 
+            $('#owl-example label.btn-primary').each(function(){
+                $('#owl-example label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+                $('#owl-example label.btn-primary.active').find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+            });
+
+            $('#owl-example label.btn-primary').click(function(){
+                $('#owl-example label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+                $(this).find('b').html('<i class="glyphicon glyphicon-check"></i> &nbsp; Selected');
+            });
 
 		});
 	</script>

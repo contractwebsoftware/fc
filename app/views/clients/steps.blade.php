@@ -693,7 +693,7 @@
                                         <h4>{{ $product->name }}</h4><Br />
                                         Description: {{ $product->description }}<Br /><Br />
                                         <label class="btn btn-primary {{$client_product->product_id == $product->product_id?'active':''}}" for="client_product_id{{ $product->product_id }}">
-                                            <input name="client_product[product_id]" id="client_product_id{{ $product->product_id }}" value="{{ $product->product_id }}" {{$client_product->product_id == $product->product_id?'checked="true" selected="true"':''}} type="radio"> &nbsp; <b>Select</b> &nbsp; ${{ $product->price }}
+                                            <input name="client_product[product_id]" style="display:none;" id="client_product_id{{ $product->product_id }}" value="{{ $product->product_id }}" {{$client_product->product_id == $product->product_id?'checked="true"':''}} type="radio"> &nbsp; <b>Select</b> &nbsp; ${{ $product->price }}
                                             <input name="client_product[price][{{ $product->product_id }}]" value="{{ $product->price }}" type="hidden" /> 
                                         </label>
                                     </td></tr>
