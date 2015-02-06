@@ -2,7 +2,8 @@
 	<img src="{{ asset('img/head-bckg1.jpg') }}" alt="header">
 </div>
 <div id="navigation">
-	<img src="{{ asset('img/logo.jpg') }}" alt="logo" id="logo">
+	<a href="http://www.forcremation.com"><img src="{{ asset('img/logo.jpg') }}" alt="logo" id="logo"></a>
+
 	<ul>
 		<li><a href="http://www.forcremation.com">home</a></li>
 		<li><a href="http://www.forcremation.com/help">how it works</a></li>
