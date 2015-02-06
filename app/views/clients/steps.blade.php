@@ -195,10 +195,10 @@
             <div class="row form-group">
                 <div class="col-sm-12">
                     <div>
-                    <strong>Cremation Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
+                    <strong>Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
-                    <strong>Cremation Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
+                    <strong>Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
                     {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
                     </div>                  
                     

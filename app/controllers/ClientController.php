@@ -930,7 +930,7 @@ class ClientController extends BaseController {
             elseif($client->CremainsInfo->package_plan == "2") $saleSummary['report']['package_plan']['price'] = $provider->pricing_options->premium_cremation;
             else $saleSummary['report']['package_plan']['price'] = '';
 
-            $saleSummary['report']['package_plan']['name'] = 'Cremation Plan';
+            $saleSummary['report']['package_plan']['name'] = 'Plan';
             $saleSummary['report']['package_plan']['qnt'] = '1';
             $saleSummary['report']['package_plan']['desc'] = $client->CremainsInfo->package_plan==1?'Package A':'Package B';
             $TOTAL_PRICE += $saleSummary['report']['package_plan']['price'];

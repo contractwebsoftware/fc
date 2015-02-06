@@ -856,7 +856,7 @@
                     {{ Form::hidden("provider[id]",$provider->id) }}
 
                             <div class="form-group">
-                                    <label for="basic_cremation" class="col-xs-12 col-md-6">Plan A Cremation Package</label>
+                                    <label for="basic_cremation" class="col-xs-12 col-md-6">Plan A Package</label>
                                     <div class="col-md-6">
                                             <input type="text" id="basic_cremation" name="pricing[basic_cremation]" value="{{ $pricing->basic_cremation }}" class="form-control">
                                     </div>
@@ -869,7 +869,7 @@
                                     </div>
                             </div>
                             <div class="form-group">
-                                    <label for="premium_cremation" class="col-xs-12 col-md-6">Plan B Cremation Package</label>
+                                    <label for="premium_cremation" class="col-xs-12 col-md-6">Plan B Package</label>
                                     <div class="col-xs-12 col-md-6">
                                             <input type="text" id="premium_cremation" name="pricing[premium_cremation]" value="{{ $pricing->premium_cremation }}" class="form-control">
                                     </div>
@@ -1114,7 +1114,10 @@
                 <h3>Provder Help</h3>
                 <div class="form-group">
                     <div class="col-xs-12">
+                        <a href="http://www.forcremation.com/images/Provider-Set-up.mp4" class="video_layer">Provider Setup</a>
                         <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer">Provider Login</a>
+                        <a href="http://www.forcremation.com/images/Provider-Pricing.mp4" class="video_layer">Provider Pricing</a>
+                        <a href="http://www.forcremation.com/images/Forms-ForCremation.mp4" class="video_layer">How To Upload Forms</a>
 
                         <br /><br />
                     </div>
