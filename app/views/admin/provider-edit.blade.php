@@ -270,8 +270,8 @@
                        <label for="provider_files" class="col-xs-3">My Cremation Registration URL</label>
                        <div class="col-xs-9">
                        Your Provider Registration URL
-                           <textarea class="client_url">{{ url('clients/steps/?provider_id='.$provider->id) }}</textarea><br />
-                           <i>Example: {{url('clients/steps/?provider_id='.$provider->id)}}</i>
+                           <textarea class="client_url">{{ url('clients/steps?provider_id='.$provider->id) }}</textarea><br />
+                           <i>Example: {{url('clients/steps?provider_id='.$provider->id)}}</i>
                        </div>
                     </div>
                     <br style="float:none;clear:both;" /><br style="float:none;clear:both;" /><br style="float:none;clear:both;" />
@@ -280,8 +280,8 @@
                         <label for="provider_files" class="col-xs-3">HTML Link To My Cremation Registration</label>
                         <div class="col-xs-9">
                         Copy This Link HTML To Your Site
-                            <textarea class="client_url" >{{ link_to('clients/steps/?provider_id='.$provider->id) }}</textarea><br />
-                            <i>Example: {{link_to('clients/steps/?provider_id='.$provider->id)}}</i>
+                            <textarea class="client_url" >{{ link_to('clients/steps?provider_id='.$provider->id) }}</textarea><br />
+                            <i>Example: {{link_to('clients/steps?provider_id='.$provider->id)}}</i>
                         </div>
                     </div>
                     <br style="float:none;clear:both;" /><br style="float:none;clear:both;" /><br style="float:none;clear:both;" />

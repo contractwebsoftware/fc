@@ -1,5 +1,25 @@
 <?php
 
+/* CATCHALLS FOR ENTERING THE REGISTRATION AND PASSING PROVIDER IDS */
+Route::get('clients/steps/provider_id={id}', function($id)
+{
+
+    return Redirect::to('clients/steps?provider_id='.$id);
+});
+Route::get('clients/steps/provider={id}', function($id)
+{
+
+    return Redirect::to('clients/steps?provider_id='.$id);
+});
+Route::get('clients/steps/id={id}', function($id)
+{
+
+    return Redirect::to('clients/steps?provider_id='.$id);
+});
+/* END CATCHALLS FOR ENTERING THE REGISTRATION AND PASSING PROVIDER IDS */
+
+
+
 Route::group(array('before' => 'Sentry|inGroup:Admin'), function()
 {
     Route::controller('admin','AdminController');
@@ -14,6 +34,8 @@ Route::group(array('before' => 'Sentry|inGroup:Customer'), function()
 {
     Route::controller('clients','ClientController');
 });
+
+
 
 Route::get('this', array('as'=>'routename','uses'=>'controllerName@method'));
 /*

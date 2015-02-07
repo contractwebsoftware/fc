@@ -385,7 +385,6 @@ class AdminController extends BaseController {
                       $zip->save();
                     }
                 }
-
             }
 
             //ADD FROM MANUAL INPUT

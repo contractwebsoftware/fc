@@ -50,11 +50,19 @@ class ClientController extends BaseController {
             //echo '<Br /><Br /> client: <pre>'; 
             //print_r($client); echo '</pre><Br /><br />';
             
-            
+
             $steps_r = Step::whereRaw("status='1' and display_in_menu='1'")->get();
            
             
             $states = DB::table('state')->distinct()->get();
+            if(strpos($goToStep, 'provider-')!==false or strpos($goToStep, 'provider=')!==false){
+
+                $provider_id = str_replace('provider-','',$goToStep);
+                $provider_id = str_replace('provider=','',$goToStep);
+                //dd($provider_id);
+
+                $provider = ClientController::updateProvider($provider_id);
+            }
             if(Input::get('provider_id')){
                 $provider_id = Input::get('provider_id');
                 $provider_id = str_replace('provider-','',$provider_id);
