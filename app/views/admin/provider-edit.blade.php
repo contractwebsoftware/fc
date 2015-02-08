@@ -1118,6 +1118,8 @@
                         <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer">Provider Login</a><br />
                         <a href="http://www.forcremation.com/images/Provider-Pricing.mp4" class="video_layer">Provider Pricing</a><br />
                         <a href="http://www.forcremation.com/images/Forms-ForCremation.mp4" class="video_layer">How To Upload Forms</a>
+                        <a href="http://www.forcremation.com/images/urns-and-urn-pricing.mp4" class="video_layer">Urns and Urn Pricing</a>
+
 
                         <br /><br />
                     </div>
