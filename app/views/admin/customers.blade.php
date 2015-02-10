@@ -145,6 +145,7 @@
                         <th>Deceased Name</th>
                         <th>Phone</th>
                         <th>Date</th>
+                        <th>Provider</th>
                         <th>Customer Email</th>
                         <th class="text-right">Status</th>
                         <th class="text-right">Actions</th>
@@ -159,7 +160,9 @@
                             <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
                             <td >{{ $client->phone }}</td>
                             <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
+                            <td >@if($client->FProvider != null)<a href="{{ action('AdminController@getEditProvider',$client->FProvider->id) }}"> {{  $client->FProvider->business_name }} </a> @endif</td>
                             <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+
                             <td class="text-right" >
                                 <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
                         title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">

@@ -761,6 +761,9 @@ class AdminController extends BaseController {
             if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
             else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
 
+            $this_clients_provider_id = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            //dd($this_clients_provider_id);
+            if($this_clients_provider_id != null)$client->FProvider = FProvider::find($this_clients_provider_id->id);
 
             $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
             if($client_DeceasedInfo!=null){ 
