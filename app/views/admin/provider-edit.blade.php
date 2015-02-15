@@ -260,10 +260,12 @@
                 </div>
             </div>
             <br />
-        @elseif
+
+        @endif
+        @if(Sentry::getUser()->role!='admin')
             <div class="row">
                 <div class="col-xs-4">
-                   
+
                 </div>
                 <div class="col-xs-8">
                     <label for="provider_files" class="col-xs-9 pull-right text-right">My Homepage URL: &nbsp;
@@ -271,9 +273,8 @@
                     </label>
                 </div>
             </div>
-
         @endif
-
+        
         <h4>Links to my provider homepage</h4>
         <div class="row">
             <div class="col-xs-12">
