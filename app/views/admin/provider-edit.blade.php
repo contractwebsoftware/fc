@@ -260,6 +260,18 @@
                 </div>
             </div>
             <br />
+        @elseif
+            <div class="row">
+                <div class="col-xs-4">
+                   
+                </div>
+                <div class="col-xs-8">
+                    <label for="provider_files" class="col-xs-9 pull-right text-right">My Homepage URL: &nbsp;
+                        <a class="pull-right" href="http://www.forcremation.com/?provider={{$provider->id}}" target="_blank">http://www.forcremation.com/?provider={{$provider->id}}</a>
+                    </label>
+                </div>
+            </div>
+
         @endif
 
         <h4>Links to my provider homepage</h4>
