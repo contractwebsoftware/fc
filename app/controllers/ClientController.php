@@ -306,9 +306,9 @@ class ClientController extends BaseController {
                 $mail_data['type'] = 'plan_change';
                 Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
                 {
-                    $message->subject('A client has selected a new ForCremation plan');
+                    $message->subject('A client has selected a new ForCremation package');
                     $message->to($mail_data['provider']->email);
-                    Log::info('Emailed A client has selected a new ForCremation plan to '.$mail_data['provider']->email);
+                    Log::info('Emailed A client has selected a new ForCremation package to '.$mail_data['provider']->email);
                 });
 
 
