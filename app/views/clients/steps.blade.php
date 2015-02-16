@@ -160,7 +160,7 @@
         
         <fieldset id="step1">
             <div class="row">
-                <div class="col-md-6"><h3 class="pull-left">Cremation Plans</h3></div>
+                <div class="col-md-6"><h3 class="pull-left">Cremation Package</h3></div>
                 <div class="col-md-6"><a href="#" {{ (Session::get('inAdminGroup')=='Provider'?'style="display:none"':'') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">Select a different provider?</a></div>
             </div>
 
@@ -199,14 +199,14 @@
                     {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
 
                     <strong>Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
-                    {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Plan A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
+                    {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Package A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
                     </div>                  
                     
-                    <strong><u>Select Your Plan</u></strong><br />
+                    <strong><u>Select Your Package</u></strong><br />
                     Please select a package from the drop down below:<br />
                     <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
-                        <option value="0" {{ ($client->CremainsInfo->package_plan=="0"?'selected':'') }}>Select Plan</option>
-                        <option value="1" {{ ($client->CremainsInfo->package_plan=="1"?'selected':'') }}>Plan A</option>
+                        <option value="0">Select Plan</option>
+                        <option value="1" {{ ($client->CremainsInfo->package_plan=="1" || $client->CremainsInfo->package_plan=="" || $client->CremainsInfo->package_plan=="0"?'selected':'') }}>Plan A</option>
                         <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
                     </select><br />
                     
@@ -218,7 +218,7 @@
                     Same as plan A, but choose one of the Urns from our list, included in the cost.<br /><br />
                     -->
                     
-                    <b><u>Plan Additions</u></b><br />
+                    <b><u>Package Additions</u></b><br />
                     <?php
                         
                         if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.'">
@@ -262,7 +262,7 @@
             
             <div class="row form-group">
                 <div class="col-sm-10 warn-login-text"></div>
-                <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Save</button><br class="clear" /></div>
+                <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Continue</button><br class="clear" /></div>
             </div>
         </fieldset>
         <style>

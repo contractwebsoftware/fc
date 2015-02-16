@@ -274,7 +274,7 @@
                 </div>
             </div>
         @endif
-        
+
         <h4>Links to my provider homepage</h4>
         <div class="row">
             <div class="col-xs-12">
