@@ -19,7 +19,8 @@ class ProviderController extends BaseController {
                             12 => 'Other 2',
                             13 => 'Other 3',
                             14 => 'Other 4',
-                            15 => 'Other 5'
+                            15 => 'Other 5',
+							16 => 'Client Printable Documents'
                          );
         }
         

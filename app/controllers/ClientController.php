@@ -1315,8 +1315,8 @@ class ClientController extends BaseController {
 
             /* FRESHBOOKS API */
             //$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            $token = $provider->freshbooks_api_token; // your api token found in your account
-            Freshbooks\FreshBooksApi::init($domain, $token);
+            //$token = $provider->freshbooks_api_token; // your api token found in your account
+            //Freshbooks\FreshBooksApi::init($domain, $token);
 
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
@@ -1333,12 +1333,16 @@ class ClientController extends BaseController {
                 'p_country' => 'United States',
                 'p_code' => $client->zip
             );
+            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+            $fb = new Freshbooks\FreshBooksApi($domain, $token);
+
             if ($client->fb_client_id == '') {
-                $fb = new Freshbooks\FreshBooksApi('client.create');
+                $fb->setMethod('client.create');
                 $type = 'Created';
             }
             else {
-                $fb = new Freshbooks\FreshBooksApi('client.update');
+                $fb->setMethod('client.update');
                 $fb_client_info['client_id'] = $client->fb_client_id;
                 $type = 'Updated';
             }
@@ -1442,11 +1446,14 @@ class ClientController extends BaseController {
 
        //echo '<pre>';dd($invoice); // You can view what the XML looks like that we're about to send over the wire
 
+            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+            $fb = new Freshbooks\FreshBooksApi($domain, $token);
 
-            if($create_new)$fb = new Freshbooks\FreshBooksApi('invoice.create');
+            if($create_new)$fb->setMethod('invoice.create');
             else {
                 $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
-                $fb = new Freshbooks\FreshBooksApi('invoice.update');
+                $fb->setMethod('invoice.update');
             }
 
 

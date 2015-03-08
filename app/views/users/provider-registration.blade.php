@@ -104,7 +104,14 @@
                     <div class="form-group">
                         <label  class="sr-only" for="fax">Fax</label>
                         <div class="col-sm-12"><input type="text" placeholder="Fax" name="fax" id="fax" class="form-control" value="{{Input::get('fax')}}" /></div>
-                    </div>   
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="sr-only" for="fax">Administrative Coordinator</label>
+                        <div class="col-sm-6"><input type="text" placeholder="Administrative Coordinator First Name" name="admin_fn" id="admin_fn" class="form-control" value="{{Input::get('admin_fn')}}" /></div>
+                        <div class="col-sm-6"><input type="text" placeholder="Administrative Coordinator Last Name" name="admin_ln" id="admin_ln" class="form-control" value="{{Input::get('admin_ln')}}" /></div>
+                    </div>
+
                     <!--
                     <div class="form-group">
                         <label for="provider_radius" class="col-sm-12">Select your serviceable area from the above address</label>
@@ -127,8 +134,16 @@
                 <table data-toggle="buttons"  style="margin-top: 0px;" id="provider-reg-table">
                     <thead >
                         <th></th>
-                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'active':'')}}" for="plan_basic"><input type="radio" style="display:none;" name="plan_id" id="plan_basic" value="{{$provider_plan_basic->id}}" {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label></th>
-                        <th><label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_premium->id?'active':'')}}" for="plan_premium"><input type="radio"style="display:none;" name="plan_id" id="plan_premium" value="{{$provider_plan_premium->id}}" {{(Input::get('plan_id')==$provider_plan_premium->id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label></th>
+                        <th>
+                            <label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'active':'')}}" for="plan_basic">
+                                <input type="radio" style="display:none;" name="plan_id" id="plan_basic" value="{{$provider_plan_basic->id}}" {{(Input::get('plan_id')==$provider_plan_basic->id || Input::get('plan_id')==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub>
+                            </label>
+                        </th>
+                        <th>
+                            <label class="btn btn-primary {{(Input::get('plan_id')==$provider_plan_premium->id?'active':'')}}" for="plan_premium">
+                                <input type="radio"style="display:none;" name="plan_id" id="plan_premium" value="{{$provider_plan_premium->id}}" {{(Input::get('plan_id')==$provider_plan_premium->id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub>
+                            </label>
+                        </th>
                     </thead>
                     <tr><td>Cases Per Month</td><td>Ten</td><td>Unlimited</td></tr>
                     <tr><td>Certified Signatures</td><td>Ten</td><td>Unlimited</td></tr>

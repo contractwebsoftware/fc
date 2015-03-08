@@ -10,8 +10,11 @@
 		<li><a href="{{action('ClientController@getSteps')}}">step 1</a></li>
 		<li><a href="http://www.forcremation.com/general-info/">info</a></li>
 		<li><a href="http://www.forcremation.com/contact-us/">contact us</a></li>
-        <li><a href="{{action('UserController@getLogin')}}">Provider Login</a></li>
-        <li><a href="{{action('UserController@getProviderRegistration')}}">Provider Signup</a></li>
+
+		@if( strpos(Request::path(),'users/provider-registration')===false )
+			<li><a href="{{action('UserController@getLogin')}}">Provider Login</a></li>
+			<li><a href="{{action('UserController@getProviderRegistration')}}">Provider Signup</a></li>
+		@endif
 	</ul>
 	<div class="clear"></div>
 </div>

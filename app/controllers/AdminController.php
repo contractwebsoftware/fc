@@ -257,7 +257,7 @@ class AdminController extends BaseController {
         if($provider == null){
             $provider = new FProvider();  
         } 
-        
+
         if(array_key_exists('freshbooks_clients_enabled',$input)){            
             if($input['freshbooks_clients_enabled']=='1')$provider->freshbooks_clients_enabled = 1;
             else $provider->freshbooks_clients_enabled = 0;
@@ -1203,7 +1203,10 @@ class AdminController extends BaseController {
         $provider = FProvider::find($provider_id);
         
         if($provider != null){
-            $fb = new Freshbooks\FreshBooksApi('client.create');
+            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+            $fb = new Freshbooks\FreshBooksApi($domain, $token);
+            $fb->setMethod('client.create');
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb->post(array('client'=>
@@ -1276,8 +1279,11 @@ class AdminController extends BaseController {
                 else $create_new = false;
                 
                 if($create_new){
-                    
-                    $fb = new Freshbooks\FreshBooksApi('recurring.create');
+                    $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+                    $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+                    $fb = new Freshbooks\FreshBooksApi($domain, $token);
+                    $fb->setMethod('recurring.create');
+
                     // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
                     $fb->post(
                         array('recurring'=>
@@ -1305,8 +1311,11 @@ class AdminController extends BaseController {
                 }
                 else {
                     //$providerBilling = ProviderBilling::where('provider_id', $provider_id)->first();
-                   
-                    $fb = new Freshbooks\FreshBooksApi('recurring.update');
+                    $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+                    $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+                    $fb = new Freshbooks\FreshBooksApi($domain, $token);
+                    $fb->setMethod('recurring.update');
+
                      // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
                     $fb->post(
                         array('recurring'=>

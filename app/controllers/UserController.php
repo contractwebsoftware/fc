@@ -4,10 +4,12 @@ class UserController extends BaseController {
     protected $layout = 'layouts.admin';
 
 
-    public function getLogin()
+    public function getLogin($flash='')
     {
         Session::flush();
         Sentry::logout();
+
+        if($flash != '')Session::flash('error', $flash);
         return View::make('users.login');
     }
 
@@ -59,6 +61,11 @@ class UserController extends BaseController {
             }elseif(Sentry::getUser()->role=='provider') {
 
                 $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
+
+                if($provider->provider_status == 0){
+                    //dd('test'.$provider->provider_status);
+                    UserController::getLogout('Your provider account has not yet been approved, you will be notified when it is active');
+                }
                 Session::put('logged_in_provider_id',$provider->id);
                 Session::put('provider',$provider);
                 return Redirect::action('AdminController@getCustomers');
@@ -74,11 +81,12 @@ class UserController extends BaseController {
             }
     }
 
-    public function getLogout(){
-            Session::flush();
-            Sentry::logout();
-            //return Redirect::to('/users/login');
-            return Redirect::action('UserController@getLogin');
+    public function getLogout($flash=''){
+        Session::flush();
+        Sentry::logout();
+        //return Redirect::to('/users/login');
+        //dd($flash);
+        return Redirect::action('UserController@getLogin', $flash);
     }
 
 
@@ -115,6 +123,8 @@ class UserController extends BaseController {
                 'website' => Input::get('website'),
                 'phone' => Input::get('phone'),
                 'fax' => Input::get('fax'),
+                'admin_fn' => Input::get('admin_fn'),
+                'admin_ln' => Input::get('admin_ln'),
                 'provider_radius' => 5,
                 'email' => Input::get('email'),
                 'password' => Input::get('password'),
@@ -172,6 +182,8 @@ class UserController extends BaseController {
                 'website' => Input::get('website'),
                 'phone' => Input::get('phone'),
                 'fax' => Input::get('fax'),
+                'admin_fn' => Input::get('admin_fn'),
+                'admin_ln' => Input::get('admin_ln'),
                 'provider_radius' => 5,
                 'user_id' => $user->id
             ];

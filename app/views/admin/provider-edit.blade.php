@@ -49,7 +49,7 @@
                                     <div class="form-group">
                                         <label  class="col-sm-2" for="provider_status">Provider Plan</label>
                                         <div class="col-sm-10">
-                                            <div data-toggle="buttons">
+                                            <div data-toggle="buttons" id="provider-plan-buttons">
                                                 @if(Sentry::getUser()->role=='admin')
                                                     <label class="btn btn-primary {{($provider_plan_basic->id == $provider->plan_id?'active':'')}}" for="plan_basic"><input type="radio" name="provider[plan_id]" id="plan_basic" value="{{$provider_plan_basic->id}}" {{($provider_plan_basic->id == $provider->plan_id || $provider->plan_id==''?'checked':'')}}> &nbsp; <b>Basic</b> &nbsp; ${{$provider_plan_basic->price}} <sub>/m</sub></label>
                                                     <label class="btn btn-primary {{($provider_plan_premium->id == $provider->plan_id?'active':'')}}" for="plan_premium"><input type="radio" name="provider[plan_id]" id="plan_premium" value="{{$provider_plan_premium->id}}" {{($provider_plan_premium->id == $provider->plan_id?'checked':'')}}> &nbsp; <b>Premium</b> &nbsp; ${{$provider_plan_premium->price}} <sub>/m</sub></label>
@@ -65,14 +65,25 @@
                                         </div>
                                         
                                     </div>
-                                    @if(Sentry::getUser()->role=='admin')
-                                    <div class="form-group">
+                                    <script>
+                                        $('#provider-plan-buttons label.btn-primary').each(function(){
+                                            $('#provider-plan-buttons label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+                                            $('#provider-plan-buttons label.btn-primary.active').find('b').html('<i class="glyphicon glyphicon-check"  style="color:#77CA77;"></i> &nbsp; Selected');
+                                        });
+
+                                        $('#provider-plan-buttons label.btn-primary').click(function(){
+                                            $('#provider-plan-buttons label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
+                                            $(this).find('b').html('<i class="glyphicon glyphicon-check"  style="color:#77CA77;"></i> &nbsp; Selected');
+                                        });
+                                    </script>
+
+                                    <div class="form-group" style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
                                         <label  class="col-sm-2" for="freshbooks_billing_cost">FreshBooks Invoice Price</label>
                                         <div class="col-sm-10">
                                             <input type="text" placeholder="Invoice Price" name="provider[freshbooks_billing_cost]" id="provider" class="form-control" value="{{ $provider->freshbooks_billing_cost }}">
                                         </div>
                                     </div>
-                                    @endif
+
 
                                     <div class="form-group">
                                         <label  class="col-sm-2" for="provider_login">Provider Login</label>
@@ -137,48 +148,55 @@
                                         <div class="col-sm-10"><input type="text" placeholder="Fax" name="provider[fax]" id="fax" class="form-control" value="{{ $provider->fax }}"></div>
                                     </div>
 
-                                    
-                                    @if(Sentry::getUser()->role=='admin')
-                                    <div class="form-group" >
-                                        <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
-                                        <div class="col-sm-10">
-                                            <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }} />
-                                        </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2" for="fax">Administrative Coordinator</label>
+                                        <div class="col-sm-5"><input type="text" placeholder="Administrative Coordinator First Name" name="provider[admin_fn]" id="admin_fn" class="form-control" value="{{ $provider->admin_fn }}" /></div>
+                                        <div class="col-sm-5"><input type="text" placeholder="Administrative Coordinator Last Name" name="provider[admin_ln]" id="admin_ln" class="form-control" value="{{ $provider->admin_ln }}" /></div>
                                     </div>
                                     
-                                    <div id='freshbooks_settings'>
+                                    <div class="row"  style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
 
                                         <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL<Br />
-                                            <i style="font-size:11px;">e.g. https://forcremationcom.freshbooks.com/api/2.1/xml-in</i>
-                                            </label>
+                                            <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
                                             <div class="col-sm-10">
-                                                <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label  class="col-sm-2" for="freshbooks_api_token">Freshbooks Authentication Token<Br />
-                                            <i style="font-size:11px;">e.g. 95cad39d654646s2d2a2a119e6559</i></label>
-                                            <div class="col-sm-10">
-                                                <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
+                                                <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }} />
                                             </div>
                                         </div>
 
-                                        <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_people">Allow Creation of Freshbooks People</label>
-                                            <div class="col-sm-10">
-                                                <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
+                                        <div id='freshbooks_settings'>
+
+                                            <div class="form-group" >
+                                                <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL<Br />
+                                                <i style="font-size:11px;">e.g. https://forcremationcom.freshbooks.com/api/2.1/xml-in</i>
+                                                </label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Freshbooks Invoices</label>
-                                            <div class="col-sm-10">
-                                                <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
+                                            <div class="form-group">
+                                                <label  class="col-sm-2" for="freshbooks_api_token">Freshbooks Authentication Token<Br />
+                                                <i style="font-size:11px;">e.g. 95cad39d654646s2d2a2a119e6559</i></label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" placeholder="API Key" name="provider[freshbooks_api_token]" id="freshbooks_api_token" class="form-control" value="{{ $provider->freshbooks_api_token }}">
+                                                </div>
                                             </div>
+
+                                            <div class="form-group" >
+                                                <label  class="col-sm-2" for="freshbooks_clients_people">Allow Creation of Freshbooks People</label>
+                                                <div class="col-sm-10">
+                                                    <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
+                                                </div>
+                                            </div>
+                                            <div class="form-group" >
+                                                <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Freshbooks Invoices</label>
+                                                <div class="col-sm-10">
+                                                    <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
+                                                </div>
+                                            </div>
+
                                         </div>
 
                                     </div>
-                                    @endif
                                     <br />
                                     
                                     <div class="form-group">
