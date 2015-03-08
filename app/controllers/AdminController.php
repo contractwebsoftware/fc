@@ -193,8 +193,9 @@ class AdminController extends BaseController {
         if($data['fuser'] == null) $data['fuser'] = new User;
         $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
-        $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_slide_%')->get();
-        $provider_homepage_files = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_slide_%')->get();
+        $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_logo')->where('file_type','not like','provider_slide_%')->get();
+        $provider_homepage_files = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_logo')->orWhere('file_type','like','provider_slide_%')->get();
+        $data['provider_logo'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_logo')->first();
         $data['provider_products'] = ProviderProducts::where('provider_id', $data['provider']->id)->get();
         if(count($data['provider_products'])<1)$data['provider_products'] = Products::get();
         //dd($data['provider_products']);
@@ -202,9 +203,8 @@ class AdminController extends BaseController {
         $data['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
         $data['custom_form_num'] = $custom_form_num;
         $data['current_tab'] = $current_tab;
-        
-        
-        
+
+
         $this_zip = Zip::where('zip',$data['provider']->zip)->first();
         if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
         else $data['zip_info'] = null;
@@ -475,6 +475,7 @@ class AdminController extends BaseController {
     {
         $input = Input::all();
 
+        //PROVIDER FILES
         if (array_key_exists('provider_files_new', $input)) {
             //dd($input['provider_files']);
             $file = Input::file('provider_files_new');
@@ -492,6 +493,26 @@ class AdminController extends BaseController {
             $provider_file->save();
         }
 
+        //PROVIDER LOGO
+        if (array_key_exists('provider_logo', $input)) {
+            //dd($input['provider_files']);
+            $file = Input::file('provider_logo');
+            //dd($file);
+            $destinationPath = public_path() . "/provider_files/" . $input['provider']['id'];
+            $file->move($destinationPath, 'logo.png');
+
+            //$name = $file->getClientOriginalName();
+
+            $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', 'provider_logo')->first();
+            if ($provider_file == null || $provider_file == "") $provider_file = new ProviderFiles();
+            $provider_file->provider_id = $input['provider']['id'];
+            $provider_file->file_name = 'logo.png';
+            $provider_file->file_type = 'provider_logo';
+            $provider_file->save();
+        }
+
+
+        //SLIDESHOW IMAGES
         for ($x = 1; $x <= 3; $x++){
 
             if (array_key_exists('provider_slide_'.$x, $input)){

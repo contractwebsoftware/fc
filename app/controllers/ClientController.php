@@ -211,6 +211,9 @@ class ClientController extends BaseController {
         $provider->ProviderFiles = ProviderFiles::where('provider_id', $provider->id)->where('file_type', 'pricing')->first();
         if ($provider->ProviderFiles == null) $provider->ProviderFiles = new ProviderFiles();
         $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type', 'pricing')->first();
+        $provider->provider_logo = ProviderFiles::where('provider_id', $provider->id)->where('file_type','like','provider_logo')->first();
+        if ($provider->provider_logo == null)$provider->provider_logo = 'http://forcremation.com/providers/badges/fclogo.png?v=2';
+        else $provider->provider_logo = 'http://provider.forcremation.com/provider_files/'.$provider->id.'/logo.png';
 
 
         if (is_object($client)) {

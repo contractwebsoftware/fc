@@ -230,45 +230,71 @@
         @if(Sentry::getUser()->role=='admin')
 
             <div class="row">
-                <div class="col-xs-4">
+                <div class="col-xs-12">
+                    <center>
                     <h4>Customize my provider homepage</h4>
-                </div>
-                <div class="col-xs-8">
-                    <label for="provider_files" class="col-xs-9 pull-right text-right">My Homepage URL: &nbsp;
-                        <a class="pull-right" href="http://www.forcremation.com/?provider={{$provider->id}}" target="_blank">http://www.forcremation.com/?provider={{$provider->id}}</a>
-                    </label>
+                        My Homepage URL: &nbsp;
+                        <a href="http://www.forcremation.com/?provider={{$provider->id}}" target="_blank">http://www.forcremation.com/?provider={{$provider->id}}</a>
+
+                    </center>
                 </div>
             </div>
+            <br />
+
             <div class="row">
                 <div class="col-xs-12">
+                    <h5>My Logo</h5>
                     <fieldset>
                         {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
                         {{ Form::hidden("provider[id]",$provider->id) }}
                         {{ Form::hidden("tab", 'client_links') }}
+                        <div class="row">
+                            <div class="col-xs-1">
+                                @if($provider_logo != null)
+                                    <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_logo->file_name) }}" style="max-width:100px;width:100%;height:auto;"/> &nbsp;
+                                    <br />&nbsp; &nbsp; &nbsp; [ <i>{{link_to_action('AdminController@getRemoveFiles', "Delete", array('fileid'=>$provider_logo ->id,'provider_id'=>$provider->id,'tab'=>'client_links'), $attributes = array('onclick'=>'return confirm("Are you sure you want to delete this file?")',"style"=>"color:red!important;"))}}</i> ]<br />
+                                @endif
+                            </div>
+                            <div class="form-group col-xs-11">
+                                <label for="provider_files"><i>* Logo should be a PNG file type with maximum of 300px wide and 100px tall</i></label>
+                                <input type="file" id="provider_files_logo" name="provider_logo" class="form-control" />
 
-                        <div class="form-group">
-                            <label for="provider_files" class="col-xs-3">Homepage Slideshow Images <i class="pull-left">&nbsp; &nbsp; *Images should be 1000px wide by 300px tall</i></label>
-
-
-
-                            <br style="float:none;clear:both;"/><br style="float:none;clear:both;"/>
-                            <div class="row">
-                            @for($x=1; $x<=3; $x++)
-                                <div class="col-xs-3">
-                                    <br style="float:none;clear:both;" /><br />
-                                    Slide {{$x}}:
-                                    <input type="file" id="provider_files_{{$x}}" name="provider_slide_{{$x}}" class="form-control" /> <br />
-                                    &nbsp; &nbsp; &nbsp;
-                                        @if(array_key_exists('provider_slide_'.$x, $provider_homepage_files))
-                                            <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_homepage_files['provider_slide_'.$x]->file_name) }}" style="max-width:250px;width:100%;height:auto;"/> &nbsp;
-                                            <br />&nbsp; &nbsp; &nbsp; [ <i>{{link_to_action('AdminController@getRemoveFiles', "Delete", array('fileid'=>$provider_homepage_files['provider_slide_'.$x]->id,'provider_id'=>$provider->id,'tab'=>'client_links'), $attributes = array('onclick'=>'return confirm("Are you sure you want to delete this file?")',"style"=>"color:red!important;"))}}</i> ]<br />
-                                        @endif
-
-                                </div>
-                            @endfor
+                                <br />
+                                <button type="submit" class="btn btn-primary btn-block" style="width:150px;">Upload</button>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{ Form::close() }}
+                    </fieldset>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5>My Homepage Slides</h5>
+                    <fieldset>
+                        {{ Form::open(['action'=>'AdminController@postUpdateFiles', 'class'=>'form-horizontal','files'=>true]) }}
+                        {{ Form::hidden("provider[id]",$provider->id) }}
+                        {{ Form::hidden("tab", 'client_links') }}
+                        <label for="provider_files"><i>* Images should be 1000px wide by 300px tall</i></label>
+
+                        <div class="form-group row">
+
+                            @for($x=1; $x<=3; $x++)
+                                <div class="col-xs-1">
+                                    @if(array_key_exists('provider_slide_'.$x, $provider_homepage_files))
+                                        <img src="{{ asset('/provider_files/'.$provider->id.'/'.$provider_homepage_files['provider_slide_'.$x]->file_name) }}" style="max-width:100px;width:100%;height:auto;"/> &nbsp;
+                                        <br />&nbsp; &nbsp; &nbsp; [ <i>{{link_to_action('AdminController@getRemoveFiles', "Delete", array('fileid'=>$provider_homepage_files['provider_slide_'.$x]->id,'provider_id'=>$provider->id,'tab'=>'client_links'), $attributes = array('onclick'=>'return confirm("Are you sure you want to delete this file?")',"style"=>"color:red!important;"))}}</i> ]<br />
+                                    @endif
+                                </div>
+                                <div class="col-xs-3">
+                                    Slide {{$x}}:
+                                    <input type="file" id="provider_files_{{$x}}" name="provider_slide_{{$x}}" class="form-control" /> <br />
+                                </div>
+                            @endfor
+
+                        </div>
+                        <div class="row">
                             <div class="col-xs-12">
                                 <button type="submit" class="btn btn-primary btn-block">Upload</button>
                             </div>
@@ -278,8 +304,8 @@
                 </div>
             </div>
             <br />
-
         @endif
+
         @if(Sentry::getUser()->role!='admin')
             <div class="row">
                 <div class="col-xs-4">
@@ -293,9 +319,9 @@
             </div>
         @endif
 
-        <h4>Links to my provider homepage</h4>
         <div class="row">
             <div class="col-xs-12">
+               <h5>Links to My Provider Homepage</h5>
                <fieldset>
                     <div class="form-group">
                        <label for="provider_files" class="col-xs-3">My Cremation Registration URL</label>
