@@ -36,7 +36,7 @@ else $provider_name = '';
         </ul>
     <div class="row">
         <div class="col-sm-4">
-            <img src="{{ $provider->provider_logo!=''?$provider->provider_logo:asset('img/logo.png') }}" alt="logo" id="logo">
+            <img src="{{ $provider->provider_logo!=''?$provider->provider_logo:asset('img/logo.png?v=2') }}" alt="logo" id="logo">
         </div>
         <div class="col-sm-8">
             <ul class="nav navbar-nav navbar-right">
