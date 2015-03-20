@@ -64,14 +64,14 @@ else $provider_name = '';
     <div class="row selected-provider-box">
            <table width="100%" align="center">
             <tr><td align="left">
-                    <b style="font-size: 20px;color:#0E7DB6 !important;">{{$provider->business_name}}</b>
-                    <br>Address: {{$provider->address}}, {{$provider->city}}, {{$provider->state}} {{$provider->zip}}
+                    <b style="font-size: 28px;color:#0E7DB6 !important;">{{$provider->business_name}}</b>
+                    <br>{{$provider->address}}{{$provider->address!=''?',':''}} {{$provider->city}}{{$provider->city!=''?',':''}} {{$provider->state}} {{$provider->zip}}
                 </td>
                 <td align="right">
                     <b style="font-size: 20px;color:#0E7DB6 !important;">Estimated Cost: $<span id="current_total_price"></span></b>
                     <br><span>Phone: {{$provider->phone}}</span>
                      @if($provider->ProviderPriceSheet!=null)
-                        <Br /><a style="font-weight:bold;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)}}" target="_blank">Download Pricing Sheet</a>
+                        <Br /><a style="font-weight:bold;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)}}" target="_blank">View Pricing Sheet</a>
                      @endif
                 </td></tr>
            </table>
