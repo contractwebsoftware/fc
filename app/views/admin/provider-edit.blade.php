@@ -938,6 +938,15 @@
                                     </div>
                             </div>
                             <div class="form-group">
+                                <label for="weight_lt_250" class="col-xs-12 col-md-6">Filing Fee</label>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" id="filing_fee" name="pricing[filing_fee]" value="{{ $pricing->filing_fee }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                     <label for="weight_lt_250" class="col-xs-12 col-md-6">Weight Under 250lbs</label>
                                     <div class="col-xs-12 col-md-6">
                                             <div class="input-group">

@@ -74,3 +74,9 @@ Route::get('test2',function(){
         });*/
             
 });
+
+Route::get('/',function(){
+
+    header("Location: http://provider.forcremation.com/clients/steps");
+    die();
+});
