@@ -68,7 +68,6 @@ class StepController extends BaseController {
 
 
 
-
             $providers = $providers->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
             $providers_with_zips = $providers_with_zips->get();
             //dd($providers_with_zips);
@@ -78,9 +77,17 @@ class StepController extends BaseController {
             foreach($funeral_homes as $key=>$row){
                 $json_r['funeralhome-'.$row->id] = $row->biz_name;
             }
+
+            if($providers == null){
+               # echo 'FAILED TO FIND'.$zip->e_state;
+                $providers = DB::table('providers')->where('default_for_state', $zip->e_state)->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
+                #dd($providers);
+            }
+
             foreach($providers as $key=>$row){
                 if($row->provider_status=='1' and $row->admin_provider=='0')$json_r['provider-'.$row->id] = $row->business_name;
             }
+
             foreach($providers_with_zips as $key=>$row){
                 $this_provider = Fprovider::find($row->provider_id);
                 if($this_provider != null)

@@ -132,8 +132,19 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                            <label  class="col-sm-2" for="website">Website</label>
-                                            <div class="col-sm-10"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
+                                        <label  class="col-sm-2" for="website">Provider</label>
+                                        <div class="col-sm-10"><input type="text" placeholder="Website" name="provider[website]" id="website" class="form-control" value="{{ $provider->website }}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                            <label  class="col-sm-2" for="default_for_state">Default Provider For State</label>
+                                            <div class="col-sm-10">
+                                                <select  placeholder="Default Provider For State" name="provider[default_for_state]" id="default_for_state" class="form-control" value="{{ $provider->default_for_state }}">
+                                                    <option value="" {{ ($provider->default_for_state==''?'selected=selected':'') }}>Not A Default Provider</option>
+
+                                                        @foreach($states as $key=>$state)
+                                                            <option value="{{$state['name_shor']}}" {{ ($provider->default_for_state==$state['name_shor']?'selected=selected':'') }}>{{$state['name_long']}}</option>
+                                                        @endforeach
+                                            </div>
                                     </div>
                                     <div class="form-group">
                                             <label  class="col-sm-2" for="email">Email</label>

@@ -192,6 +192,7 @@ class AdminController extends BaseController {
         $data['fuser'] = User::find($data['provider']->user_id);
         if($data['fuser'] == null) $data['fuser'] = new User;
         $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
+        $data['states'] = State::orderBy('name_long')->get();
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
         $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_logo')->where('file_type','not like','provider_slide_%')->get();
         $provider_homepage_files = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_logo')->orWhere('file_type','like','provider_slide_%')->get();
@@ -348,6 +349,7 @@ class AdminController extends BaseController {
                 Session::flash('error','Password Update Failed');
             }   
         }
+
 
 
 
