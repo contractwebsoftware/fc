@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Set Password</label>
-                    <input type="text" class="form-control input-sm" name="user[password]" id="password" value=""  autocomplete="off" />
+                    <input type="text" class="form-control input-sm" name="pass" id="password" value=""  autocomplete="off" />
                 </div>
                 <div class="form-group">
                     <label for="activated">Account is Active</label>

@@ -318,8 +318,11 @@ class UserController extends BaseController {
         }
         else {
             Session::flash('success','User Updated Successfully');
+
             $user->fill($input['user']);
             $user->save();
+
+            if($input['pass']!='')$input['user']['password'] = $input['pass'];
 
             // Okay all validation passed, we change the password
             if($input['user']['password']!=''){
