@@ -759,22 +759,22 @@
 
 
 		        <div class="row">
-                    <label for="provider_zip_code" class="col-xs-4">Currently Assigned Zip Codes</label><br style="float:none;clear:both;"/>
-                        <script>
-                            var addallchecked=true;
-                            var removeallchecked=true;
-                            function addcheckall(){
-                                $('.addzips').prop('checked', addallchecked);
-                                addallchecked = !addallchecked;
-                            }
-                            function removeall(){
-                                $('.removezips').prop('checked', removeallchecked);
-                                removeallchecked = !removeallchecked;
-                            }
-                       </script>
-			    <div class="col-xs-12 col-md-4">
+
+			        <div class="col-xs-12 col-md-4">
                             <div class="table-responsive">
-                                <br />
+                                <label for="provider_zip_code" >Currently Assigned Zip Codes</label><br style="float:none;clear:both;"/>
+                                <script>
+                                    var addallchecked=true;
+                                    var removeallchecked=true;
+                                    function addcheckall(){
+                                        $('.addzips').prop('checked', addallchecked);
+                                        addallchecked = !addallchecked;
+                                    }
+                                    function removeall(){
+                                        $('.removezips').prop('checked', removeallchecked);
+                                        removeallchecked = !removeallchecked;
+                                    }
+                                </script>
                                 <a href="#" onclick="removeall();return false;"><b>Select All</b></a>
                                     <table class="table table-condensed" style="margin:0;padding:0;">
                                         <thead>
@@ -802,62 +802,62 @@
                                     </table>
                                     </div>
                                     <button type="submit" class="btn btn-primary btn-block" class="form-control">Remove</button>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-8">
-                               
-                <div class="form-group">
-                    <label for="provider_zip_code" >Add Zip Codes</label><br style="float:none;clear:both;"/>
-                    <div class="col-xs-8">
-                            <i>You can enter multiple zips separated by commas</i><br />
-                            <input type="text" id="provider_zip_code" placeholder="Enter Zip Code Here" name="provider_zip_code" class="form-control">
-                    </div>
-                </div>
-                <br style="float:none;clear:both;"/>
-                <br style="float:none;clear:both;"/>
+				            </div>
+			        </div>
+                    <div class="col-xs-12 col-md-8">
 
-
-                <div class="form-group">
-                    <label for="provider_zip_code">Lookup radius of zips</label>
-                    <div class="col-xs-8">
-                        <i>Currently listing zips in the radius of this zip:</i><br />
-                        <input type="text" id="zip_search" placeholder="Enter Zip Code Here" name="zip_search" class="form-control" value="{{$provider->zip}}" style="float:left;" />
-                    </div>
-                    <div class="col-xs-4">
-                        <br />
-                        <button type="button" class="btn btn-primary " id="search_zips_btn" class="form-control">Search</button>
-                    </div>
-                </div>
-
-                <br style="float:none;clear:both;"/>
-
-                <div class="row">
-                    <div class="col-xs-8" >
-                        &nbsp; &nbsp; <a href="#" onclick="addcheckall();return false;"><b>Select All</b></a><br />
-                            <div id="zip_list" style="height:300px;overflow-x:auto;border:1px solid #aaa;width:100%;margin:5px 5px;padding:5px 17px;">
-                            <?php
-                                if($zip_info!=null){
-                                    foreach($zip_info as $zip){
-                                        //if(!in_array($zip->zip,$zips_r))
-                                        echo '<br style="float:none;clear:both;"/><label for="addzip-'.$zip->zip.'" style="cursor:pointer;float:left;">'.$zip->zip.' </label>'
-                                                . '&nbsp; <input type="checkbox" class="addzips" id="addzip-'.$zip->zip.'" name="addzips['.$zip->zip.']" value="'.$zip->zip.'" /> '
-                                                . '&nbsp; ~ '.round($zip->distance,2).' miles';
-                                    }
-
-                                }
-                            ?>
+                        <div class="form-group">
+                            <label for="provider_zip_code" >Add Zip Codes</label>
+                            <div class="col-xs-8">
+                                    <i>You can enter multiple zips separated by commas</i><br />
+                                    <input type="text" id="provider_zip_code" placeholder="Enter Zip Code Here" name="provider_zip_code" class="form-control">
                             </div>
-                    </div>
-                </div>
-                            
-                            
-				<div class="form-group">
-					<div class="col-xs-8"><button type="submit" class="btn btn-primary btn-block" class="form-control">Update Zip Info</button></div>
-					<div class="col-xs-4">
+                        </div>
+                        <br style="float:none;clear:both;"/>
+                        <br style="float:none;clear:both;"/>
 
-					</div>
-				</div>
-			</div>
+
+                        <div class="form-group">
+                            <label for="provider_zip_code">Lookup radius of zips</label>
+                            <div class="col-xs-8">
+                                <i>Currently listing zips in the radius of this zip:</i><br />
+                                <input type="text" id="zip_search" placeholder="Enter Zip Code Here" name="zip_search" class="form-control" value="{{$provider->zip}}" style="float:left;" />
+                            </div>
+                            <div class="col-xs-4">
+                                <br />
+                                <button type="button" class="btn btn-primary " id="search_zips_btn" class="form-control">Search</button>
+                            </div>
+                        </div>
+
+                        <br style="float:none;clear:both;"/>
+
+                        <div class="row">
+                            <div class="col-xs-8" >
+                                &nbsp; &nbsp; <a href="#" onclick="addcheckall();return false;"><b>Select All</b></a><br />
+                                    <div id="zip_list" style="height:300px;overflow-x:auto;border:1px solid #aaa;width:100%;margin:5px 5px;padding:5px 17px;">
+                                    <?php
+                                        if($zip_info!=null){
+                                            foreach($zip_info as $zip){
+                                                //if(!in_array($zip->zip,$zips_r))
+                                                echo '<br style="float:none;clear:both;"/><label for="addzip-'.$zip->zip.'" style="cursor:pointer;float:left;">'.$zip->zip.' </label>'
+                                                        . '&nbsp; <input type="checkbox" class="addzips" id="addzip-'.$zip->zip.'" name="addzips['.$zip->zip.']" value="'.$zip->zip.'" /> '
+                                                        . '&nbsp; ~ '.round($zip->distance,2).' miles';
+                                            }
+
+                                        }
+                                    ?>
+                                    </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-xs-8"><button type="submit" class="btn btn-primary btn-block" class="form-control">Update Zip Info</button></div>
+                            <div class="col-xs-4">
+
+                            </div>
+                        </div>
+                </div>
 		</div>
 
         <script>
