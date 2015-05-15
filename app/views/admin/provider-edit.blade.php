@@ -818,21 +818,21 @@
 
 
                 <div class="form-group">
-                    <label for="provider_zip_code">Lookup another radius of zips</label>
+                    <label for="provider_zip_code">Lookup radius of zips</label>
                     <div class="col-xs-8">
+                        <i>Currently listing zips in the radius of this zip:</i><br />
                         <input type="text" id="zip_search" placeholder="Enter Zip Code Here" name="zip_search" class="form-control" value="{{$provider->zip}}" style="float:left;" />
                     </div>
                     <div class="col-xs-4">
+                        <br />
                         <button type="button" class="btn btn-primary " id="search_zips_btn" class="form-control">Search</button>
                     </div>
                 </div>
 
                 <br style="float:none;clear:both;"/>
-                <br style="float:none;clear:both;"/>
 
                 <div class="row">
                     <div class="col-xs-8" >
-                        <label for="provider_zip_code">Zips in Providers' Radius</label>
                         &nbsp; &nbsp; <a href="#" onclick="addcheckall();return false;"><b>Select All</b></a><br />
                             <div id="zip_list" style="height:300px;overflow-x:auto;border:1px solid #aaa;width:100%;margin:5px 5px;padding:5px 17px;">
                             <?php
