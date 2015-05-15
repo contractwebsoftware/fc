@@ -223,6 +223,28 @@ class AdminController extends BaseController {
         $this->layout->content = View::make('admin.provider-edit',$data);
     }
 
+    public function getZipsByLocation()
+    {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+
+        $zip = Input::get('zip');
+        $radius = Input::get('radius');
+
+        $this_zip = Zip::where('zip',$zip)->first();
+
+        if($this_zip!=null)$zips_r = AdminController::findZipsInRadius($radius, $this_zip->latitude, $this_zip->longitude);
+        else $zips_r = null;
+
+        if($zips_r!=null){
+            foreach($zips_r as $key=>$zip){
+                $zip->distance = round($zip->distance,2);
+                $zips_r[$key] = $zip;
+            }
+        }
+
+        return $zips_r;
+    }
+
 
     public function  getDeleteProvider($id){
         $provider = FProvider::find($id);    

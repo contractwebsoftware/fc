@@ -806,42 +806,93 @@
 			</div>
 			<div class="col-xs-12 col-md-8">
                                
-				<div class="form-group">
-                                    <label for="provider_zip_code" class="col-xs-4">Add Zip Codes</label><br style="float:none;clear:both;"/>
-					<div class="col-xs-8">
-                                            <i>You can enter multiple zips separated by commas</i><br />
-                                            <input type="text" id="provider_zip_code" placeholder="Enter Zip Code Here" name="provider_zip_code" class="form-control">
-					</div>
-				</div>
-                                <br style="float:none;clear:both;"/>
-                           
-                                <div class="form-group">
-                                    <label for="provider_zip_code" class="col-xs-4">Zips in Providers' Radius</label><br style="float:none;clear:both;"/>
-                                        &nbsp; &nbsp; <a href="#" onclick="addcheckall();return false;"><b>Select All</b></a>
-					<div class="col-xs-8" style="height:300px;overflow-x:auto;border:1px solid #aaa;width:100%;margin:5px 17px;">
-                                            <?php
-                                                if($zip_info!=null){
-                                                    foreach($zip_info as $zip){
-                                                        //if(!in_array($zip->zip,$zips_r))
-                                                        echo '<br style="float:none;clear:both;"/><label for="addzip-'.$zip->zip.'" style="cursor:pointer;float:left;">'.$zip->zip.' </label>'
-                                                                . '&nbsp; <input type="checkbox" class="addzips" id="addzip-'.$zip->zip.'" name="addzips['.$zip->zip.']" value="'.$zip->zip.'" /> '
-                                                                . '&nbsp; ~ '.round($zip->distance,2).' miles';
-                                                    }
-                                                    
-                                                }
-                                            ?>
-					</div>
-				</div>
+                <div class="form-group">
+                    <label for="provider_zip_code" >Add Zip Codes</label><br style="float:none;clear:both;"/>
+                    <div class="col-xs-8">
+                            <i>You can enter multiple zips separated by commas</i><br />
+                            <input type="text" id="provider_zip_code" placeholder="Enter Zip Code Here" name="provider_zip_code" class="form-control">
+                    </div>
+                </div>
+                <br style="float:none;clear:both;"/>
+                <br style="float:none;clear:both;"/>
+
+
+                <div class="form-group">
+                    <label for="provider_zip_code">Lookup another radius of zips</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="zip_search" placeholder="Enter Zip Code Here" name="zip_search" class="form-control" value="{{$provider->zip}}" style="float:left;" />
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="button" class="btn btn-primary " id="search_zips_btn" class="form-control">Search</button>
+                    </div>
+                </div>
+
+                <br style="float:none;clear:both;"/>
+                <br style="float:none;clear:both;"/>
+
+                <div class="row">
+                    <div class="col-xs-8" >
+                        <label for="provider_zip_code">Zips in Providers' Radius</label>
+                        &nbsp; &nbsp; <a href="#" onclick="addcheckall();return false;"><b>Select All</b></a><br />
+                            <div id="zip_list" style="height:300px;overflow-x:auto;border:1px solid #aaa;width:100%;margin:5px 5px;padding:5px 17px;">
+                            <?php
+                                if($zip_info!=null){
+                                    foreach($zip_info as $zip){
+                                        //if(!in_array($zip->zip,$zips_r))
+                                        echo '<br style="float:none;clear:both;"/><label for="addzip-'.$zip->zip.'" style="cursor:pointer;float:left;">'.$zip->zip.' </label>'
+                                                . '&nbsp; <input type="checkbox" class="addzips" id="addzip-'.$zip->zip.'" name="addzips['.$zip->zip.']" value="'.$zip->zip.'" /> '
+                                                . '&nbsp; ~ '.round($zip->distance,2).' miles';
+                                    }
+
+                                }
+                            ?>
+                            </div>
+                    </div>
+                </div>
                             
                             
 				<div class="form-group">
-					<div class="col-xs-4"></div>
-					<div class="col-xs-8">
-						<button type="submit" class="btn btn-primary btn-block" class="form-control">Update Zip Info</button>
+					<div class="col-xs-8"><button type="submit" class="btn btn-primary btn-block" class="form-control">Update Zip Info</button></div>
+					<div class="col-xs-4">
+
 					</div>
 				</div>
 			</div>
 		</div>
+
+        <script>
+
+                $('#search_zips_btn').on('click',function(){
+
+                        $.getJSON( "{{action("AdminController@getZipsByLocation")}}", {
+                            zip: $('#zip_search').val(),
+                            radius:$('#provider_radius').val()
+                        })
+                        .done(function( data ) {
+                            if(data){
+                                $( "#zip_list" ).empty();
+
+                                $.each( data, function( i, item ) {
+                                    //alert(item);
+                                    $( "#zip_list" ).append('<br style="float:none;clear:both;"/><label for="addzip-'+ item.zip + '" style="cursor:pointer;float:left;">'+ item.zip + ' </label>');
+                                    $( "#zip_list" ).append('&nbsp; <input type="checkbox" class="addzips" id="addzip-'+ item.zip + '" name="addzips['+ item.zip + ']" value="'+ item.zip + '" />');
+                                    $( "#zip_list" ).append('&nbsp; ~ '+item.distance+' miles');
+                                });
+                            }
+
+                        });
+
+
+                });
+                $('#zip_search').keydown( function(e) {
+                    var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+                    if(key == 13) {
+                        e.preventDefault();
+                        $('#search_zips_btn').click();
+                    }
+                });
+        </script>
+
 
             {{ Form::close() }}
             </fieldset>
@@ -1234,6 +1285,7 @@
 
 
 
+<script src="{{ asset('js/jquery.colorbox-min.js') }}"></script>
 <script>
     $().ready(function(){
         $('.video_layer').colorbox({iframe:true, innerWidth:640, innerHeight:344});
