@@ -50,8 +50,8 @@ class RightSignature
         #$url = $this->secure_base_url . "/builder/new?rt=test";
 
 
-        $pdf_url = urlencode('http://provider.forcremation.com/clients/customer-documents?provider_id=1&client_id=428&download_forms[customer_form_1]=1');
-        $pdf_url = 'http://www.forcremation.com/images/test.pdf';
+        $pdf_url = urlencode('http://provider.forcremation.com/clients/customer-documents?provider_id=1&client_id=1&download_forms[customer_form_1]=1');
+        #$pdf_url = 'http://www.forcremation.com/images/test.pdf';
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
                         .'<subject>ForCremation Signature</subject><document_data><type>url</type><value>'.$pdf_url.'</value></document_data>'
