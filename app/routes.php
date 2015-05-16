@@ -82,5 +82,6 @@ Route::get('/',function(){
 });
 
 App::missing(function($exception) {
-    dd($_SERVER);
+    
+    Log::info("Route Missing: ".implode(',',$_SERVER));
 });
