@@ -208,7 +208,7 @@ class AdminController extends BaseController {
     public function getRedirectCallback($test='y')
     {
         //dd(Input::all());
-        Log::info("test: ".implode(Input::all()));
+        Log::info("Callback called: ".implode(Input::all()));
         dd('test');
     }
 
