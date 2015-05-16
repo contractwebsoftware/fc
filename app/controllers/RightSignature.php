@@ -49,48 +49,22 @@ class RightSignature
         $url = $this->secure_base_url . "/api/documents.xml";
         #$url = $this->secure_base_url . "/builder/new?rt=test";
 
-        #$pdf_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id=1&client_id=428&download_forms[customer_form_1]=1';
+
+        $pdf_url = urlencode('http://provider.forcremation.com/clients/customer-documents?provider_id=1&client_id=428&download_forms[customer_form_1]=1');
         $pdf_url = 'http://www.forcremation.com/images/test.pdf';
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-                  <document>
-                     <subject>ForCremation Signature</subject>
-                     <document_data>
-                       <type>url</type>
-                       <value>'.$pdf_url.'</value>
-                     </document_data>
-                     <recipients>
-                          <recipient>
-                            <name>RightSignature</name>
-                            <email>bendavol@gmail.com</email>
-                            <role>cc</role>
-                          </recipient>
-                          <recipient>
-                            <name>Ben Davol</name>
-                            <email>bendavol+test@gmail.com</email>
-                            <role>signer</role>
-                          </recipient>
-                          <recipient>
-                              <is_sender>true</is_sender>
-                            <role>signer</role>
-                          </recipient>
-                    </recipients>
-                    <tags>
-                      <tag>
-                        <name>sent_from_api</name>
-                      </tag>
-                      <tag>
-                        <name>mutual_nda</name>
-                      </tag>
-                      <tag>
-                        <name>user_id</name>
-                        <value>123456</value>
-                      </tag>
-                    </tags>
-                    <expires_in>5 days</expires_in>
-                    <action>redirect</action>
-                    <callback_location>http://provider.forcremation.com/admin/redirect-callback</callback_location>
-                    <use_text_tags>false</use_text_tags>
-                  </document>';
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+                    .'<document>'
+                        .'<subject>ForCremation Signature</subject><document_data><type>url</type><value>'.$pdf_url.'</value></document_data>'
+                        .'<recipients>'
+                            .'<recipient><name>RightSignature</name><email>bendavol@gmail.com</email><role>cc</role></recipient>'
+                            .'<recipient><name>Ben Davol</name><email>bendavol+test@gmail.com</email><role>signer</role></recipient>'
+                            .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
+                        .'<tags><tag><name>sent_from_api</name></tag><tag><name>mutual_nda</name></tag><tag><name>user_id</name><value>123456</value></tag></tags>'
+                        .'<expires_in>5 days</expires_in>'
+                        .'<action>redirect</action>'
+                        .'<callback_location>http://provider.forcremation.com/admin/redirect-callback</callback_location>'
+                        .'<use_text_tags>false</use_text_tags>'
+                      .'</document>';
 
         $header = Array();
 
@@ -133,8 +107,8 @@ class RightSignature
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         // Append 'api-token' to Headers
-        $headers[] = "Content-Type: text/xml;charset=utf-8";
         $headers[] = "api-token: ".$this->secure_token;
+        $headers[] = "Content-Type: text/xml;charset=utf-8";
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); // Set the headers.
 
@@ -142,12 +116,10 @@ class RightSignature
             curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-            // Append 'api-token' to Headers
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         }
 
         $data = curl_exec($curl);
-        dd($data);
+        echo'<pre>';print_r($data);
         if ($this->debug) {
             #echo "In httpRequest: Recieved DATA\n===========\n" . $data . "\n===========\n";
         }
