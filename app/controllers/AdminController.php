@@ -4,6 +4,10 @@
 $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
 $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
 Freshbooks\FreshBooksApi::init($domain, $token);
+$right_key = "pZ1pInLyDdEAzJkP2DATtIpd0kQI2uUNGpTug67g";
+$right_secret = "VjFf4DzpByqNzSt7d7pyUzGFIM0iaXYIHG1Cj6m2";
+$right_token = "4nymWlQGXzc8IcULYCoDbzeX1aIaPdOToH4Fu5XK";
+$right_app_url = "http://provider.forcremation.com";
 
 
 class AdminController extends BaseController {
@@ -184,6 +188,31 @@ class AdminController extends BaseController {
             return $zips;
 
     }
+
+    public function getRightSignatureAccess()
+    {
+        global $right_token;
+        $right_token = "4nymWlQGXzc8IcULYCoDbzeX1aIaPdOToH4Fu5XK";
+
+        // First step is to initialize with your consumer key and secret. We'll use an out-of-band oauth_callback
+        $rightsignature = new RightSignature($right_token, "http://localhost:8888/callback");
+        $rightsignature->debug = false;
+
+        #print_r($rightsignature->getDocuments());
+        #print_r($rightsignature->testPost());
+
+        return $rightsignature;
+
+    }
+
+    public function getRedirectCallback($test='y')
+    {
+        //dd(Input::all());
+        Log::info("test: ".implode(Input::all()));
+        dd('test');
+    }
+
+
     public function getEditProvider($id, $current_tab='company_info', $custom_form_num='')
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
@@ -219,6 +248,13 @@ class AdminController extends BaseController {
         //echo '<pre>';dd($data);
         $data['clients'] = AdminController::getProviderCustomers($id);
         //dd($data['clients']);
+
+        $test = Input::get('test');
+        if($test!=''){
+            $rightsignature = AdminController::getRightSignatureAccess();
+            $data['right_docs'] = $rightsignature->sendDocuments();
+
+        }
 
         $this->layout->content = View::make('admin.provider-edit',$data);
     }
