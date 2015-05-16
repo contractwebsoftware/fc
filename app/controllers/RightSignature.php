@@ -62,7 +62,7 @@ class RightSignature
                         .'<tags><tag><name>sent_from_api</name></tag><tag><name>mutual_nda</name></tag><tag><name>user_id</name><value>123456</value></tag></tags>'
                         .'<expires_in>5 days</expires_in>'
                         .'<action>redirect</action>'
-                        .'<callback_location>http://provider.forcremation.com/admin/redirect-callback</callback_location>'
+                        .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
 

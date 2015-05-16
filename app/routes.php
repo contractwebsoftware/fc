@@ -80,3 +80,7 @@ Route::get('/',function(){
     header("Location: http://provider.forcremation.com/clients/steps");
     die();
 });
+
+App::missing(function($exception) {
+    dd($_SERVER);
+});
