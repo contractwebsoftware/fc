@@ -68,7 +68,7 @@ class RightSignature
 
         $header = Array();
 
-        Log::info("test: ".implode(',',Input::all()));
+        Log::info("Doc Sent: ".implode(',',Input::all()));
         $response = $this->httpRequest($url, $header, "GET", $xml);
         return $response;
     }
