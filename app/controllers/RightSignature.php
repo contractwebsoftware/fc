@@ -64,18 +64,18 @@ class RightSignature
                             .'<recipient><name>'.$doc_data['doc_cc_name'].'</name><email>'.$doc_data['doc_cc_email'].'</email><role>cc</role></recipient>'
                             .'<recipient><name>'.$doc_data['doc_to_sign_name'].'</name><email>'.$doc_data['doc_to_sign_email'].'</email><role>signer</role></recipient>'
                             .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
-                        #.'<tags>'
-                            #.'<tag><name>sent_from_api</name></tag>'
-                            #.'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
-                            #.'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
-                        #.'</tags>'
-                        .'<expires_in>30 days</expires_in>'
+                        .'<tags>'
+                            .'<tag><name>sent_from_api</name></tag>'
+                            .'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
+                            .'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
+                            .'</tags>'
+                        #.'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+       /* $xml = '<?xml version="1.0" encoding="UTF-8"?>'
             .'<document>'
             .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>ForCremation Signature</subject>'
             .'<recipients>'
@@ -87,7 +87,7 @@ class RightSignature
             .'<action>send</action>'
             .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
             .'<use_text_tags>false</use_text_tags>'
-            .'</document>';
+            .'</document>';*/
 
         $header = Array();
 #dd($xml);
@@ -134,7 +134,7 @@ class RightSignature
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-        #curl_setopt($curl, CURLOPT_HEADER, $headers);
+        curl_setopt($curl, CURLOPT_HEADER, $headers);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); // Set the headers.
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -145,7 +145,7 @@ class RightSignature
 
             $information = curl_getinfo($curl);
 
-            dd($information);
+            #dd($information);
         }
 
         $data = curl_exec($curl);
