@@ -1556,7 +1556,7 @@ class ClientController extends BaseController {
             $doc_data['doc_to_sign_email'] = $client->User->email;
             $doc_data['doc_cc_name'] = $provider->business_name;
             $doc_data['doc_cc_email'] = $provider->email;
-            $doc_data['doc_action'] = $return_redirect_url ? 'redirect' : 'send'; //send or redirect
+            $doc_data['doc_action'] = $return_redirect_url ? 'send' : 'send'; //send or redirect
             $doc_data['doc_client_id'] = $client_id;
             $doc_data['doc_forms_included'] = $forms_included;
 
