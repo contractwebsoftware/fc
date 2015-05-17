@@ -91,7 +91,7 @@ class RightSignature
 
         $header = Array();
 #dd($xml);
-        Log::info("Doc Sent: ".$xml);
+        Log::info("Doc Sent: $url ".$xml);
         $response = $this->httpRequest($url, $header, "POST", $xml);
 
         return $response;
@@ -129,7 +129,7 @@ class RightSignature
         // Append 'api-token' to Headers
         $headers[] = "api-token: ".$this->secure_token;
         $headers[] = "Content-Type: text/xml;charset=utf-8";
-        dd($headers);
+        #dd($headers);
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
