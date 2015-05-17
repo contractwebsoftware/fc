@@ -1563,10 +1563,16 @@ class ClientController extends BaseController {
             #dd($doc_data);
             $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
 
-            dd($data['right_docs']);
+            #dd($data['right_docs']);
         }
 
-        if($return_redirect_url) return $data['right_docs'];
+        if($return_redirect_url) {
+            $xml = simplexml_load_string($data['right_docs']);
+            $json = json_encode($xml);
+            $array = json_decode($json,TRUE);
+            #dd('https://rightsignature.com/builder/new?rt='.$array['redirect-token']);
+            return Redirect::away("https://rightsignature.com/builder/new?rt=".$array['redirect-token']);
+        }
         else return Redirect::action('ClientController@getSteps', $data);
 
     }

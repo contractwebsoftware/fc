@@ -74,11 +74,26 @@ class RightSignature
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
+        /*
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+            .'<document>'
+            .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>ForCremation Signature</subject>'
+            .'<recipients>'
+            .'<recipient><name>RightSignature</name><email>bendavol@gmail.com</email><role>cc</role></recipient>'
+            .'<recipient><name>Ben Davol</name><email>bendavol+test@gmail.com</email><role>signer</role></recipient>'
+            .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
+            .'<tags><tag><name>sent_from_api</name></tag><tag><name>mutual_nda</name></tag><tag><name>user_id</name><value>123456</value></tag></tags>'
+            .'<expires_in>5 days</expires_in>'
+            .'<action>send</action>'
+            .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
+            .'<use_text_tags>false</use_text_tags>'
+            .'</document>';*/
 
         $header = Array();
 
         Log::info("Doc Sent: ".$xml);
         $response = $this->httpRequest($url, $header, "POST", $xml);
+
         return $response;
     }
 
