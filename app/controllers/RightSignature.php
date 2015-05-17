@@ -74,7 +74,7 @@ class RightSignature
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
-        /*
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
             .'<document>'
             .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>ForCremation Signature</subject>'
@@ -87,7 +87,7 @@ class RightSignature
             .'<action>send</action>'
             .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
             .'<use_text_tags>false</use_text_tags>'
-            .'</document>';*/
+            .'</document>';
 
         $header = Array();
 #dd($xml);
