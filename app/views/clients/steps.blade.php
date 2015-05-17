@@ -90,7 +90,7 @@
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-               <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update Existing':'Create')?> Client In Freshbooks</button>
+               <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update Existing':'Create')?> Freshbooks Client</button>
                {{ Form::close() }}
 
                <?php
@@ -109,7 +109,7 @@
                 {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
                 {{ Form::hidden('client_id',$client->id) }}
                 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update Existing':'Create')?> Invoice In Freshbooks</button>
+                <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update Existing':'Create')?> Freshbooks Invoice</button>
                 {{ Form::close() }}
                 <?php
                 if($client->fb_invoice_id  != ''){

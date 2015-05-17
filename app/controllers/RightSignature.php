@@ -57,6 +57,7 @@ class RightSignature
 
 
         #$doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
                         .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>'.$doc_data['doc_name'].'</subject>'
@@ -69,7 +70,7 @@ class RightSignature
                             .'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
                             .'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
                             .'</tags>'
-                        #.'<expires_in>30 days</expires_in>'
+                        .'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
@@ -127,22 +128,23 @@ class RightSignature
         }
 
         // Append 'api-token' to Headers
-        $headers[] = "api-token: ".$this->secure_token;
-        $headers[] = "Content-Type: text/xml;charset=utf-8";
+        #$headers[] = "api-token: ".$this->secure_token;
+        #$headers[] = "Content-Type: text/xml;charset=utf-8";
         #dd($headers);
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        // Append 'api-token' to Headers
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token")); // Set the headers.
 
-        #curl_setopt($curl, CURLOPT_HEADER, $headers);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); // Set the headers.
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         if ($body) {
             curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
 
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: text/xml;charset=utf-8", "api-token: $this->secure_token"));
             $information = curl_getinfo($curl);
 
             #dd($information);
