@@ -59,16 +59,16 @@ class RightSignature
         $doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
-                        .'<subject>'.$doc_data['doc_name'].'</subject><document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data>'
+                        .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>'.$doc_data['doc_name'].'</subject>'
                         .'<recipients>'
                             .'<recipient><name>'.$doc_data['doc_cc_name'].'</name><email>'.$doc_data['doc_cc_email'].'</email><role>cc</role></recipient>'
                             .'<recipient><name>'.$doc_data['doc_to_sign_name'].'</name><email>'.$doc_data['doc_to_sign_email'].'</email><role>signer</role></recipient>'
                             .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
-                        .'<tags>'
-                            .'<tag><name>sent_from_api</name></tag>'
-                            .'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
-                            .'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
-                        .'</tags>'
+                        #.'<tags>'
+                            #.'<tag><name>sent_from_api</name></tag>'
+                            #.'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
+                            #.'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
+                        #.'</tags>'
                         .'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
@@ -90,7 +90,7 @@ class RightSignature
             .'</document>';*/
 
         $header = Array();
-
+dd($xml);
         Log::info("Doc Sent: ".$xml);
         $response = $this->httpRequest($url, $header, "POST", $xml);
 
