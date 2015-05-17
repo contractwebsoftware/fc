@@ -56,7 +56,7 @@ class RightSignature
 
 
 
-        #$doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
+        $doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
@@ -76,7 +76,7 @@ class RightSignature
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
 
-       /* $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'
             .'<document>'
             .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>ForCremation Signature</subject>'
             .'<recipients>'
@@ -85,10 +85,10 @@ class RightSignature
             .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
             .'<tags><tag><name>sent_from_api</name></tag><tag><name>mutual_nda</name></tag><tag><name>user_id</name><value>123456</value></tag></tags>'
             .'<expires_in>5 days</expires_in>'
-            .'<action>send</action>'
+            .'<action>redirect</action>'
             .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
             .'<use_text_tags>false</use_text_tags>'
-            .'</document>';*/
+            .'</document>';
 
         $header = Array();
 #dd($xml);
