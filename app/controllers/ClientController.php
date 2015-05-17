@@ -1536,7 +1536,7 @@ class ClientController extends BaseController {
 
         ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
         $forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
-
+        $forms_url = 'http://www.forcremation.com/images/test.pdf';
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
