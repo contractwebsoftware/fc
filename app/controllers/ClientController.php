@@ -1551,7 +1551,7 @@ class ClientController extends BaseController {
             $rightsignature->debug = false;
 
             $doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
-            $doc_data['doc_url'] = ($forms_url);
+            $doc_data['doc_url'] = ($forms_url).'.pdf';
             $doc_data['doc_to_sign_name'] = $client->first_name.' '.$client->last_name;
             $doc_data['doc_to_sign_email'] = $client->User->email;
             $doc_data['doc_cc_name'] = $provider->business_name;
@@ -1560,7 +1560,7 @@ class ClientController extends BaseController {
             $doc_data['doc_client_id'] = $client_id;
             $doc_data['doc_forms_included'] = $forms_included;
 
-            dd($doc_data);
+            #dd($doc_data);
             $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
 
             dd($data['right_docs']);
