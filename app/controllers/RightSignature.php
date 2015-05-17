@@ -90,7 +90,7 @@ class RightSignature
             .'</document>';*/
 
         $header = Array();
-dd($xml);
+#dd($xml);
         Log::info("Doc Sent: ".$xml);
         $response = $this->httpRequest($url, $header, "POST", $xml);
 
