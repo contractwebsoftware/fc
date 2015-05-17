@@ -1087,6 +1087,10 @@ class ClientController extends BaseController {
      * 
      */    
     public function getCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
+        if($client_id=='')$client_id = Input::get('client_id');
+        if($provider_id=='')$provider_id = Input::get('provider_id');
+        if($download_forms=='')$download_forms = Input::get('download_forms');
+
         return ClientController::postCustomerDocuments($client_id, $provider_id, $download_forms);
     }
     public function postCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
@@ -1504,5 +1508,67 @@ class ClientController extends BaseController {
 
     }
 
+    function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
+    {
+        $forms_included = $com = '';
+
+
+        if(Input::get('return_redirect_url') != '')$return_redirect_url = (bool)Input::get('return_redirect_url');
+        if($client_id=='')$client_id = Input::get('client_id');
+        if($provider_id=='')$provider_id = Input::get('provider_id');
+
+        if($client_id=='')$client_id = Session::get('client_id');
+        if($provider_id=='')$provider_id = Session::get('provider_id');
+
+        $provider = FProvider::find($provider_id);
+        $provider = ClientController::updateProvider($provider_id);
+
+        $client = Client::find($client_id);
+        $clientData = ClientController::fillOutClientTables(Client::find($client_id));
+        //$client_user = User::find($client->user_id);
+
+        $download_forms = Input::get('sign_forms');
+        $doc_forms = ProviderController::getDocumentTypes();
+
+        if(Input::get('sign_forms')!=null)$download_forms = Input::get('sign_forms');
+        if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
+        if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
+
+        ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
+        $forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
+
+
+        if($download_forms != null)
+        foreach($download_forms as $key=>$file_name){
+
+            $forms_included .= $file_name.$com.' ';
+            $com = ',';
+            $forms_url .= '&download_forms['.$key.']='.$file_name;
+        }
+
+        if($client != null && $forms_included != ''){
+            $rightsignature = new RightSignature("http://localhost:8888/callback");
+            $rightsignature->debug = false;
+
+            $doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
+            $doc_data['doc_url'] = urlencode($forms_url);
+            $doc_data['doc_to_sign_name'] = $client->first_name.' '.$client->last_name;
+            $doc_data['doc_to_sign_email'] = $client->User->email;
+            $doc_data['doc_cc_name'] = $provider->business_name;
+            $doc_data['doc_cc_email'] = $provider->email;
+            $doc_data['doc_action'] = $return_redirect_url ? 'redirect' : 'send'; //send or redirect
+            $doc_data['doc_client_id'] = $client_id;
+            $doc_data['doc_forms_included'] = $forms_included;
+
+            #dd($doc_data);
+            $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
+
+            dd($data['right_docs']);
+        }
+
+        if($return_redirect_url) return $data['right_docs'];
+        else return Redirect::action('ClientController@getSteps', $data);
+
+    }
 
 }

@@ -209,7 +209,21 @@
 
                                     </div>
                                     <br />
-                                    
+
+
+                                    <div class="row"  style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
+
+                                        <div class="form-group" >
+                                            <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">RightSignature Integration</b><br />
+                                            <i style="font-size:11px;"><b>Secret Token</b> (not "oAuth Consumer Secret")</i></label>
+                                            <div class="col-sm-10">
+                                                <input type="text" placeholder="API Secret Token" name="provider[rightsignature_secret]" id="rightsignature_secret" class="form-control" value="{{ $provider->rightsignature_secret }}">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+
                                     <div class="form-group">
                                         <div class="col-xs-12">
                                                 <button type="submit" class="btn btn-primary btn-block">Update</button>

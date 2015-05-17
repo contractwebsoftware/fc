@@ -11,13 +11,18 @@ class RightSignature
 {
     public $base_url = "https://rightsignature.com";
     public $secure_base_url = "https://rightsignature.com";
+    #Consumer Key: pZ1pInLyDdEAzJkP2DATtIpd0kQI2uUNGpTug67g
+    #oAuth Consumer Secret:	VjFf4DzpByqNzSt7d7pyUzGFIM0iaXYIHG1Cj6m2
+
     public $oauth_callback = "oob";
-    public $secure_token;
+    public $secure_token = "4nymWlQGXzc8IcULYCoDbzeX1aIaPdOToH4Fu5XK";
+
     public $debug = false;
 
-    function __construct($secure_token, $oauth_callback = NULL)
+    function __construct($oauth_callback = NULL)
     {
-        $this->secure_token = $secure_token;
+
+        #$this->secure_token = $secure_token;
         if ($oauth_callback) {
             $this->oauth_callback = $oauth_callback;
         }
@@ -44,32 +49,36 @@ class RightSignature
         return $response;
     }
 
-    function sendDocuments()
+    function sendDocuments($doc_data)
     {
         $url = $this->secure_base_url . "/api/documents.xml";
         #$url = $this->secure_base_url . "/builder/new?rt=test";
 
 
-        $pdf_url = urlencode('http://provider.forcremation.com/clients/customer-documents?provider_id=1&client_id=1&download_forms[customer_form_1]=1');
+
         #$pdf_url = 'http://www.forcremation.com/images/test.pdf';
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
-                        .'<subject>ForCremation Signature</subject><document_data><type>url</type><value>'.$pdf_url.'</value></document_data>'
+                        .'<subject>'.$doc_data['doc_name'].'</subject><document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data>'
                         .'<recipients>'
-                            .'<recipient><name>RightSignature</name><email>bendavol@gmail.com</email><role>cc</role></recipient>'
-                            .'<recipient><name>Ben Davol</name><email>bendavol+test@gmail.com</email><role>signer</role></recipient>'
+                            .'<recipient><name>'.$doc_data['doc_cc_name'].'</name><email>'.$doc_data['doc_cc_email'].'</email><role>cc</role></recipient>'
+                            .'<recipient><name>'.$doc_data['doc_to_sign_name'].'</name><email>'.$doc_data['doc_to_sign_email'].'</email><role>signer</role></recipient>'
                             .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
-                        .'<tags><tag><name>sent_from_api</name></tag><tag><name>mutual_nda</name></tag><tag><name>user_id</name><value>123456</value></tag></tags>'
-                        .'<expires_in>5 days</expires_in>'
-                        .'<action>send</action>'
+                        .'<tags>'
+                            .'<tag><name>sent_from_api</name></tag>'
+                            .'<tag><name>client_id</name><value>'.$doc_data['doc_client_id'].'</value></tag>'
+                            .'<tag><name>forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
+                        .'</tags>'
+                        .'<expires_in>30 days</expires_in>'
+                        .'<action>'.$doc_data['doc_action'].'</action>'
                         .'<callback_location>http://provider.forcremation.com/admin/redirect-callback/</callback_location>'
                         .'<use_text_tags>false</use_text_tags>'
                       .'</document>';
 
         $header = Array();
 
-        Log::info("Doc Sent: ".implode(',',Input::all()));
-        $response = $this->httpRequest($url, $header, "GET", $xml);
+        Log::info("Doc Sent: ".$xml);
+        $response = $this->httpRequest($url, $header, "POST", $xml);
         return $response;
     }
 
@@ -102,28 +111,35 @@ class RightSignature
             $method = "GET";
         }
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         // Append 'api-token' to Headers
         $headers[] = "api-token: ".$this->secure_token;
         $headers[] = "Content-Type: text/xml;charset=utf-8";
 
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+        #curl_setopt($curl, CURLOPT_HEADER, $headers);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); // Set the headers.
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         if ($body) {
             curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+
+            $information = curl_getinfo($curl);
+
+        #    dd($information);
         }
 
         $data = curl_exec($curl);
-        echo'<pre>';print_r($data);
+        #echo'<pre>';print_r($data);
         if ($this->debug) {
             #echo "In httpRequest: Recieved DATA\n===========\n" . $data . "\n===========\n";
         }
         curl_close($curl);
+
         return $data;
     }
 
