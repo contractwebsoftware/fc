@@ -56,7 +56,7 @@ class RightSignature
 
 
 
-        $doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
+        #$doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
                         .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>'.$doc_data['doc_name'].'</subject>'
