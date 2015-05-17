@@ -145,7 +145,7 @@ class RightSignature
 
             $information = curl_getinfo($curl);
 
-        #    dd($information);
+            dd($information);
         }
 
         $data = curl_exec($curl);
