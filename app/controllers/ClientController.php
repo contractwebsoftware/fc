@@ -1574,6 +1574,8 @@ class ClientController extends BaseController {
             if ($xml != false) {
                 $json = json_encode($xml);
                 $array = json_decode($json,TRUE);
+                #dd($array);
+                $data['right_docs'] = $array['redirect-token'];
             }
             $data['right_docs'] = trim($data['right_docs']);
 
