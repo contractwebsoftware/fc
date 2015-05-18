@@ -1544,7 +1544,7 @@ class ClientController extends BaseController {
             $com = ',';
             $forms_url .= '&download_forms['.$key.']='.$file_name;
         }
-        $forms_url = 'http://www.forcremation.com/images/test.pdf';
+        #$forms_url = 'http://www.forcremation.com/images/test.pdf';
 
         if($client != null && $forms_included != ''){
             $rightsignature = new RightSignature();
