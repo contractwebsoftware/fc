@@ -1566,6 +1566,9 @@ class ClientController extends BaseController {
             $doc_data['doc_action'] = $return_redirect_url ? 'redirect' : 'send'; //send or redirect
             $doc_data['doc_client_id'] = $client_id;
             $doc_data['doc_forms_included'] = $forms_included;
+            if(is_object($clientData->DeceasedInfo))
+            $doc_data['doc_deceased'] = $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name;
+
 
             #$res = $rightsignature->testPost();
             #dd($res);
