@@ -160,7 +160,7 @@
     @foreach($doc_forms as $key=>$value)
         <div class="row form-group">
             <div class="col-sm-12">
-                <input type="checkbox" name="sign_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
+                <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
                 {{$value}}
             </div>
         </div>
