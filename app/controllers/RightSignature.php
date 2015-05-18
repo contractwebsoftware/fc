@@ -69,7 +69,7 @@ class RightSignature
                             .'<tag><name>Sent From API</name></tag>'
                             .'<tag><name>Client</name><value>'.$doc_data['doc_name'].'</value></tag>'
                             .'<tag><name>Deceased Name</name><value>'.$doc_data['doc_deceased'].'</value></tag>'
-                            .'<tag><name>Forms</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
+                            .$doc_data['doc_forms_included']
                             .'</tags>'
                         .'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'

@@ -1547,8 +1547,8 @@ class ClientController extends BaseController {
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            $forms_included .= $file_name.$com.' ';
-            $com = ',';
+            $forms_included .= '<tag><name>'.$file_name.'</name></tag>';
+
         }
 
         #$forms_url = 'http://www.forcremation.com/images/test.pdf';
@@ -1568,7 +1568,6 @@ class ClientController extends BaseController {
             $doc_data['doc_forms_included'] = $forms_included;
             if(is_object($clientData->DeceasedInfo))
             $doc_data['doc_deceased'] = $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name;
-
 
             #$res = $rightsignature->testPost();
             #dd($res);
