@@ -135,11 +135,12 @@
     {{ Form::hidden('client_id',$client->id) }}
     {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
     <b>Choose the documents you would like to combine and download</b><br />
+    <a href="#" onclick="downcheckall();return false;"><b>Select All</b></a><br />
     <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
     @foreach($doc_forms as $key=>$value)
         <div class="row form-group">
           <div class="col-sm-12">
-              <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
+              <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
               {{$value}}
           </div>
         </div>
@@ -155,12 +156,25 @@
     {{ Form::hidden('client_id',$client->id) }}
     {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
     {{ Form::hidden('return_redirect_url', true) }}
+    <script>
+        var downallchecked=true;
+        function downcheckall(){
+            $('.download-forms-cb').prop('checked', downallchecked);
+            downallchecked = !downallchecked;
+        }
+        var signallchecked=true;
+        function signcheckall(){
+            $('.sign-forms-cb').prop('checked', signallchecked);
+            signallchecked = !signallchecked;
+        }
+    </script>
     <b>Combine and Send these documents for signing </b><br />
+    <a href="#" onclick="signcheckall();return false;"><b>Select All</b></a><br />
     <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
     @foreach($doc_forms as $key=>$value)
         <div class="row form-group">
             <div class="col-sm-12">
-                <input type="checkbox" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
+                <input type="checkbox" class="sign-forms-cb" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
                 {{$value}}
             </div>
         </div>
