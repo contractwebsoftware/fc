@@ -1535,23 +1535,31 @@ class ClientController extends BaseController {
         if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
 
         ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
-        $forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
+        #$forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
 
+        $pdf = ClientController::getCustomerDocuments();
+        $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
+        $forms_url = URL::to($form_path);
+
+        File::put(public_path() .$form_path, $pdf);
+
+        #dd($forms_url.'   path:'.$form_path);
+        /*
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
 
             $forms_included .= $file_name.$com.' ';
             $com = ',';
             $forms_url .= '&download_forms['.$key.']='.$file_name;
-        }
-        $forms_url = 'http://www.forcremation.com/images/test.pdf';
+        }*/
+        #$forms_url = 'http://www.forcremation.com/images/test.pdf';
 
-        if($client != null && $forms_included != ''){
+        if($client != null && $forms_url != ''){
             $rightsignature = new RightSignature();
             $rightsignature->debug = false;
 
             $doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
-            $doc_data['doc_url'] = urlencode($forms_url);
+            $doc_data['doc_url'] = ($forms_url);
             $doc_data['doc_to_sign_name'] = $client->first_name.' '.$client->last_name;
             $doc_data['doc_to_sign_email'] = $client->User->email;
             $doc_data['doc_cc_name'] = $provider->business_name;
