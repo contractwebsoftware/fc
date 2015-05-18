@@ -1565,15 +1565,20 @@ class ClientController extends BaseController {
             #dd($doc_data);
             $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
 
-            dd($data['right_docs']);
+            #dd($data['right_docs']);
         }
 
         if($return_redirect_url) {
-            $xml = simplexml_load_string($data['right_docs']);
-            $json = json_encode($xml);
-            $array = json_decode($json,TRUE);
-            #dd('https://rightsignature.com/builder/new?rt='.$array['redirect-token']);
-            return Redirect::away("https://rightsignature.com/builder/new?rt=".$array['redirect-token']);
+
+            $xml = simplexml_load_string($data['right_docs'], 'SimpleXmlElement', LIBXML_NOERROR+LIBXML_ERR_FATAL+LIBXML_ERR_NONE);
+            if ($xml != false) {
+                $json = json_encode($xml);
+                $array = json_decode($json,TRUE);
+            }
+            $data['right_docs'] = trim($data['right_docs']);
+
+            dd('https://rightsignature.com/builder/new?rt='.$data['right_docs']);
+            return Redirect::away("https://rightsignature.com/builder/new?rt=".$data['right_docs']);
         }
         else return Redirect::action('ClientController@getSteps', $data);
 
