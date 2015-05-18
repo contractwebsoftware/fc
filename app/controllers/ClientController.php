@@ -1565,7 +1565,7 @@ class ClientController extends BaseController {
             #dd($doc_data);
             $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
 
-            dd($data['right_docs']);
+            #dd($data['right_docs']);
         }
 
         if($return_redirect_url) {
