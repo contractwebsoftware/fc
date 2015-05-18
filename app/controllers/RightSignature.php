@@ -134,6 +134,7 @@ class RightSignature
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLINFO_HEADER_OUT, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         // Append 'api-token' to Headers
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token")); // Set the headers.
@@ -150,9 +151,10 @@ class RightSignature
         }
 
         $data = curl_exec($curl);
-
+        $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
+        dd($in);
         $information = curl_getinfo($curl);
-        echo '<pre>';
+        echo '<pre>'.$in;
         dd($information);
 
 
