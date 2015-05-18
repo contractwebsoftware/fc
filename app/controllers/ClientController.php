@@ -1527,9 +1527,6 @@ class ClientController extends BaseController {
         $clientData = ClientController::fillOutClientTables(Client::find($client_id));
         //$client_user = User::find($client->user_id);
 
-        $download_forms = Input::get('sign_forms');
-        $doc_forms = ProviderController::getDocumentTypes();
-
 
         ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
         #$forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
@@ -1537,10 +1534,22 @@ class ClientController extends BaseController {
         $pdf = ClientController::getCustomerDocuments();
         $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
         $forms_url = URL::to($form_path);
-
         File::put(public_path() .$form_path, $pdf);
 
-        #dd($forms_url.'   path:'.$form_path);
+
+
+        $download_forms = Input::get('download_forms');
+        $doc_forms = ProviderController::getDocumentTypes();
+
+        if(Input::get('download_forms')!=null)$download_forms = Input::get('download_forms');
+        if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
+        if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
+
+        if($download_forms != null)
+        foreach($download_forms as $key=>$file_name){
+            $forms_included .= $file_name.$com.' ';
+            $com = ',';
+        }
 
         #$forms_url = 'http://www.forcremation.com/images/test.pdf';
 
