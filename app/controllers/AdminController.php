@@ -1496,6 +1496,7 @@ class AdminController extends BaseController {
                             }
                         }
                         if ($cid != '') $docs['documents']['document'][$key]['client'] = Client::find($cid);
+                        else $docs['documents']['document'][$key]['client'] = new Client();
                         $docs['documents']['document'][$key]['doc_types'] = $doc_types;
 
                         if (!array_key_exists('signed-pdf-url', $docs['documents']['document'][$key]) || count($docs['documents']['document'][$key]['signed-pdf-url']) < 1) $docs['documents']['document'][$key]['signed-pdf-url'] = '';
