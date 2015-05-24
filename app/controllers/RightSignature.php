@@ -112,7 +112,7 @@ class RightSignature
                             .'<tag><name>Deceased Name</name><value>'.$doc_data['doc_deceased'].'</value></tag>'
                             .'<tag><name>Pid</name><value>'.$doc_data['doc_pid'].'</value></tag>'
                             .'<tag><name>Cid</name><value>'.$doc_data['doc_cid'].'</value></tag>'
-                            .'<tag><name>Documents</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
+                            .$doc_data['doc_forms_included']
                             .'</tags>'
                         .'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'

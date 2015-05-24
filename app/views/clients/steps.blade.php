@@ -100,7 +100,7 @@
                 @foreach( $provider->signature_docs['documents']['document'] as $key=> $signed_docs )
 
                     <tr>
-                        <td >{{ date('m/d/Y',strtotime($signed_docs['created-at'])) }}</td>
+                        <td >{{ date('m/d/Y h:i a',strtotime($signed_docs['created-at'].' - 7 hours')) }}</td>
                         <td >{{ $signed_docs['doc_types'] }}</td>
                         <td >{{ ucwords($signed_docs['state']) }}</td>
 
@@ -147,6 +147,7 @@
 
                 <script>
                     function getSignedDoc(guid) {
+                        $('#doc_info').html('Loading <i class="fa fa-gear"></i>');
                         $.get('{{ action('AdminController@getSignedDoc') }}/'+guid, function (data) {
                             $('#doc_info').html(data);
                         });

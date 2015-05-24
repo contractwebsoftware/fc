@@ -1552,11 +1552,12 @@ class ClientController extends BaseController {
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            $forms_included .= $com.$file_name;
-            $com=' - ';
+            #$forms_included .= $com.$file_name;
+            $forms_included .= '<tag><name>'.$key.'</name><value>'.$file_name.'</value></tag>';
+
         }
 
-        $forms_url = 'http://www.forcremation.com/images/test.pdf';
+        #$forms_url = 'http://www.forcremation.com/images/test.pdf';
 
         if($client != null && $forms_url != ''){
             $rightsignature = new RightSignature();

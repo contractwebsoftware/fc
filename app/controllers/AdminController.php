@@ -1487,10 +1487,13 @@ class AdminController extends BaseController {
                     if (array_key_exists('tags', $doc)) {
 
                         $tags = explode(',', $doc['tags']);
-                        $cid = $doc_types = '';
+                        $cid = $doc_types = $doc_com = '';
                         foreach ($tags as $tag) {
                             if (strpos($tag, 'cid:') !== false) $cid = substr($tag, 4, strlen($tag));
-                            if (strpos($tag, 'documents:') !== false) $doc_types = substr($tag, 10, strlen($tag));
+                            if (strpos($tag, 'customer_form_') !== false) {
+                                $doc_types .= $doc_com.substr($tag, strpos($tag,':')+1, strlen($tag));
+                                $doc_com=', ';
+                            }
                         }
                         if ($cid != '') $docs['documents']['document'][$key]['client'] = Client::find($cid);
                         $docs['documents']['document'][$key]['doc_types'] = $doc_types;
@@ -1529,28 +1532,44 @@ class AdminController extends BaseController {
         }
         #echo '<pre>';dd($doc);
         $recipient_details = '<h3>Recipients</h3><table><tr><td>Name</td><td>Role</td><td>Status</td><td>Email</td></tr>';
-        if(is_array($doc))
-        foreach($doc['recipients']['recipient'] as $recipient) {
+        if(is_array($doc)){
+            if (!array_key_exists('0', $doc['recipients']['recipient'])) {
+                $temp_doc = $doc['recipients']['recipient'];
+                $doc['recipients']['recipient'] = array();
+                $doc['recipients']['recipient'][0] = $temp_doc;
+            }
+            foreach($doc['recipients']['recipient'] as $recipient) {
 
-            $recipient_details .= '<tr>';
-            $recipient_details .= '<td>' . $recipient['name'] . '</td>';
-            $recipient_details .= '<td>' . $recipient['role-id'] . '</td>';
-            $recipient_details .= '<td>' . $recipient['state'] . '</td>';
-            $recipient_details .= '<td><a href="mailto:' . $recipient['email'] . '">' . $recipient['email'] . '</a></td>';
-            $recipient_details .= '</tr>';
+                $recipient_details .= '<tr>';
+                $recipient_details .= '<td>' . $recipient['name'] . '</td>';
+                $recipient_details .= '<td>' . $recipient['role-id'] . '</td>';
+                $recipient_details .= '<td>' . $recipient['state'] . '</td>';
+                $recipient_details .= '<td><a href="mailto:' . $recipient['email'] . '">' . $recipient['email'] . '</a></td>';
+                $recipient_details .= '</tr>';
+            }
         }
+
         $recipient_details .= '</table>';
 
         $history = '<br /><h3>History</h3><div style="height:300px;overflow-y: scroll;border:1px solid #999;padding:5px 15px">';
         $history .= '<table style="width:100%"><thead><th style="width:95px;">Date</th><th>Message</th></thead>';
-        if(is_array($doc))
-            foreach($doc['audit-trails']['audit-trail'] as $trail) {
 
-                $history .= '<tr>';
-                $history .= '<td>' . date('m/d/Y h:i a', strtotime($trail['timestamp'].' - 8 hours')) . '</td>';
-                $history .= '<td valign=top>' . $trail['message'] . '</td>';
-                $history .= '</tr>';
+        if(is_array($doc)) {
+            if (!array_key_exists('0', $doc['audit-trails']['audit-trail'])) {
+                $temp_doc = $doc['audit-trails']['audit-trail'];
+                $doc['audit-trails']['audit-trail'] = array();
+                $doc['audit-trails']['audit-trail'][0] = $temp_doc;
             }
+            foreach ($doc['audit-trails']['audit-trail'] as $trail) {
+                if (array_key_exists('timestamp', $trail)) {
+                    $history .= '<tr>';
+                    $history .= '<td>' . date('m/d/Y h:i a', strtotime($trail['timestamp'] . ' - 7 hours')) . '</td>';
+                    $history .= '<td valign=top>' . $trail['message'] . '</td>';
+                    $history .= '</tr>';
+                }
+
+            }
+        }
         $history .= '</table></div>';
 
         $recipient_details .= $history;
