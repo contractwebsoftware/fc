@@ -1006,7 +1006,12 @@
                             <tr>
                                 <td >{{ date('m/d/Y h:i a',strtotime($signed_docs['created-at'].' - 7 hours')) }}</td>
                                 <td >{{ $signed_docs['doc_types'] }}</td>
-                                <td><a href="{{ action('AdminController@getEditClient', $signed_docs['client']->id) }}">{{$signed_docs['client']->first_name.' '.$signed_docs['client']->last_name}}</a></td>
+                                <td>
+                                    @if(is_object($signed_docs['client'])))
+                                        <a href="{{ action('AdminController@getEditClient', $signed_docs['client']->id) }}">{{$signed_docs['client']->first_name.' '.$signed_docs['client']->last_name}}</a>
+                                    @endif
+                                </td>
+
                                 <td >{{ ucwords($signed_docs['state']) }}</td>
 
                                 <td class="text-right">
