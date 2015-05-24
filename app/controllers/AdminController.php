@@ -1503,11 +1503,11 @@ class AdminController extends BaseController {
                         if (!array_key_exists('pdf-url', $docs['documents']['document'][$key]) || count($docs['documents']['document'][$key]['pdf-url']) < 1) $docs['documents']['document'][$key]['pdf-url'] = '';
                     }
                     else {
-                        #unset($docs['documents'][$key]);
+                        unset($docs['documents']['document'][$key]);
                     }
                 }
                 else {
-                    #unset($docs['documents'][$key]);
+                    unset($docs['documents']['document'][$key]);
                 }
 
             }
