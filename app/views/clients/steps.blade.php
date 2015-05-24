@@ -523,10 +523,9 @@ $("#choose_provider").click(function(){
 </div>
 
 <div class="row form-group">
+    <div class="col-sm-6" style="@if(!Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br /><input name="deceased_info[dod]" id="dod" class="calendar" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dod))}}" /></div>
 
-       <div class="col-sm-6" style="@if(!Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br /><input name="deceased_info[dod]" id="dod" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dod))}}" /></div>
-
-   <div class="col-sm-6">Date of Birth<br /><input name="deceased_info[dob]" id="dob" type="text" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
+    <div class="col-sm-6">Date of Birth<br /><input name="deceased_info[dob]" id="dob" type="text" class="calendar" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
 </div>
 
 <div class="row form-group">
@@ -564,6 +563,8 @@ $("#dob").datepicker( {
    changeMonth: true,
    changeYear: true
 });*/
+    
+
 </script>
 {{ Form::close() }}
 
