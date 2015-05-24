@@ -13,7 +13,7 @@ class AdminController extends BaseController {
     public function getProviders()
     {
         $per_page = 50;
-        
+
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
         if(Sentry::getUser()->role=='provider') {
             $provider = FProvider::where('user_id',Sentry::getUser()->id)->first();
@@ -40,12 +40,12 @@ class AdminController extends BaseController {
             else $providers = FProvider::with('user');
         }
         $providers = $providers->where('admin_provider',0)->orderBy('created_at', 'desc')->paginate($per_page);
-        
+
         foreach($providers as $provider){
             $client_provider = DB::table('clients_providers')->where('provider_id', $provider->id)->get();
             $provider->client_count = count($client_provider);
         }
-        
+
         $this->layout->content = View::make('admin.providers')->withProviders($providers);
 
     }
@@ -55,11 +55,11 @@ class AdminController extends BaseController {
         $input = Input::all();
         $input['provider_plan_basic'] = ProviderPlans::where('id','1')->first();
         $input['provider_plan_premium'] = ProviderPlans::where('id','2')->first();
-        
+
         $this->layout->content = View::make('admin.provider-new', $input);
     }
 
-   
+
     public function postNewProvider()
     {
         Session::put('new_provider_data', Input::all());
@@ -130,17 +130,17 @@ class AdminController extends BaseController {
             // dd($input);
             //$new_provider = DB::table('providers')->insert($input);
 
-            $provider = new FProvider();  
+            $provider = new FProvider();
             $provider->fill($input);
-            $provider->save(); 
+            $provider->save();
 
             $zips = new ProviderZip();
             $zips->fill( Array('zip'=>Input::get('zip'), 'provider_id'=>$provider->id) );
-            $zips->save(); 
+            $zips->save();
 
             $pricing = new ProviderPricingOptions();
             $pricing->fill( Array('provider_id'=>$provider->id) );
-            $pricing->save(); 
+            $pricing->save();
 
             /*
             $bill = Billing::first();
@@ -151,7 +151,7 @@ class AdminController extends BaseController {
             $billing->per_case_fee = $bill->per_case_fee;
             $billing->save(); 
             */
-            
+
 
             //CREATE FRESHBOOKS ENTRY
             //$client_id = AdminController::postAddBillingClient($provider->id);
@@ -198,7 +198,7 @@ class AdminController extends BaseController {
     public function getEditProvider($id, $current_tab='company_info', $custom_form_num='')
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
-         
+
         $data['provider'] = FProvider::find($id);
         $data['fuser'] = User::find($data['provider']->user_id);
         if($data['fuser'] == null) $data['fuser'] = new User;
@@ -216,6 +216,8 @@ class AdminController extends BaseController {
         $data['custom_form_num'] = $custom_form_num;
         $data['current_tab'] = $current_tab;
 
+
+        $data['signature_docs'] =  AdminController::getListProviderSignatureDocs($id);
 
         $this_zip = Zip::where('zip',$data['provider']->zip)->first();
         if($this_zip!=null)$data['zip_info'] = AdminController::findZipsInRadius($data['provider']->provider_radius, $this_zip->latitude, $this_zip->longitude);
@@ -258,7 +260,7 @@ class AdminController extends BaseController {
 
 
     public function  getDeleteProvider($id){
-        $provider = FProvider::find($id);    
+        $provider = FProvider::find($id);
         if($provider!=null){
             $provider->provider_status = 2;
             $provider->save();
@@ -283,37 +285,37 @@ class AdminController extends BaseController {
     public function postUpdateProvider()
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
-        
+
         $input = Input::all();
         //dd($input['provider']['id']);
         $provider = FProvider::find($input['provider']['id']);
         //dd($provider);
         if($provider == null){
-            $provider = new FProvider();  
-        } 
+            $provider = new FProvider();
+        }
 
-        if(array_key_exists('freshbooks_clients_enabled',$input)){            
+        if(array_key_exists('freshbooks_clients_enabled',$input)){
             if($input['freshbooks_clients_enabled']=='1')$provider->freshbooks_clients_enabled = 1;
             else $provider->freshbooks_clients_enabled = 0;
-        }        
-        else $provider->freshbooks_clients_enabled = 0; 
-        
-        if(array_key_exists('freshbooks_clients_invoice',$input)){            
+        }
+        else $provider->freshbooks_clients_enabled = 0;
+
+        if(array_key_exists('freshbooks_clients_invoice',$input)){
             if($input['freshbooks_clients_invoice']=='1')$provider->freshbooks_clients_invoice = 1;
             else $provider->freshbooks_clients_invoice = 0;
-        }        
-        else $provider->freshbooks_clients_invoice = 0; 
-        
-        if(array_key_exists('freshbooks_clients_people',$input)){            
+        }
+        else $provider->freshbooks_clients_invoice = 0;
+
+        if(array_key_exists('freshbooks_clients_people',$input)){
             if($input['freshbooks_clients_people']=='1')$provider->freshbooks_clients_people = 1;
             else $provider->freshbooks_clients_people = 0;
-        }        
-        else $provider->freshbooks_clients_people = 0; 
-            
+        }
+        else $provider->freshbooks_clients_people = 0;
+
         if($provider->plan_id != $input['provider']['plan_id']){
             $provider->plan_id = $input['provider']['plan_id'];
             $provider->save();
-            
+
             if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
             else {
                 $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
@@ -324,25 +326,25 @@ class AdminController extends BaseController {
                 $message->subject('A Provider Has Upgrade Their ForCremation Plan');
                 $message->to('forcremation@gmail.com');
             });
-            
+
             //AdminController::postAddRecurringBillingToClient($input['provider']['id'], false);
         }
-        
-        
+
+
         //CREATE FRESHBOOKS ENTRY
-        
+
         if($provider->provider_status != $input['provider']['provider_status'] && $input['provider']['provider_status']=='1')$create_billing = true;
         else $create_billing = false;
-        
+
         if($provider->freshbooks_billing_cost != $input['provider']['freshbooks_billing_cost'])$update_billing = true;
         else $update_billing = false;
-        
-        
-        
+
+
+
         $provider->fill($input['provider']);
         $provider->save();
 
-        
+
         if($create_billing)
         {
             $client_id = AdminController::postAddBillingClient($provider->id);
@@ -351,18 +353,18 @@ class AdminController extends BaseController {
         if($update_billing){
             if($input['provider']['provider_status']=='1')AdminController::postAddRecurringBillingToClient($provider->id);
         }
-        
+
         if($input['provider_login']!=""){
             $user = User::find($provider->user_id);
             if($user == null)$user = new User;
-            $user->email = $input['provider_login']; 
+            $user->email = $input['provider_login'];
             $user->activated = 1;
             //$user->role = "provider";
             $user->save();
             //dd($user);
             $provider->user_id = $user->id;
             $provider->save();
-        } 
+        }
         if($input['newpassword']!="" && $input['newpassword_confirmation']!="" && $user!=null){
             $newpass = ['newpassword'=>$input['newpassword'],'newpassword_confirmation'=>$input['newpassword_confirmation']] ;
             $rules = ['newpassword'=>'required|confirmed'] ;
@@ -380,7 +382,7 @@ class AdminController extends BaseController {
                 Session::flash('success','Password Updated');
             } catch (Exception $e) {
                 Session::flash('error','Password Update Failed');
-            }   
+            }
         }
 
 
@@ -415,7 +417,7 @@ class AdminController extends BaseController {
                     if($this_zip!=''){
                       $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$this_zip)->first();
                       if($zip==null)$zip = new ProviderZip();
-                      $zip->zip = $this_zip;   
+                      $zip->zip = $this_zip;
                       $zip->provider_id = $input['provider']['id'];
                       $zip->save();
                     }
@@ -428,12 +430,12 @@ class AdminController extends BaseController {
 
                 if(array_key_exists('provider_zip_code',$input))
                 if(strpos($input['provider_zip_code'],',')!==false){
-                  $zips_r = explode(',', $input['provider_zip_code']);  
+                  $zips_r = explode(',', $input['provider_zip_code']);
                   foreach($zips_r as $this_zip){
                       if($this_zip!=''){
                         $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$this_zip)->first();
                         if($zip==null)$zip = new ProviderZip();
-                        $zip->zip = $this_zip;   
+                        $zip->zip = $this_zip;
                         $zip->provider_id = $input['provider']['id'];
                         $zip->save();
                       }
@@ -442,7 +444,7 @@ class AdminController extends BaseController {
                 else {
                     $zip = ProviderZip::where('provider_id',$input['provider']['id'])->where('zip',$input['provider_zip_code'])->first();
                     if($zip==null)$zip = new ProviderZip();
-                    $zip->zip = $input['provider_zip_code'];   
+                    $zip->zip = $input['provider_zip_code'];
                     $zip->provider_id = $input['provider']['id'];
                     $zip->save();
                 }
@@ -465,7 +467,7 @@ class AdminController extends BaseController {
             $input = Input::all();
             $pricing_options = ProviderPricingOptions::where('provider_id',$input['provider']['id'])->first();
             if($pricing_options==null)$pricing_options = new ProviderPricingOptions();
-            $pricing_options->fill($input['pricing']);   
+            $pricing_options->fill($input['pricing']);
             $pricing_options->provider_id = $input['provider']['id'];
             //dd($pricing_options);
             $pricing_options->save();
@@ -478,18 +480,18 @@ class AdminController extends BaseController {
         $input = Input::all();
         $provider = FProvider::find($input['provider']['id']);
         //dd($input);
-        
+
         $provider->fill($input['provider']);
         if(!array_key_exists('change_form',$input)){
             $provider->save();
             Session::flash('success','Provider\'s Custome Documents has been updated');
         }
-        
+
         if(array_key_exists('edit_custom_form',$input))$key = $input['edit_custom_form'];
         else $key = '1';
-        
-        
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'customer_document_forms','custom_form_num'=>$key));    
+
+
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'customer_document_forms','custom_form_num'=>$key));
     }
 
     public function getRemoveFiles()
@@ -572,13 +574,13 @@ class AdminController extends BaseController {
         Session::flash('success','Provider Files Added Successfully');
         return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>$tab));
     }
-    
-    
+
+
     public function postUpdateProviderUrns()
-    {        
+    {
         $input = Input::all();
         $provider = FProvider::find($input['provider']['id']);
-        
+
         //dd($input['product']);
         foreach($input['product'] as $id=>$product){
             //dd($product);
@@ -586,14 +588,14 @@ class AdminController extends BaseController {
             //dd($provider_products);
             if($provider_products == null || count($provider_products)<1)$provider_products = new ProviderProducts();
             //dd($provider_products);
-             
+
             $provider_products->provider_id = $provider->id;
             $provider_products->fill($product);
             $provider_products->save();
         }
 
         Session::flash('success','Provider\'s Custome Documents has been updated');
-        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_urns')); 
+        return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_urns'));
     }
 
     /*
@@ -614,8 +616,8 @@ class AdminController extends BaseController {
             Session::flash('success','Billing and Freshbooks have been updated');
             return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id']));
     }*/
-    
-    
+
+
 
     public function getAllUser()
     {
@@ -632,10 +634,10 @@ class AdminController extends BaseController {
     {
         $admin_settings = AdminSetting::where('setting_type','provider_registration_letter')->first();
         $data['admin_settings']['provider_registration_letter'] = $admin_settings->setting_value;
-        
+
         $admin_settings = AdminSetting::where('setting_type','provider_registration_message')->first();
         $data['admin_settings']['provider_registration_message'] = $admin_settings->setting_value;
-        
+
         $this->layout->content = View::make('admin.setting', $data);
     }
 
@@ -672,13 +674,13 @@ class AdminController extends BaseController {
                 $setting = AdminSetting::where('setting_type',$key)->first();
                 $setting->setting_value = $value;
                 $setting->save();
-            }            
+            }
         }
-        
+
         return Redirect::action('AdminController@getSetting');
     }
-    
-    public function getCreateUser() 
+
+    public function getCreateUser()
     {
             try
             {
@@ -735,7 +737,7 @@ class AdminController extends BaseController {
 
 
             $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
-            if($client_DeceasedInfo!=null){ 
+            if($client_DeceasedInfo!=null){
                 $client->deceased_first_name = $client_DeceasedInfo->first_name;
                 $client->deceased_last_name = $client_DeceasedInfo->last_name;
                 if($client_DeceasedInfo->cremation_reason == "planning_for_future")$client->preneed = "y";
@@ -787,8 +789,8 @@ class AdminController extends BaseController {
         elseif(Input::get('status')!="")
         {
             if(Input::get('status')==0 || Input::get('status')==1)$clients = Client::where('status','like',Input::get('status'));
-            elseif(Input::get('status')==2)$clients = Client::where('status','like','%')->withTrashed(); 
-            elseif(Input::get('status')==3)$clients = Client::where('status','like',3)->withTrashed();  
+            elseif(Input::get('status')==2)$clients = Client::where('status','like','%')->withTrashed();
+            elseif(Input::get('status')==3)$clients = Client::where('status','like',3)->withTrashed();
         }
         else {
             $clients = Client::with('user');
@@ -822,7 +824,7 @@ class AdminController extends BaseController {
             if($this_clients_provider_id != null)$client->FProvider = FProvider::find($this_clients_provider_id->provider_id);
             //else dd($client->FProvider );
             $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
-            if($client_DeceasedInfo!=null){ 
+            if($client_DeceasedInfo!=null){
                 $client->deceased_first_name = $client_DeceasedInfo->first_name;
                 $client->deceased_last_name = $client_DeceasedInfo->last_name;
                 if($client_DeceasedInfo->cremation_reason == "planning_for_future")$client->preneed = "y";
@@ -915,7 +917,7 @@ class AdminController extends BaseController {
 
 
     public function  getDeleteClient($id, $return = true){
-        $client = Client::withTrashed()->find($id);    
+        $client = Client::withTrashed()->find($id);
 
         if($client!=null){
             $client->status = 3; //Active=0 Completed=1 Deleted=3 
@@ -965,7 +967,7 @@ class AdminController extends BaseController {
         if($client!=null){
 
             $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
-            if($client_DeceasedInfo!=null){ 
+            if($client_DeceasedInfo!=null){
 
                 $client_DeceasedInfo->cremation_reason = "planning_for_future";
                 $client_DeceasedInfo->save();
@@ -1072,7 +1074,7 @@ class AdminController extends BaseController {
         $states_r['Wisconsin'] = 'WI';
         $states_r['Wyoming'] = 'WY';
 
-        
+
         if(strlen($q)>=2 or $city != '' or $state != '')
         {
             Session::put('fh_q', $q);
@@ -1109,8 +1111,8 @@ class AdminController extends BaseController {
         $data['funeral_homes'] = $FuneralHomes->orderBy('biz_name', 'asc')->withTrashed()->paginate(100);
         //echo '<pre>'; dd(DB::getQueryLog()); echo '</pre>';
 
-        $this->layout->content = View::make('admin.funeralhomes', $data);		
-    } 
+        $this->layout->content = View::make('admin.funeralhomes', $data);
+    }
 
     public function getNewFuneralhome()
     {
@@ -1132,7 +1134,7 @@ class AdminController extends BaseController {
 
 
     public function  getDeleteFuneralhome($id){
-        $funeralhome = FuneralHomes::find($id);    
+        $funeralhome = FuneralHomes::find($id);
         if($funeralhome!=null){
             $funeralhome->status = 2;
             $funeralhome->save();
@@ -1161,8 +1163,8 @@ class AdminController extends BaseController {
             $funeralhome = FuneralHomes::find($input['funeralhome']['id']);
             //dd($provider);
             if($funeralhome == null){
-                $funeralhome = new FuneralHomes();  
-            } 
+                $funeralhome = new FuneralHomes();
+            }
             $funeralhome->fill($input['funeralhome']);
             $funeralhome->save();
 
@@ -1185,7 +1187,7 @@ class AdminController extends BaseController {
     public function  postMassUpdateFuneralHomes(){
         $funeralhomes_r = Input::get('edit_funeralhomes');
         $mass_edit_type = Input::get('mass_edit_type');
-        
+
         if(is_array($funeralhomes_r))
         foreach($funeralhomes_r as $key=>$funeralhome_id){
             if($mass_edit_type == 'delete')AdminController::getDeleteFuneralhome($funeralhome_id,false);
@@ -1195,11 +1197,11 @@ class AdminController extends BaseController {
         Session::flash('success',count($funeralhomes_r).' Funeral Homes Updated Successfully');
         return Redirect::action('AdminController@getFuneralhomes');
     }
-   
-    
-    
-    
-    
+
+
+
+
+
     /*
     * BILLING MANAGEMENT
     * 
@@ -1209,7 +1211,7 @@ class AdminController extends BaseController {
      * Docs: http://developers.freshbooks.com/docs/clients/
      * 
     */
-    
+
     public function getBillingPage()
     {
         /*
@@ -1233,10 +1235,10 @@ class AdminController extends BaseController {
         */
         $plan_basic = ProviderPlans::where('id', 1)->first();
         $plan_premium = ProviderPlans::where('id', 2)->first();
-        
+
         $this->layout->content = View::make('admin.billing', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
     }
-    
+
     /*
     public function postUpdateDefaultBilling()
     {
@@ -1252,12 +1254,12 @@ class AdminController extends BaseController {
             Session::flash('success','Billing Setting has been updated');
             return Redirect::action('AdminController@getBillingPage', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
     } */
-    
+
     public function postAddBillingClient($provider_id)
     {
-       
+
         $provider = FProvider::find($provider_id);
-        
+
         if($provider != null){
             $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
             $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
@@ -1283,7 +1285,7 @@ class AdminController extends BaseController {
                 )
             );
             //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
-            
+
             $fb->request();
 
             if($fb->success()) {
@@ -1302,38 +1304,38 @@ class AdminController extends BaseController {
 
                 var_dump($fb->getResponse());
             }
-            
- 
-        } 
+
+
+        }
         else Session::flash('Issue Finding Provider To Create Freshbooks Entry');
-                    
+
 
     }
-    
-    
+
+
     function postAddRecurringBillingToClient($provider_id, $create_new=true)
     {
         $provider = FProvider::find($provider_id);
-        
+
         //$bill = Billing::first();
-        
-        
+
+
         if($provider == null)return;
-        
+
         $billing_plan = ProviderPlans::where('id', $provider->plan_id)->first();
         if($billing_plan==null)$billing_plan = ProviderPlans::where('id',1)->first();
-        
+
         if($provider->freshbooks_client_id=='' || $provider->freshbooks_client_id=='0'){
             $provider->freshbooks_client_id = AdminController::postAddBillingClient($provider_id);
             //$provider = FProvider::find($provider->id);
         }
         $billing_plan->price = $provider->freshbooks_billing_cost;
-        
+
         if($provider->freshbooks_client_id!=''){
-                
+
                 if($provider->freshbooks_recurring_id=='0' || $provider->freshbooks_recurring_id=='')$create_new = true;
                 else $create_new = false;
-                
+
                 if($create_new){
                     $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
                     $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
@@ -1398,7 +1400,7 @@ class AdminController extends BaseController {
                         )
                     );
                 }
-               
+
                 //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
 
                 $fb->request();
@@ -1406,7 +1408,7 @@ class AdminController extends BaseController {
                 if($fb->success()) {
                     Session::flash('success','Successfully Set Recurring Freshbooks entry');
                     //dd($fb->getResponse());
-                    
+
                     $res = $fb->getResponse();
                     //dd($res);
                     if($create_new){
@@ -1421,7 +1423,7 @@ class AdminController extends BaseController {
                     Session::flash('error','Errors Setting Freshbooks Recurring Entry, Has the Person or Recurring Invoice Been Deleted From Freshbooks?<br />'
                             . 'The Freshbook Integration Has been Reset for this client, the next time you change plans and save it will create a new setup in freshbooks for them. '
                             . 'Make sure to login to Freshbooks to double check everything is ok and no duplicates exist '.$fb->getError());
-                    
+
                     $provider->freshbooks_recurring_id = '';
                     $provider->freshbooks_client_id = '';
                     $provider->save();
@@ -1429,34 +1431,132 @@ class AdminController extends BaseController {
                 }
 
         }
-        
+
     }
-    
-    
-    
+
+
+
     public function postUpdateProviderPlans()
     {
             $input = Input::all();
             $rules = ['plan_basic'=>'required', 'plan_premium'=>'required'];
-            
+
             $v = Validator::make($input['provider_plans'],$rules);
             if($v->fails()) return Redirect::back()->withErrors($v);
 
             $plan_basic = ProviderPlans::where('id', 1)->first();
             $plan_basic->price = $input['provider_plans']['plan_basic'];
             $plan_basic->save();
-            
+
             $plan_premium = ProviderPlans::where('id', 2)->first();
             $plan_premium->price = $input['provider_plans']['plan_premium'];
             $plan_premium->save();
-            
+
             Session::flash('success','Plans have been updated');
             return Redirect::action('AdminController@getBillingPage', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
     }
-    
-    
 
 
+    function getListProviderSignatureDocs($pid='', $cid='')
+    {
+        $tags = array();
+        $rightsignature = new RightSignature();
+        $rightsignature->debug = false;
+
+        $docs = $rightsignature->getDocuments($cid,$pid);
+
+        $xml = simplexml_load_string($docs, 'SimpleXmlElement', LIBXML_NOERROR+LIBXML_ERR_FATAL+LIBXML_ERR_NONE);
+        if ($xml != false) {
+            $json = json_encode($xml);
+            $docs = json_decode($json,TRUE);;
+        }
+        #echo '<pre>';dd($docs);
+        if(is_array($docs))
+        if(array_key_exists('documents',$docs))
+        if(array_key_exists('document', $docs['documents'])) {
+            #echo '<pre>';dd($docs['documents']['document']);
+            if (!array_key_exists('0', $docs['documents']['document'])) {
+                $temp_doc = $docs['documents']['document'];
+                $docs['documents']['document'] = array();
+                $docs['documents']['document'][0] = $temp_doc;
+            }
+           # else dd('test');
+
+            foreach ($docs['documents']['document'] as $key => $doc) {
+                if(is_array($doc)) {
+                    if (array_key_exists('tags', $doc)) {
+
+                        $tags = explode(',', $doc['tags']);
+                        $cid = $doc_types = '';
+                        foreach ($tags as $tag) {
+                            if (strpos($tag, 'cid:') !== false) $cid = substr($tag, 4, strlen($tag));
+                            if (strpos($tag, 'documents:') !== false) $doc_types = substr($tag, 10, strlen($tag));
+                        }
+                        if ($cid != '') $docs['documents']['document'][$key]['client'] = Client::find($cid);
+                        $docs['documents']['document'][$key]['doc_types'] = $doc_types;
+
+                        if (!array_key_exists('signed-pdf-url', $docs['documents']['document'][$key]) || count($docs['documents']['document'][$key]['signed-pdf-url']) < 1) $docs['documents']['document'][$key]['signed-pdf-url'] = '';
+                        if (!array_key_exists('pdf-url', $docs['documents']['document'][$key]) || count($docs['documents']['document'][$key]['pdf-url']) < 1) $docs['documents']['document'][$key]['pdf-url'] = '';
+                    }
+                    else {
+                        #unset($docs['documents'][$key]);
+                    }
+                }
+                else {
+                    #unset($docs['documents'][$key]);
+                }
+
+            }
+        }
+        else $docs['documents']['document'] = array();
+
+        #echo '<pre>';dd($docs['documents']['document'][0]);
+        return $docs;
+    }
+
+    function getSignedDoc($doc_guid='')
+    {
+
+        if($doc_guid == '')$doc_guid = Input::get('doc_guid');
+        $rightsignature = new RightSignature();
+        $rightsignature->debug = false;
+
+        $doc = $rightsignature->getSignDocument($doc_guid);
+        $xml = simplexml_load_string($doc, 'SimpleXmlElement', LIBXML_NOERROR+LIBXML_ERR_FATAL+LIBXML_ERR_NONE);
+        if ($xml != false) {
+            $json = json_encode($xml);
+            $doc = json_decode($json,TRUE);
+        }
+        #echo '<pre>';dd($doc);
+        $recipient_details = '<h3>Recipients</h3><table><tr><td>Name</td><td>Role</td><td>Status</td><td>Email</td></tr>';
+        if(is_array($doc))
+        foreach($doc['recipients']['recipient'] as $recipient) {
+
+            $recipient_details .= '<tr>';
+            $recipient_details .= '<td>' . $recipient['name'] . '</td>';
+            $recipient_details .= '<td>' . $recipient['role-id'] . '</td>';
+            $recipient_details .= '<td>' . $recipient['state'] . '</td>';
+            $recipient_details .= '<td><a href="mailto:' . $recipient['email'] . '">' . $recipient['email'] . '</a></td>';
+            $recipient_details .= '</tr>';
+        }
+        $recipient_details .= '</table>';
+
+        $history = '<br /><h3>History</h3><div style="height:300px;overflow-y: scroll;border:1px solid #999;padding:5px 15px">';
+        $history .= '<table style="width:100%"><thead><th style="width:95px;">Date</th><th>Message</th></thead>';
+        if(is_array($doc))
+            foreach($doc['audit-trails']['audit-trail'] as $trail) {
+
+                $history .= '<tr>';
+                $history .= '<td>' . date('m/d/Y h:i a', strtotime($trail['timestamp'].' - 8 hours')) . '</td>';
+                $history .= '<td valign=top>' . $trail['message'] . '</td>';
+                $history .= '</tr>';
+            }
+        $history .= '</table></div>';
+
+        $recipient_details .= $history;
+
+        return $recipient_details;
+    }
 
     
 }

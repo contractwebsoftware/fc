@@ -40,10 +40,51 @@ class RightSignature
         $this->access_token = new OAuthConsumer($response_params['oauth_token'], $response_params['oauth_token_secret'], 1);
     }
 
-    function getDocuments()
+    function getDocuments($cid='',$pid='',$state='')
     {
+        ## https://rightsignature.com/apidocs/api_documentation_php
+        # state = 'completed', 'pending', 'trash'  //'completed', 'pending', 'trash'
+
+
         $url = $this->secure_base_url . "/api/documents.xml";
         #echo "Getting documents...\n";
+
+
+        ## TAG SEARCH
+        $tag_search = $and = $state_search = '';
+        if($cid != '' or $pid != '')$tag_search = 'tags=';
+        if($cid != ''){
+            $tag_search .= 'cid:'.$cid;
+            $and=',';
+        }
+        if($pid != '')$tag_search .= $and.'pid:'.$pid;
+
+
+        if($state != '') $state_search = 'state='.$state;
+
+        if($state_search != '' || $tag_search != '')$url .= '?';
+        if($tag_search != ''){
+            $url .= $tag_search;
+            $amp = '&';
+        }
+        if($state_search != '')$url .= $amp.$state_search;
+
+        #dd($url);
+        $header = Array();
+        $response = $this->httpRequest($url, $header, "GET");
+        return $response;
+    }
+
+    function getSignDocument($doc_guid='')
+    {
+        ##  https://rightsignature.com/api/documents/ABCDEFGHIJKLMN0P.xml
+        # state = 'completed', 'pending', 'trash'  //'completed', 'pending', 'trash'
+
+
+        $url = $this->secure_base_url . '/api/documents/'.$doc_guid.'.xml';
+        #echo "Getting documents...\n";
+
+        #dd($url);
         $header = Array();
         $response = $this->httpRequest($url, $header, "GET");
         return $response;
@@ -69,7 +110,9 @@ class RightSignature
                             .'<tag><name>Sent From API</name></tag>'
                             .'<tag><name>Client</name><value>'.$doc_data['doc_name'].'</value></tag>'
                             .'<tag><name>Deceased Name</name><value>'.$doc_data['doc_deceased'].'</value></tag>'
-                            .$doc_data['doc_forms_included']
+                            .'<tag><name>Pid</name><value>'.$doc_data['doc_pid'].'</value></tag>'
+                            .'<tag><name>Cid</name><value>'.$doc_data['doc_cid'].'</value></tag>'
+                            .'<tag><name>Documents</name><value>'.$doc_data['doc_forms_included'].'</value></tag>'
                             .'</tags>'
                         .'<expires_in>30 days</expires_in>'
                         .'<action>'.$doc_data['doc_action'].'</action>'

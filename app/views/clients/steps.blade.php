@@ -81,6 +81,83 @@
 
     </fieldset>
 
+
+    <fieldset>
+        <div class="row">
+            <div class="col-md-12">
+            <h3>Client Signed Documents</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th style="width:90px;">Date</th>
+                    <th>Forms Sent</th>
+                    <th style="width:90px;">Status</th>
+                    <th style="width:140px;" class="text-right">Original Document</th>
+                    <th style="width:140px;" class="text-right">Signed Document</th>
+                    <th style="width:120px;" class="text-right">History</th>
+                </tr>
+
+                @foreach( $provider->signature_docs['documents']['document'] as $key=> $signed_docs )
+
+                    <tr>
+                        <td >{{ date('m/d/Y',strtotime($signed_docs['created-at'])) }}</td>
+                        <td >{{ $signed_docs['doc_types'] }}</td>
+                        <td >{{ ucwords($signed_docs['state']) }}</td>
+
+                        <td class="text-right">
+                            <a href="{{ urldecode($signed_docs['pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
+                                <span class="glyphicon glyphicon-list-alt"></span> &nbsp; View
+                            </a>
+                        </td>
+                        <td class="text-right">
+                            @if($signed_docs['signed-pdf-url'] != '')
+                                <a href="{{ urldecode($signed_docs['signed-pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
+                                    <span class="glyphicon glyphicon-pencil"></span> &nbsp; View
+                                </a>
+                            @endif
+                        </td>
+                        <td class="text-right">
+                            <a href="#" onclick="getSignedDoc('{{$signed_docs['guid'] }}')" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myModal">
+                                <span class="glyphicon glyphicon-search"></span> &nbsp; History
+                            </a>
+                        </td>
+                    </tr>
+
+                @endforeach
+
+            </table>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog"  style="width:800px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Client Document</h4>
+                            </div>
+                            <div class="modal-body" id="doc_info">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function getSignedDoc(guid) {
+                        $.get('{{ action('AdminController@getSignedDoc') }}/'+guid, function (data) {
+                            $('#doc_info').html(data);
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </fieldset>
+
+
+
     <div class="row">
         <div class="col-md-3" >
            <button class="pull-right" onclick="$('#choose_download_forms').slideToggle();return false;">Download Client Forms</button>
@@ -90,7 +167,7 @@
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-               <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update Existing':'Create')?> Freshbooks Client</button>
+               <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update':'Create')?> Freshbooks Client</button>
                {{ Form::close() }}
 
                <?php
@@ -109,7 +186,7 @@
                 {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
                 {{ Form::hidden('client_id',$client->id) }}
                 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update Existing':'Create')?> Freshbooks Invoice</button>
+                <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update':'Create')?> Freshbooks Invoice</button>
                 {{ Form::close() }}
                 <?php
                 if($client->fb_invoice_id  != ''){

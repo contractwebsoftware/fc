@@ -17,6 +17,7 @@
           <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
           <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Document Builder</a></li>
           <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
+          <li class="{{$current_tab=='provider_signatures'?'active':''}}"><a href="#provider_signatures" role="tab" data-toggle="tab">Signed Documents</a></li>
         @endif
         <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
         <li class="{{$current_tab=='provider_urns'?'active':''}}"><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
@@ -970,7 +971,7 @@
                         </tr>
                     @endforeach
                     @if(count($clients)<1)
-                    <tr><td colspan="7"><center><b><i>Your clients will appear here when they register</i></b></center></td></tr>
+                        <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br /></td></tr>
                     @endif
             </tbody>
             </table>
@@ -979,8 +980,97 @@
             </div><!--/col-12-->
         </div><!--/row-->
     </div> <!-- /END Client info tab -->
-        
+
+
+
+    <div class="tab-pane {{$current_tab=='provider_signatures'?'active':''}}" id="provider_signatures">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <fieldset>
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th style="width:90px;">Date</th>
+                            <th>Forms Sent</th>
+                            <th>Client</th>
+                            <th>Status</th>
+                            <th class="text-right">Original Document</th>
+                            <th class="text-right">Signed Document</th>
+                            <th class="text-right">History</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        @foreach( $signature_docs['documents']['document'] as $signed_docs )
+                            <tr>
+                                <td >{{ date('m/d/Y',strtotime($signed_docs['created-at'])) }}</td>
+                                <td >{{ $signed_docs['doc_types'] }}</td>
+                                <td><a href="{{ action('AdminController@getEditClient', $signed_docs['client']->id) }}">{{$signed_docs['client']->first_name.' '.$signed_docs['client']->last_name}}</a></td>
+                                <td >{{ ucwords($signed_docs['state']) }}</td>
+
+                                <td class="text-right">
+                                    <a href="{{ urldecode($signed_docs['pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
+                                        <span class="glyphicon glyphicon-list-alt"></span> &nbsp; View
+                                    </a>
+                                </td>
+                                <td class="text-right">
+                                    @if($signed_docs['signed-pdf-url'] != '')
+                                    <a href="{{ urldecode($signed_docs['signed-pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
+                                        <span class="glyphicon glyphicon-pencil"></span> &nbsp; View
+                                    </a>
+                                    @endif
+                                </td>
+                                <td class="text-right">
+                                    <a href="#" onclick="getSignedDoc('{{$signed_docs['guid'] }}')" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myModal">
+                                        <span class="glyphicon glyphicon-search"></span> &nbsp; History
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        @if(count($signature_docs['documents']['document'])<1)
+                            <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients' documents will appear here when they are sent</i></b></center><br /></td></tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog"  style="width:800px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Client Document</h4>
+                            </div>
+                            <div class="modal-body" id="doc_info">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!--/col-12-->
+        </div><!--/row-->
+    </div> <!-- /END Client info tab -->
+
+    <script>
+        function getSignedDoc(guid) {
+            $.get('{{ action('AdminController@getSignedDoc') }}/'+guid, function (data) {
+                $('#doc_info').html(data);
+            });
+        }
+    </script>
    @endif
+
+
+
+
+
    <div class="tab-pane {{$current_tab=='provider_pricing'?'active':''}}" id="provider_pricing">
 	<div class="row">
 		<div class="col-xs-12">

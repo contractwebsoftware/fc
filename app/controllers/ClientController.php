@@ -119,6 +119,11 @@ class ClientController extends BaseController {
                 if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
                 elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
                 else Session::put('inAdminGroup','');
+
+                $adminController = new AdminController();
+                $provider->signature_docs =  $adminController->getListProviderSignatureDocs('', $client->id);
+
+                #echo '<pre>';dd($provider->signature_docs);
             }
             else Session::put('inAdminGroup','');
             
@@ -1547,11 +1552,11 @@ class ClientController extends BaseController {
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            $forms_included .= '<tag><name>'.$file_name.'</name></tag>';
-
+            $forms_included .= $com.$file_name;
+            $com=' - ';
         }
 
-        #$forms_url = 'http://www.forcremation.com/images/test.pdf';
+        $forms_url = 'http://www.forcremation.com/images/test.pdf';
 
         if($client != null && $forms_url != ''){
             $rightsignature = new RightSignature();
@@ -1568,6 +1573,8 @@ class ClientController extends BaseController {
             $doc_data['doc_forms_included'] = $forms_included;
             if(is_object($clientData->DeceasedInfo))
             $doc_data['doc_deceased'] = $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name;
+            $doc_data['doc_pid'] = $provider_id;
+            $doc_data['doc_cid'] = $client_id;
 
             #$res = $rightsignature->testPost();
             #dd($res);
@@ -1594,5 +1601,22 @@ class ClientController extends BaseController {
         else return Redirect::action('ClientController@getSteps', $data);
 
     }
+/*
+    function getListClientSignatureDocs($cid='')
+    {
 
+        $rightsignature = new RightSignature();
+        $rightsignature->debug = false;
+
+        $docs = $rightsignature->getDocuments($cid);
+
+        $xml = simplexml_load_string($docs, 'SimpleXmlElement', LIBXML_NOERROR+LIBXML_ERR_FATAL+LIBXML_ERR_NONE);
+        if ($xml != false) {
+            $json = json_encode($xml);
+            $docs = json_decode($json,TRUE);
+        }
+        echo '<pre>';dd($docs);
+        return $docs;
+    }
+*/
 }
