@@ -802,17 +802,18 @@
                                     <div  style="height:370px;overflow-x:auto;border:1px solid #ccc;width:100%;margin-bottom:5px;">
                                     <table class="table  table-condensed" width="90%">
                                         <tbody>
-                                            <?php
-                                                if($zips!=null){
-                                                   //print_r($zips);
-                                                    foreach($zips as $zip){
+
+                                                @if($zips!=null)
+                                                   @foreach($zips as $zip)
+                                                       <?php
                                                         $zips_r[$zip->zip]=$zip->zip;
                                                         echo '<tr><td width="90%"><label for="zip-'.$zip->zip.'" style="cursor:pointer;">'.$zip->zip.'</label></td>'
                                                                 . '<td width="10%"><input type="checkbox" class="removezips" id="zip-'.$zip->zip.'" name="removezips['.$zip->zip.']" value="'.$zip->zip.'" /></td>'
                                                                 . '</tr>';
-                                                    }
-                                                }
-                                            ?>
+                                                       ?>
+                                                    @endforeach
+                                                @endif
+
                                         </tbody>
                                     </table>
                                     </div>

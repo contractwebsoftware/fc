@@ -202,7 +202,7 @@ class AdminController extends BaseController {
         $data['provider'] = FProvider::find($id);
         $data['fuser'] = User::find($data['provider']->user_id);
         if($data['fuser'] == null) $data['fuser'] = new User;
-        $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->get();
+        $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->orderBy('zip')->get();
         $data['states'] = State::orderBy('name_long')->get();
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
         $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_logo')->where('file_type','not like','provider_slide_%')->get();
