@@ -98,14 +98,14 @@ class RightSignature
 
 
         #$doc_data['doc_url'] = 'http://www.forcremation.com/images/test.pdf';
-
+//.'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
                     .'<document>'
                         .'<document_data><type>url</type><value>'.$doc_data['doc_url'].'</value></document_data><subject>Signature Required</subject>'
                         .'<recipients>'
                             .'<recipient><name>'.$doc_data['doc_cc_name'].'</name><email>'.$doc_data['doc_cc_email'].'</email><role>cc</role></recipient>'
                             .'<recipient><name>'.$doc_data['doc_to_sign_name'].'</name><email>'.$doc_data['doc_to_sign_email'].'</email><role>signer</role></recipient>'
-                            .'<recipient><is_sender>true</is_sender><role>signer</role></recipient></recipients>'
+                            .'<recipient><is_sender>true</is_sender><role>cc</role></recipient></recipients>'
                         .'<tags>'
                             .'<tag><name>Sent From API</name></tag>'
                             .'<tag><name>Client</name><value>'.$doc_data['doc_name'].'</value></tag>'
