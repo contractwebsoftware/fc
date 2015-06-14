@@ -1340,8 +1340,15 @@ class ClientController extends BaseController {
 
             /* FRESHBOOKS API */
             //$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            //$token = $provider->freshbooks_api_token; // your api token found in your account
+            #$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
             //Freshbooks\FreshBooksApi::init($domain, $token);
+
+            $token = $provider->freshbooks_api_token; // your api token found in your account
+            $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+
+
+            $fb = new Freshbooks\FreshBooksApi($domain, $token);
 
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
@@ -1358,9 +1365,6 @@ class ClientController extends BaseController {
                 'p_country' => 'United States',
                 'p_code' => $client->zip
             );
-            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
-            $fb = new Freshbooks\FreshBooksApi($domain, $token);
 
             if ($client->fb_client_id == '') {
                 $fb->setMethod('client.create');
@@ -1471,9 +1475,14 @@ class ClientController extends BaseController {
 
        //echo '<pre>';dd($invoice); // You can view what the XML looks like that we're about to send over the wire
 
-            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+            #$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+            #$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+
+            $token = $provider->freshbooks_api_token; // your api token found in your account
+            $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
             $fb = new Freshbooks\FreshBooksApi($domain, $token);
+
 
             if($create_new)$fb->setMethod('invoice.create');
             else {

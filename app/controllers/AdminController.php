@@ -1,9 +1,9 @@
 <?php
 
 /* FRESHBOOKS API */
-$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
-Freshbooks\FreshBooksApi::init($domain, $token);
+#$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
+#$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+#Freshbooks\FreshBooksApi::init($domain, $token);
 
 
 
@@ -1261,8 +1261,9 @@ class AdminController extends BaseController {
         $provider = FProvider::find($provider_id);
 
         if($provider != null){
-            $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+            $token = $provider->freshbooks_api_token; // your api token found in your account
+            $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
             $fb = new Freshbooks\FreshBooksApi($domain, $token);
             $fb->setMethod('client.create');
 
@@ -1337,8 +1338,10 @@ class AdminController extends BaseController {
                 else $create_new = false;
 
                 if($create_new){
-                    $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-                    $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+                    $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+                    $token = $provider->freshbooks_api_token; // your api token found in your account
+                    $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+
                     $fb = new Freshbooks\FreshBooksApi($domain, $token);
                     $fb->setMethod('recurring.create');
 
@@ -1369,8 +1372,10 @@ class AdminController extends BaseController {
                 }
                 else {
                     //$providerBilling = ProviderBilling::where('provider_id', $provider_id)->first();
-                    $domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-                    $token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
+                    $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+                    $token = $provider->freshbooks_api_token; // your api token found in your account
+                    $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+
                     $fb = new Freshbooks\FreshBooksApi($domain, $token);
                     $fb->setMethod('recurring.update');
 

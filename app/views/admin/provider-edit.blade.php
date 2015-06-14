@@ -178,8 +178,8 @@
                                         <div id='freshbooks_settings'>
 
                                             <div class="form-group" >
-                                                <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API URL<Br />
-                                                <i style="font-size:11px;">e.g. https://forcremationcom.freshbooks.com/api/2.1/xml-in</i>
+                                                <label  class="col-sm-2" for="freshbooks_api_url">Freshbooks API Domain<Br />
+                                                <i style="font-size:11px;font-weight:normal;">e.g. enter "forcremationcom" if your API url is https://<b>forcremationcom</b>.freshbooks.com/api/2.1/xml-in</i>
                                                 </label>
                                                 <div class="col-sm-10">
                                                     <input type="text" placeholder="API URL" name="provider[freshbooks_api_url]" id="freshbooks_api_url" class="form-control" value="{{ $provider->freshbooks_api_url }}">
