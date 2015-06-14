@@ -1331,6 +1331,7 @@ class ClientController extends BaseController {
         $provider = FProvider::find($provider_id);
         $client = Client::find($client_id);
         $client_user = User::find($client->user_id);
+        $clientData = ClientController::fillOutClientTables(Client::find($client_id));
 
 
         if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
@@ -1353,6 +1354,7 @@ class ClientController extends BaseController {
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb_client_info = array(
+                'organization' => $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name,
                 'first_name' => $client->first_name,
                 'last_name' => $client->last_name,
                 'email' => $client->User->email,
@@ -1553,7 +1555,6 @@ class ClientController extends BaseController {
         $client = Client::find($client_id);
         $clientData = ClientController::fillOutClientTables(Client::find($client_id));
         //$client_user = User::find($client->user_id);
-
 
         ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
         #$forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
