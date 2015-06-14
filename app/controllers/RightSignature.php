@@ -191,8 +191,8 @@ class RightSignature
                 curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: text/xml;charset=utf-8", "api-token: $this->secure_token"));
+                //"Content-Type: text/xml;charset=utf-8", 
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
 
 
             }
