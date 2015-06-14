@@ -174,7 +174,9 @@
                <?php
                if($client->fb_client_id  != ''){
                    $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-                   $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+                   $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+
+                   //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
                    echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showUser?userid='.$client->fb_client_id.'" target="_blank">View Client In Freshbooks</a>';
 
@@ -192,9 +194,10 @@
                 <?php
                 if($client->fb_invoice_id  != ''){
                     $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-                    $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+                    $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+                    //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
-                    echo '<br /><a class="pull-left" style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">View Invoice In Freshbooks</a>';
+                    echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">View Invoice In Freshbooks</a>';
 
                 }
                 ?>
