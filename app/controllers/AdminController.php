@@ -730,6 +730,8 @@ class AdminController extends BaseController {
 
         $clients->orderBy('created_at', 'desc');
         $clients = $clients->paginate($per_page);
+
+        $clients->setBaseUrl('provider_clients');
         foreach($clients as $client){
             $provider_id = Session::get('provider_id');
             if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();

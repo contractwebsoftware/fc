@@ -918,6 +918,7 @@
 
 
 
+
     <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
