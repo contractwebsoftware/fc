@@ -1643,4 +1643,22 @@ class ClientController extends BaseController {
         return $docs;
     }
 */
+    function getDownloadRightSignatureDoc($file_url=''){
+
+        #header('Content-Disposition: attachment; filename=' . urlencode($file_url));
+        #header('Content-Type: application/force-download');
+        #header('Content-Type: application/octet-stream');
+        #header('Content-Type: application/download');
+        #header('Content-Description: File Transfer');
+        #header('Content-Length: ' . filesize($file_url));
+        header('Content-type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $file_url . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
+
+        dd(file_get_contents($file_url));
+        #return file_get_contents($file_url);
+
+    }
+
 }

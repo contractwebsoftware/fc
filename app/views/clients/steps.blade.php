@@ -105,7 +105,7 @@
                         <td >{{ ucwords($signed_docs['state']) }}</td>
 
                         <td class="text-right">
-                            <a href="{{ urldecode($signed_docs['pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
+                            <a href="{{ action('ClientController@getDownloadRightSignatureDoc', $signed_docs['pdf-url'] ) }}" target="_blank" class="btn btn-xs btn-default">
                                 <span class="glyphicon glyphicon-list-alt"></span> &nbsp; View
                             </a>
                         </td>
