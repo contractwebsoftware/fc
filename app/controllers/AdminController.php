@@ -207,6 +207,7 @@ class AdminController extends BaseController {
         $data['pricing'] = ProviderPricingOptions::where('provider_id',$data['provider']->id)->first();
         $data['provider_files'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','not like','provider_logo')->where('file_type','not like','provider_slide_%')->get();
         $provider_homepage_files = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_logo')->orWhere('file_type','like','provider_slide_%')->get();
+
         $data['provider_logo'] = ProviderFiles::where('provider_id', $data['provider']->id)->where('file_type','like','provider_logo')->first();
         $data['provider_products'] = ProviderProducts::where('provider_id', $data['provider']->id)->get();
         if(count($data['provider_products'])<1)$data['provider_products'] = Products::get();
@@ -229,7 +230,7 @@ class AdminController extends BaseController {
             }
         }
         else $data['provider_homepage_files'] = array();
-        //echo '<pre>';dd($data);
+        echo '<pre>';dd($data);
         $data['clients'] = AdminController::getProviderCustomers($id);
         //dd($data['clients']);
 
