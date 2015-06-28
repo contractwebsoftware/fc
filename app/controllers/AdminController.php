@@ -1492,7 +1492,7 @@ class AdminController extends BaseController {
             foreach ($docs['documents']['document'] as $key => $doc) {
                 if(is_array($doc)) {
                     if (array_key_exists('tags', $doc)) {
-                        if(is_array($doc['tags'])){}$tags = $doc['tags'];
+                        if(is_array($doc['tags']))$tags = $doc['tags'];
                         else $tags = explode(',', $doc['tags']);
                         $cid = $doc_types = $doc_com = '';
                         foreach ($tags as $tag) {
