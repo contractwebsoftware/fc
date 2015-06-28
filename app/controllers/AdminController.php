@@ -230,7 +230,7 @@ class AdminController extends BaseController {
             }
         }
         else $data['provider_homepage_files'] = array();
-        echo '<pre>';dd($data);
+        //echo '<pre>';dd($data);
         $data['clients'] = AdminController::getProviderCustomers($id);
         //dd($data['clients']);
 
