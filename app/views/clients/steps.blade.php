@@ -472,7 +472,7 @@ $("#choose_provider").click(function(){
    <div class="col-sm-6"><input name="deceased_info[ssn]" type="text" placeholder="Social Security Number (SSN) - Optional" value="{{$client->DeceasedInfo->ssn}}"/></div>
    <div class="col-sm-6">
        <select name="deceased_info[gender]" class="form-control">
-           <option selected="selected" value="">Gender</option>
+           <option {{ ($client->DeceasedInfo->gender==""?'selected':'') }} value="">Gender</option>
            <option value="Male" {{ ($client->DeceasedInfo->gender=="Male"?'selected':'') }}>Male</option>
            <option value="Female" {{ ($client->CremainsInfo->gender=="Female"?'selected':'') }}>Female</option>
        </select>
