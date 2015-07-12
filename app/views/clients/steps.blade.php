@@ -474,7 +474,7 @@ $("#choose_provider").click(function(){
        <select name="deceased_info[gender]" class="form-control">
            <option {{ ($client->DeceasedInfo->gender==""?'selected':'') }} value="">Gender</option>
            <option value="Male" {{ ($client->DeceasedInfo->gender=="Male"?'selected':'') }}>Male</option>
-           <option value="Female" {{ ($client->CremainsInfo->gender=="Female"?'selected':'') }}>Female</option>
+           <option value="Female" {{ ($client->DeceasedInfo->gender=="Female"?'selected':'') }}>Female</option>
        </select>
    </div>
 </div>
