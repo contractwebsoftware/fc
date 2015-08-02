@@ -1589,9 +1589,9 @@ class ClientController extends BaseController {
 
             $doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
             $doc_data['doc_url'] = ($forms_url);
-            $doc_data['doc_to_sign_name'] = str_replace('&','and',$client->first_name.' '.$client->last_name);
+            $doc_data['doc_to_sign_name'] = str_replace('&','&amp;',$client->first_name.' '.$client->last_name);
             $doc_data['doc_to_sign_email'] = $client->User->email;
-            $doc_data['doc_cc_name'] = str_replace('&','and',$provider->business_name);
+            $doc_data['doc_cc_name'] = str_replace('&','&amp;',$provider->business_name);
             $doc_data['doc_cc_email'] = $provider->email;
             $doc_data['doc_action'] = $return_redirect_url ? 'redirect' : 'send'; //send or redirect
             $doc_data['doc_client_id'] = $client_id;
