@@ -194,8 +194,8 @@ class RightSignature
 
                 $headers = array(
                     "Content-type: text/xml",
-                    "Api-Version: 1.4",
-                    "api-token: ".$this->secure_token
+                    "Api-Version:1.4",
+                    "api-token:".$this->secure_token
                 );
 
                 curl_setopt($curl, CURLOPT_POST, 1);
