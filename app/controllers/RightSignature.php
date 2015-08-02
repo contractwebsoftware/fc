@@ -179,7 +179,7 @@ class RightSignature
         try {
             $curl = curl_init($url);
             #curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($crl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLINFO_HEADER_OUT, true);
             #curl_setopt($curl, CURLOPT_HEADER,true);
