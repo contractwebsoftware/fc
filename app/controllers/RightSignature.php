@@ -211,9 +211,25 @@ class RightSignature
                 #curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: ".$this->secure_token,"Content-Type:text/xml;charset=utf-8"));
+                $headers = array();
+                $headers[] = 'X-Apple-Tz: 0';
+                $headers[] = 'X-Apple-Store-Front: 143444,12';
+                $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+                $headers[] = 'Accept-Encoding: gzip, deflate';
+                $headers[] = 'Accept-Language: en-US,en;q=0.5';
+                $headers[] = 'Cache-Control: no-cache';
+                $headers[] = "Content-Type:text/xml;charset=utf-8";
+                $headers[] = 'Referer: http://www.example.com/index.php'; //Your referrer address
+                $headers[] = 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0';
+                $headers[] = 'X-MicrosoftAjax: Delta=true';
+                $headers[] = "api-token: ".$this->secure_token;
+
+
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+                #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: ".$this->secure_token,"Content-Type:text/xml;charset=utf-8"));
                 #dd(curl_getinfo($curl));
-                $curl["header_size"] = (int)$curl["header_size"]-1;
+                #$curl["header_size"] = (int)$curl["header_size"]-1;
             }
             else {
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
