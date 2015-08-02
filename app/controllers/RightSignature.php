@@ -180,6 +180,10 @@ class RightSignature
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+
+            curl_setopt($curl, CURLOPT_HEADER,false);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
             // Append 'api-token' to Headers
             #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
@@ -197,7 +201,7 @@ class RightSignature
                     "Connection: close"
                 );
                 #dd($headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                
                 curl_setopt($curl, CURLOPT_TIMEOUT, 10);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
@@ -208,10 +212,6 @@ class RightSignature
 
             }
             else {
-
-                curl_setopt($curl, CURLOPT_HEADER,false);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLINFO_HEADER_OUT, true);
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
             } // Set the headers.
 
@@ -222,7 +222,7 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            dd($data);
+            dd($in);
             #Return Redirect::back()->with('error', $data);
 
             #$information = curl_getinfo($curl);
