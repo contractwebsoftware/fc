@@ -225,7 +225,7 @@ class RightSignature
             $information = curl_getinfo($curl);
             echo '<pre>'.$in.'<br />'.$body;
             #dd($data);
-            dd($information);
+            #dd($information);
 
 
             if (FALSE === $data)
