@@ -9,8 +9,8 @@
 
 class RightSignature
 {
-    public $base_url = "https://rightsignature.com";
-    public $secure_base_url = "https://rightsignature.com";
+    public $base_url = "http://rightsignature.com";
+    public $secure_base_url = "http://rightsignature.com";
     #Consumer Key: pZ1pInLyDdEAzJkP2DATtIpd0kQI2uUNGpTug67g
     #oAuth Consumer Secret:	VjFf4DzpByqNzSt7d7pyUzGFIM0iaXYIHG1Cj6m2
 
