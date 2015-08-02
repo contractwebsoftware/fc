@@ -185,6 +185,7 @@ class RightSignature
             #curl_setopt($curl, CURLOPT_HEADER,true);
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
 
             // Append 'api-token' to Headers
             #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
@@ -198,23 +199,15 @@ class RightSignature
                 $headers = array(
                     "Content-type: text/xml",
                     "api-token: ".str_replace('\n','',str_replace('\r','',$this->secure_token)),
-                    "Content-length: " . strlen($body),
-                    "Connection: close"
+                    "Expect:"
                 );
-                #dd($headers);
 
                 #curl_setopt($curl, CURLOPT_TIMEOUT, 10);
                 curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-                #curl_setopt($curl, CURLOPT_CRLF, true);
-
-                $headers = array();
-                $headers[] = "api-token: ".$this->secure_token;
-                $headers[] = "Content-Type:text/xml;charset=utf-8";
-
 
                 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_HEADER,$headers);
+
 
                 #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: ".$this->secure_token,"Content-Type:text/xml;charset=utf-8"));
                 #dd(curl_getinfo($curl));
@@ -235,8 +228,8 @@ class RightSignature
             #Return Redirect::back()->with('error', $data);
 
             $information = curl_getinfo($curl);
-            echo '<pre>'.$in;
-            dd($information);
+            #echo '<pre>'.$in;
+            #dd($information);
 
 
             if (FALSE === $data)
