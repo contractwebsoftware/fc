@@ -196,8 +196,7 @@ class RightSignature
                 $headers = array(
                     "Content-type: text/xml",
                     "api-token: ".$this->secure_token,
-                    "Expect:",
-                    "Content-Length: ".strlen($body)-1
+                    "Expect:"
                 );
 
                 curl_setopt($curl, CURLOPT_POST, 1);
@@ -221,12 +220,12 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            dd($in);
+            #dd($in);
             #Return Redirect::back()->with('error', $data);
 
             $information = curl_getinfo($curl);
-            #echo '<pre>'.$in;
-            #dd($information);
+            echo '<pre>'.$in;
+            dd($information);
 
 
             if (FALSE === $data)
