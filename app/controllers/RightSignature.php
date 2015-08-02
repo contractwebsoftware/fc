@@ -205,7 +205,7 @@ class RightSignature
 
                 #curl_setopt($curl, CURLOPT_TIMEOUT, 10);
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+                #curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 #curl_setopt($curl, CURLOPT_CRLF, true);
 
                 #curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
