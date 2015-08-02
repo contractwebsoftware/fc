@@ -178,8 +178,8 @@ class RightSignature
         try {
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
-           # curl_setopt($curl, CURLOPT_HEADER, 0);
-            #curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLINFO_HEADER_OUT, true);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
@@ -202,8 +202,8 @@ class RightSignature
 
 
             $data = curl_exec($curl);
-            #$in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            #dd($in);
+            $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
+            dd($in);
             $information = curl_getinfo($curl);
             #echo '<pre>'.$in;
             #dd($information);
