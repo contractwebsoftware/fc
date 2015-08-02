@@ -185,7 +185,6 @@ class RightSignature
             #curl_setopt($curl, CURLOPT_HEADER,true);
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
 
             // Append 'api-token' to Headers
             #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
@@ -194,7 +193,7 @@ class RightSignature
 
 
                 $headers = array(
-                    "Content-type: text/xml",
+                    "Content-type: application/xml",
                     "api-token: ".$this->secure_token,
                     "Expect:"
                 );
