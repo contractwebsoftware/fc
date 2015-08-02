@@ -197,7 +197,7 @@ class RightSignature
                     "Content-length: " . strlen($body),
                     "Connection: close"
                 );
-
+                dd($headers);
                 curl_setopt($curl, CURLOPT_URL,$url);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($curl, CURLOPT_TIMEOUT, 10);
