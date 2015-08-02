@@ -225,6 +225,7 @@ class RightSignature
 
             $information = curl_getinfo($curl);
             echo '<pre>'.$in;
+            dd($data);
             dd($information);
 
 
