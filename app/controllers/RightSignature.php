@@ -223,9 +223,9 @@ class RightSignature
             #Return Redirect::back()->with('error', $data);
 
             $information = curl_getinfo($curl);
-            echo '<pre>'.$in;
-            dd($data);
-            dd($information);
+            #echo '<pre>'.$in;
+            #dd($data);
+            #dd($information);
 
 
             if (FALSE === $data)
