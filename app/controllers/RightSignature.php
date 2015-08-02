@@ -193,7 +193,7 @@ class RightSignature
 
 
                 $headers = array(
-                    "Content-type: application/xml",
+                    "Content-type: text/xml",
                     "api-token: ".$this->secure_token,
                     "Expect:"
                 );
