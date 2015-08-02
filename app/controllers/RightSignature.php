@@ -197,7 +197,7 @@ class RightSignature
                     "Content-type: text/xml",
                     "api-token: ".$this->secure_token,
                     "Expect:",
-                    "Content-Length: ".strlen($body)
+                    "Content-Length: ".strlen($body)-1
                 );
 
                 curl_setopt($curl, CURLOPT_POST, 1);
