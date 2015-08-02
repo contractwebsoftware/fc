@@ -205,27 +205,16 @@ class RightSignature
 
                 #curl_setopt($curl, CURLOPT_TIMEOUT, 10);
                 curl_setopt($curl, CURLOPT_POST, 1);
-                #curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 #curl_setopt($curl, CURLOPT_CRLF, true);
 
-                #curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-
                 $headers = array();
-                $headers[] = 'X-Apple-Tz: 0';
-                $headers[] = 'X-Apple-Store-Front: 143444,12';
-                $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
-                $headers[] = 'Accept-Encoding: gzip, deflate';
-                $headers[] = 'Accept-Language: en-US,en;q=0.5';
-                $headers[] = 'Cache-Control: no-cache';
+                $headers[] = "api-token: ".$this->secure_token;
                 $headers[] = "Content-Type:text/xml;charset=utf-8";
-                $headers[] = 'Referer: http://www.example.com/index.php'; //Your referrer address
-                $headers[] = 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0';
-                $headers[] = 'X-MicrosoftAjax: Delta=true';
-                #$headers[] = "api-token: ".$this->secure_token;
 
 
                 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($curl, CURLOPT_HEADER,$headers);
 
                 #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: ".$this->secure_token,"Content-Type:text/xml;charset=utf-8"));
                 #dd(curl_getinfo($curl));
@@ -242,7 +231,7 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            dd($in);
+            #dd($in);
             #Return Redirect::back()->with('error', $data);
 
             #$information = curl_getinfo($curl);
