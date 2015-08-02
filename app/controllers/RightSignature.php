@@ -184,17 +184,17 @@ class RightSignature
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
             // Append 'api-token' to Headers
-
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
 
             if ($body) {
                 curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: text/xml;charset=utf-8","api-token: ".$this->secure_token));
+                #curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: text/xml;charset=utf-8","api-token: ".$this->secure_token));
 
             }
-            else curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token")); // Set the headers.
+            #else curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token")); // Set the headers.
 
 
             if (FALSE === $curl)
@@ -203,7 +203,9 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            #dd($in);
+           # dd($in);
+            #Return Redirect::back()->with('error', $data);
+
             #$information = curl_getinfo($curl);
             #echo '<pre>'.$in;
             #dd($information);

@@ -1605,7 +1605,7 @@ class ClientController extends BaseController {
             #dd($doc_data);
             $data['right_docs'] = $rightsignature->sendDocuments($doc_data);
 
-            dd($data['right_docs']);
+            #dd($data['right_docs']);
         }
 
         if($return_redirect_url) {
@@ -1619,7 +1619,7 @@ class ClientController extends BaseController {
             }
             $data['right_docs'] = trim($data['right_docs']);
 
-            dd('https://rightsignature.com/builder/new?rt='.$data['right_docs']);
+           # dd('https://rightsignature.com/builder/new?rt='.$data['right_docs']);
             return Redirect::away("https://rightsignature.com/builder/new?rt=".$data['right_docs']);
         }
         else return Redirect::action('ClientController@getSteps', $data);
