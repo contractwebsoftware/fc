@@ -1539,7 +1539,6 @@ class ClientController extends BaseController {
 
     function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
     {
-        ob_start();
 
         $forms_included = $com = '';
 
@@ -1623,14 +1622,12 @@ class ClientController extends BaseController {
 
            # dd('https://rightsignature.com/builder/new?rt='.$data['right_docs']);
 
-            $output = ob_get_contents();
-            ob_end_clean();
+
             return Redirect::away("https://rightsignature.com/builder/new?rt=".$data['right_docs']);
         }
         else {
 
-            $output = ob_get_contents();
-            ob_end_clean();
+
             return Redirect::action('ClientController@getSteps', $data);
         }
 
