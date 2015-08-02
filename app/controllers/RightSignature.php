@@ -222,7 +222,7 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            #dd($in);
+            dd($data);
             #Return Redirect::back()->with('error', $data);
 
             #$information = curl_getinfo($curl);
