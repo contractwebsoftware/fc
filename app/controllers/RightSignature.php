@@ -204,13 +204,16 @@ class RightSignature
                 #dd($headers);
 
                 #curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+                #curl_setopt($curl, CURLOPT_CRLF, true);
+
                 #curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: ".$this->secure_token,"Content-Type:text/xml;charset=utf-8"));
-                dd(curl_getinfo($curl));
+                #dd(curl_getinfo($curl));
+                $curl['header_size'] = (int)$curl-1;
             }
             else {
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
