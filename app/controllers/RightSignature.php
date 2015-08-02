@@ -9,8 +9,8 @@
 
 class RightSignature
 {
-    public $base_url = "http://rightsignature.com";
-    public $secure_base_url = "http://rightsignature.com";
+    public $base_url = "https://rightsignature.com";
+    public $secure_base_url = "https://rightsignature.com";
     #Consumer Key: pZ1pInLyDdEAzJkP2DATtIpd0kQI2uUNGpTug67g
     #oAuth Consumer Secret:	VjFf4DzpByqNzSt7d7pyUzGFIM0iaXYIHG1Cj6m2
 
@@ -195,7 +195,8 @@ class RightSignature
                 $headers = array(
                     "Content-type: text/xml",
                     "Api-Version:1.4",
-                    "api-token:".$this->secure_token
+                    "api-token:".$this->secure_token,
+                    "Content-Length: 1000"
                 );
 
                 curl_setopt($curl, CURLOPT_POST, 1);
