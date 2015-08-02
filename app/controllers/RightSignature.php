@@ -191,18 +191,14 @@ class RightSignature
             #curl_setopt($curl, CURLOPT_HTTPHEADER, array("api-token: $this->secure_token"));
 
             if ($body) {
-                #curl_setopt($curl, CURLOPT_POST, 1);
-                #curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-                #curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 
 
                 $headers = array(
                     "Content-type: text/xml",
-                    "api-token: ".str_replace('\n','',str_replace('\r','',$this->secure_token)),
+                    "api-token: ".$this->secure_token,
                     "Expect:"
                 );
 
-                #curl_setopt($curl, CURLOPT_TIMEOUT, 10);
                 curl_setopt($curl, CURLOPT_POST, 1);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
 
@@ -224,7 +220,7 @@ class RightSignature
 
             $data = curl_exec($curl);
             $in = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-            #dd($in);
+            dd($in);
             #Return Redirect::back()->with('error', $data);
 
             $information = curl_getinfo($curl);
