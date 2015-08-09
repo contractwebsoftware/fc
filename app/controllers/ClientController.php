@@ -123,7 +123,11 @@ class ClientController extends BaseController {
                 $adminController = new AdminController();
                 $provider->signature_docs =  $adminController->getListProviderSignatureDocs('', $client->id);
 
-                #echo '<pre>';dd($provider->signature_docs);
+                if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+                    $client->fb_invoice = ClientController::postGetInvoiceItems($provider->id, $client->id);
+                }
+
+                #echo '<pre>';dd($client->fb_invoice['invoice']['lines']['line'] );
             }
             else Session::put('inAdminGroup','');
             
@@ -1098,6 +1102,7 @@ class ClientController extends BaseController {
 
         return ClientController::postCustomerDocuments($client_id, $provider_id, $download_forms);
     }
+    
     public function postCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
         if($client_id=='')$client_id = Input::get('client_id');
         if($provider_id=='')$provider_id = Input::get('provider_id');
@@ -1317,7 +1322,19 @@ class ClientController extends BaseController {
         return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');
     }
 
+    //GET THE FRESHBOOKS API
+    public function postFreshbooksApi($provider){
+        $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+        $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
+        /* FRESHBOOKS API */
+        $token = $provider->freshbooks_api_token; // your api token found in your account
+        $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
+        $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+
+        $fb = new Freshbooks\FreshBooksApi($domain, $token);
+        return $fb;
+    }
 
     //FRESHBOOKS BILLING INTEGRATION FOR A PROVIDERS CLIENTS
     public function postAddBillingClient($provider_id='', $client_id='', $return_client_id=false)
@@ -1340,16 +1357,8 @@ class ClientController extends BaseController {
             $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
             /* FRESHBOOKS API */
-            //$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            #$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
-            //Freshbooks\FreshBooksApi::init($domain, $token);
+            $fb = ClientController::postFreshbooksApi($provider);
 
-            $token = $provider->freshbooks_api_token; // your api token found in your account
-            $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
-            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
-
-
-            $fb = new Freshbooks\FreshBooksApi($domain, $token);
 
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
@@ -1394,6 +1403,9 @@ class ClientController extends BaseController {
                     $client->save();
                 }
 
+                ClientController::postInvoiceClient($provider_id, $client_id);
+
+
                 //freshbooks_client_id
                 //freshbooks_recurring_id
                 //return $fb_client_id;
@@ -1414,128 +1426,279 @@ class ClientController extends BaseController {
     }
 
 
-    function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=false)
-    {
-            if($client_id=='')$client_id = Input::get('client_id');
-            if($provider_id=='')$provider_id = Input::get('provider_id');
+function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=false)
+{
+    if($client_id=='')$client_id = Input::get('client_id');
+    if($provider_id=='')$provider_id = Input::get('provider_id');
 
-            if($client_id=='')$client_id = Session::get('client_id');
-            if($provider_id=='')$provider_id = Session::get('provider_id');
+    if($client_id=='')$client_id = Session::get('client_id');
+    if($provider_id=='')$provider_id = Session::get('provider_id');
 
-            $provider = FProvider::find($provider_id);
-            $provider = ClientController::updateProvider($provider_id);
+    $provider = FProvider::find($provider_id);
+    $provider = ClientController::updateProvider($provider_id);
 
-            $client = Client::find($client_id);
-            $clientData = ClientController::fillOutClientTables(Client::find($client_id));
-            //$client_user = User::find($client->user_id);
-
-
-            //$bill = Billing::first();
+    $client = Client::find($client_id);
+    $clientData = ClientController::fillOutClientTables(Client::find($client_id));
+    //$client_user = User::find($client->user_id);
 
 
-            if($client == null)return;
+    //$bill = Billing::first();
 
-            if($client->fb_client_id=='' || $client->fb_client_id=='0'){
-                $client->fb_client_id = ClientController::postAddBillingClient($provider_id, $client_id, true);
-                //$provider = FProvider::find($provider->id);
+
+    if($client == null)return;
+
+    if($client->fb_client_id=='' || $client->fb_client_id=='0'){
+        $client->fb_client_id = ClientController::postAddBillingClient($provider_id, $client_id, true);
+        //$provider = FProvider::find($provider->id);
+    }
+
+
+    if(!is_array($clientData->sale_summary_r['report']))$clientData->sale_summary_r = ClientController::getSaleTotals($clientData, $provider);
+
+    if(is_array($clientData->sale_summary_r['report'])){
+        $invoice['invoice']['client_id'] = $client->fb_client_id;
+        $invoice['invoice']['lines']['line'] = array();
+
+        foreach($clientData->sale_summary_r['report'] as $key=>$value){
+
+            array_push($invoice['invoice']['lines']['line'], array(
+                                    'name'=>$value['name'],
+                                    'description'=>$value['desc'],
+                                    'unit_cost'=>$value['price'],
+                                    'quantity'=>($value['qnt']==''?'1':$value['qnt']),
+                                    'tax1_name'=>'',
+                                    'tax2_name'=>'',
+                                    'tax1_percent'=>'',
+                                    'tax2_percent'=>''
+                                )
+
+
+            );
+
+        }
+        //$client->sale_summary_r['total']
+
+    }
+//echo '<pre>';dd($line_items_r);
+
+
+    if($client->fb_invoice_id=='0' || $client->fb_invoice_id=='')$create_new = true;
+    else $create_new = false;
+
+
+
+   //echo '<pre>';dd($invoice); // You can view what the XML looks like that we're about to send over the wire
+
+    $fb = ClientController::postFreshbooksApi($provider);
+
+
+
+    if($create_new)$fb->setMethod('invoice.create');
+        else {
+            $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
+            $fb->setMethod('invoice.update');
+        }
+
+
+        // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+        $fb->post( $invoice );
+
+
+
+
+
+        //echo '<pre>';dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+        $fb->request();
+
+        if($fb->success()) {
+            Session::flash('success','Successfully Created Freshbooks Invoice');
+            //dd($fb->getResponse());
+
+            $res = $fb->getResponse();
+            //dd($res);
+
+
+            if($create_new){
+                $invoice_id = $res['invoice_id'];
+                $client->fb_invoice_id = $invoice_id;
+                $client->save();
             }
 
+        } else {
+            //echo $fb->getError();
+            Session::flash('error','Errors Setting Freshbooks Recurring Entry, Has the Person or Invoice Been Deleted From Freshbooks?<br />'
+                . 'The Freshbook Integration Has been Reset for this client, the next time you change plans and save it will create a new setup in freshbooks for them. '
+                . 'Make sure to login to Freshbooks to double check everything is ok and no duplicates exist '.$fb->getError());
 
-            if(!is_array($clientData->sale_summary_r['report']))$clientData->sale_summary_r = ClientController::getSaleTotals($clientData, $provider);
+            $client->fb_client_id = '';
+            $client->fb_recurring_id = '';
+            $client->fb_invoice_id = '';
+            //echo '<pre>';dd($client);
+            $client->save();
+            //dd($fb->getResponse());
+        }
 
-            if(is_array($clientData->sale_summary_r['report'])){
-                $invoice['invoice']['client_id'] = $client->fb_client_id;
-                $invoice['invoice']['lines']['line'] = array();
+    if($return_invoice_id) return $client->fb_invoice_id;
+    else return Redirect::action('ClientController@getSteps');
 
-                foreach($clientData->sale_summary_r['report'] as $key=>$value){
-
-                    array_push($invoice['invoice']['lines']['line'], array(
-                                            'name'=>$value['name'],
-                                            'description'=>$value['desc'],
-                                            'unit_cost'=>$value['price'],
-                                            'quantity'=>($value['qnt']==''?'1':$value['qnt']),
-                                            'tax1_name'=>'',
-                                            'tax2_name'=>'',
-                                            'tax1_percent'=>'',
-                                            'tax2_percent'=>''
-                                        )
+}
 
 
-                    );
 
-                }
-                //$client->sale_summary_r['total']
 
+//FRESHBOOKS GET CLIENT INVOICE DETAILS
+public function postGetInvoiceItems($provider_id='', $client_id='')
+{
+    if($client_id=='')$client_id = Input::get('client_id');
+    if($provider_id=='')$provider_id = Input::get('provider_id');
+
+    if($client_id=='')$client_id = Session::get('client_id');
+    if($provider_id=='')$provider_id = Session::get('provider_id');
+
+    $provider = FProvider::find($provider_id);
+    $client = Client::find($client_id);
+    $client_user = User::find($client->user_id);
+    $clientData = ClientController::fillOutClientTables(Client::find($client_id));
+
+
+    if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+
+        $fb = ClientController::postFreshbooksApi($provider);
+
+
+        // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+        $fb_client_info = array(
+            'invoice_id' => $client->fb_invoice_id
+        );
+        $fb->setMethod('invoice.get');
+
+        $fb->post( $fb_client_info );
+
+        //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+        $fb->request();
+
+        if($fb->success()) {
+            #Session::flash('success','Successfully '.$type.' Freshbooks Invoice');
+           # echo '<pre>';dd($fb->getResponse());
+            $res = $fb->getResponse();
+            return $res;
+
+            //freshbooks_client_id
+            //freshbooks_recurring_id
+            //return $fb_client_id;
+        } else {
+            echo $fb->getError();
+            Session::flash('error','Errors Updating Freshbooks Invoice');
+
+            var_dump($fb->getResponse());
+        }
+    }
+
+}
+
+
+//FRESHBOOKS BILLING INTEGRATION FOR EDITING A CLIENTS INVOICE
+public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_client_id=false)
+{
+    if($client_id=='')$client_id = Input::get('client_id');
+    if($provider_id=='')$provider_id = Input::get('provider_id');
+
+    if($client_id=='')$client_id = Session::get('client_id');
+    if($provider_id=='')$provider_id = Session::get('provider_id');
+
+    $provider = FProvider::find($provider_id);
+    $client = Client::find($client_id);
+    $client_user = User::find($client->user_id);
+    $clientData = ClientController::fillOutClientTables(Client::find($client_id));
+
+
+
+    if($client->fb_invoice_id!='' ) {
+
+
+        $fb = ClientController::postFreshbooksApi($provider);
+
+        if(Input::get('send_invoice')!=''){
+
+            // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+            $fb_client_info = array(
+                'invoice_id' => $client->fb_invoice_id,
+                'subject' => Input::get('invoice_subject'),
+                'message' => Input::get('invoice_message')
+            );
+
+            $fb->setMethod('invoice.sendByEmail');
+            $fb->post($fb_client_info);
+
+            #dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+            $fb->request();
+            if ($fb->success()) {
+                Session::flash('success', 'Successfully Emailed Freshbooks Invoice');
+                #dd($fb->getResponse());
+                $res = $fb->getResponse();
+
+            } else {
+                #echo $fb->getError();
+                #dd($fb->getError());
+                Session::flash('error', 'Errors Emailing Freshbooks Invoice'.tostring($fb->getError()));
+                var_dump($fb->getResponse());
             }
-        //echo '<pre>';dd($line_items_r);
 
-
-            if($client->fb_invoice_id=='0' || $client->fb_invoice_id=='')$create_new = true;
-            else $create_new = false;
-
-
-
-       //echo '<pre>';dd($invoice); // You can view what the XML looks like that we're about to send over the wire
-
-            #$domain = 'forcremationcom'; // https://your-subdomain.freshbooks.com/
-            #$token = '95cad39d382f8bc4ae2d2a2a119e6559'; // your api token found in your account
-
-            $token = $provider->freshbooks_api_token; // your api token found in your account
-            $domain = $provider->freshbooks_api_url; // https://your-subdomain.freshbooks.com/
-            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
-            $fb = new Freshbooks\FreshBooksApi($domain, $token);
-
-
-            if($create_new)$fb->setMethod('invoice.create');
-            else {
-                $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
-                $fb->setMethod('invoice.update');
-            }
+        }
+        else {
 
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
-            $fb->post( $invoice );
+            $fb_client_info = array(
+                'organization' => $clientData->DeceasedInfo->first_name . ' ' . $clientData->DeceasedInfo->last_name,
+            );
 
+            if ($client->fb_client_id == '') {
+                $fb->setMethod('client.create');
+                $type = 'Created';
+            } else {
+                $fb->setMethod('client.update');
+                $fb_client_info['client_id'] = $client->fb_client_id;
+                $type = 'Updated';
+            }
 
+            $fb->post(array('client' => $fb_client_info));
 
-
-
-            //echo '<pre>';dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+            //dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
 
             $fb->request();
 
-            if($fb->success()) {
-                Session::flash('success','Successfully Created Freshbooks Invoice');
+            if ($fb->success()) {
+                Session::flash('success', 'Successfully ' . $type . ' Freshbooks Invoice');
                 //dd($fb->getResponse());
-
                 $res = $fb->getResponse();
-                //dd($res);
-
-
-                if($create_new){
-                    $invoice_id = $res['invoice_id'];
-                    $client->fb_invoice_id = $invoice_id;
+                if ($type == 'Created') {
+                    $fb_client_id = $res['client_id'];
+                    $client->fb_client_id = $fb_client_id;
                     $client->save();
                 }
 
+                //freshbooks_client_id
+                //freshbooks_recurring_id
+                //return $fb_client_id;
             } else {
-                //echo $fb->getError();
-                Session::flash('error','Errors Setting Freshbooks Recurring Entry, Has the Person or Invoice Been Deleted From Freshbooks?<br />'
-                    . 'The Freshbook Integration Has been Reset for this client, the next time you change plans and save it will create a new setup in freshbooks for them. '
-                    . 'Make sure to login to Freshbooks to double check everything is ok and no duplicates exist '.$fb->getError());
+                echo $fb->getError();
+                Session::flash('error', 'Errors Updating Freshbooks Invoice');
 
-                $client->fb_client_id = '';
-                $client->fb_recurring_id = '';
-                $client->fb_invoice_id = '';
-                //echo '<pre>';dd($client);
-                $client->save();
-                //dd($fb->getResponse());
+                var_dump($fb->getResponse());
             }
-
-        if($return_invoice_id) return $client->fb_invoice_id;
-        else return Redirect::action('ClientController@getSteps');
+        }
 
     }
+    else Session::flash('error', 'Please Enter All Provider Freshbooks Information');
+
+    if($return_client_id) return $client->fb_client_id;
+    else return Redirect::action('ClientController@getSteps');
+
+}
 
     function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
     {

@@ -168,7 +168,7 @@
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-               <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Update':'Create')?> Freshbooks Client</button>
+                    <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Recreate Invoice From Client Details':'Create Freshbooks Invoice')?></button>
                {{ Form::close() }}
 
                <?php
@@ -178,30 +178,14 @@
 
                    //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
-                   echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showUser?userid='.$client->fb_client_id.'" target="_blank">View Client In Freshbooks</a>';
+                  # echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showUser?userid='.$client->fb_client_id.'" target="_blank">View Client In Freshbooks</a>';
 
                }
                ?>
             @endif
         </div>
         <div class="col-md-3 " >
-            @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
-                {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
-                {{ Form::hidden('client_id',$client->id) }}
-                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update':'Create')?> Freshbooks Invoice</button>
-                {{ Form::close() }}
-                <?php
-                if($client->fb_invoice_id  != ''){
-                    $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-                    $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
-                    //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
-                    echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">View Invoice In Freshbooks</a>';
-
-                }
-                ?>
-            @endif
         </div>
         <div class="col-md-3 " >
            @if($provider->rightsignature_secret != '')
@@ -211,6 +195,133 @@
         </div>
 </div>
 <br />
+
+
+
+@if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+
+        <!--
+        {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
+        {{ Form::hidden('client_id',$client->id) }}
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+        <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update':'Create')?> Freshbooks Invoice</button>
+        {{ Form::close() }}
+        -->
+
+        <?php
+            /*
+        if($client->fb_invoice_id  != ''){
+            $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+            //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+
+            #echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">Edit Invoice In Freshbooks</a>';
+
+           # echo '<br /><a style="margin-left:15px;font-weight:bold;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice In Freshbooks</a>';
+
+
+        }
+
+        //LIST INVOICE ITEMS
+*/
+        ?>
+
+
+
+    @if(is_array($client->fb_invoice))
+
+        {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
+        {{ Form::hidden('client_id',$client->id) }}
+        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+        {{ Form::hidden('fb_client_id', $client->fb_client_id) }}
+        {{ Form::hidden('fb_invoice_id', $client->fb_invoice_id) }}
+
+        <fieldset>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ '<a style="font-weight:bold;float:right;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice In Freshbooks</a>';
+}}<h3>Client Invoice</h3>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th style="width:90px;">Name</th>
+                            <th>Description</th>
+                            <th style="width:90px;">Unit Cost</th>
+                            <th style="width:90px;">Quantity</th>
+                            <th style="width:140px;" class="text-right">Line Total</th>
+                        </tr>
+                        </thead>
+
+                            @foreach( $client->fb_invoice['invoice']['lines']['line'] as $key=> $item )
+                                <?php
+                                    if(is_array($item['description']))
+                                    $item['description'] = implode(' ',$item['description']);
+                                ?>
+                                <tr>
+                                    <td>{{$item['name']}}</td>
+                                    <td>{{$item['description']}}</td>
+                                    <td>${{$item['unit_cost']}}</td>
+                                    <td>{{$item['quantity']}}</td>
+                                    <td class="text-right">${{$item['amount']}}</td>
+                                </tr>
+
+                            @endforeach
+                        <tr>
+                            <td colspan="3" style="border-bottom:0px;"></td>
+                            <td ><b>Invoice Total</b></td>
+                            <td class="text-right" >${{$client->fb_invoice['invoice']['amount']}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border:none;"></td>
+                            <td><b>Paid To Date</b></td>
+                            <td class="text-right">${{$client->fb_invoice['invoice']['paid']}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border:none;"></td>
+                            <td><b>Balance</b></td>
+                            <td class="text-right">${{$client->fb_invoice['invoice']['amount_outstanding']}}</td>
+                        </tr>
+
+                    </table>
+
+                    <button class="pull-right" type="submit" name="save_invoice" value="submit">Save Invoice</button>
+
+                    <br />
+                    <hr>
+                    <b>Email Message</b><br /><br />
+                    <div style="margin-left:25px;">
+                        <label><b>To:</b></label> {{$client->User->email}}
+                        <!--<input type="text" name="email_to" value="{{$client->User->email}}" placeholder="Email To" />-->
+                        <input type="text" name="invoice_subject" placeholder="Email Subject" value="New invoice {{trim($client->fb_invoice['invoice']['invoice_id'],'0')}} from {{$provider->business_name}}, sent using QuikFiles" />
+                        <textarea name="invoice_message" type="text" placeholder="Email Message">To view your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}, or to download a PDF copy for your records, click the link below:
+                        </textarea>
+                        <?php
+                        $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+                        $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+                        ?>
+                        <br />
+
+                        {{$client->fb_invoice['invoice']['links']['client_view']}}<br /><br />
+
+                        Best regards,<br />
+                        {{$provider->business_name}} ({{$provider->email}})<br />
+                    </div>
+                    <hr>
+                    <button class="pull-right" type="submit" name="send_invoice" value="send">Send Invoice</button>
+                </div>
+            </div>
+
+        </fieldset>
+        {{ Form::close() }}
+    @endif
+
+
+@endif
+
+
+
+
 <div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
     {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
     {{ Form::hidden('client_id',$client->id) }}
