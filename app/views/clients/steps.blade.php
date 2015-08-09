@@ -163,7 +163,15 @@
         <div class="col-md-3" >
            <button class="pull-right" onclick="$('#choose_download_forms').slideToggle();return false;">Download Client Forms</button>
         </div>
-        <div class="col-md-3 " >
+
+        <div class="col-md-2" style="padding-left:18px;">
+            @if($provider->rightsignature_secret != '')
+                <button class="pull-left" onclick="$('#choose_sign_forms').slideToggle();return false;">Sign Forms</button>
+
+            @endif
+        </div>
+
+        <div class="col-md-4" style="padding-left:0px;" >
            @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
@@ -186,12 +194,6 @@
         </div>
         <div class="col-md-3 " >
 
-        </div>
-        <div class="col-md-3 " >
-           @if($provider->rightsignature_secret != '')
-                  <button class="pull-left" onclick="$('#choose_sign_forms').slideToggle();return false;">Sign Forms</button>
-
-           @endif
         </div>
 </div>
 <br />
