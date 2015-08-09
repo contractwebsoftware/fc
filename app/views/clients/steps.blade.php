@@ -168,7 +168,7 @@
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                    <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Recreate Invoice From Client Details':'Create Freshbooks Invoice')?></button>
+                    <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Recreate Invoice From Client Details':'Create Invoice')?></button>
                {{ Form::close() }}
 
                <?php
@@ -204,7 +204,7 @@
         {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-        <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update':'Create')?> Freshbooks Invoice</button>
+        <button class="pull-left" type="submit" name="submit" value="submit" style=""><?=($client->fb_invoice_id !=''?'Update':'Create')?> Invoice</button>
         {{ Form::close() }}
         -->
 
@@ -217,7 +217,7 @@
 
             #echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">Edit Invoice In Freshbooks</a>';
 
-           # echo '<br /><a style="margin-left:15px;font-weight:bold;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice In Freshbooks</a>';
+           # echo '<br /><a style="margin-left:15px;font-weight:bold;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice</a>';
 
 
         }
