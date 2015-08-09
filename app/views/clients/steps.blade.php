@@ -295,6 +295,10 @@
                         <!--<input type="text" name="email_to" value="{{$client->User->email}}" placeholder="Email To" />-->
                         <input type="text" name="invoice_subject" placeholder="Email Subject" value="New invoice {{trim($client->fb_invoice['invoice']['invoice_id'],'0')}} from {{$provider->business_name}}, sent using QuikFiles" />
                         <textarea name="invoice_message" type="text" placeholder="Email Message">To view your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}, or to download a PDF copy for your records, click the link below:
+
+{{$client->fb_invoice['invoice']['links']['client_view']}}
+
+or copy and paste the following URL into your browser: {{$client->fb_invoice['invoice']['links']['client_view']}}
                         </textarea>
                         <?php
                         $domain = str_replace('https://', '', $provider->freshbooks_api_url);
@@ -302,7 +306,6 @@
                         ?>
                         <br />
 
-                        {{$client->fb_invoice['invoice']['links']['client_view']}}<br /><br />
 
                         Best regards,<br />
                         {{$provider->business_name}} ({{$provider->email}})<br />
