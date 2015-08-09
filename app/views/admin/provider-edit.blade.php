@@ -922,7 +922,7 @@
     <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
-            {{ $clients->links() }}
+            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links() }}
             <fieldset>
             <table class="">
                 <thead>
@@ -975,10 +975,11 @@
                     @if(count($clients)<1)
                         <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br /></td></tr>
                     @endif
-            </tbody>
+                </tbody>
             </table>
             </fieldset>
-            {{ $clients->links() }}
+            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links() }}
+
             </div><!--/col-12-->
         </div><!--/row-->
     </div> <!-- /END Client info tab -->

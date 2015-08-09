@@ -199,7 +199,12 @@ class AdminController extends BaseController {
     {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
 
+        if(!is_numeric($id))$id = Input::get('id');
+
+        if($current_tab == '' || Input::get('current_tab')!='')$current_tab = Input::get('current_tab');
+
         $data['provider'] = FProvider::find($id);
+        #dd($id );
         $data['fuser'] = User::find($data['provider']->user_id);
         if($data['fuser'] == null) $data['fuser'] = new User;
         $data['zips'] = ProviderZip::where('provider_id',$data['provider']->id)->orderBy('zip')->get();

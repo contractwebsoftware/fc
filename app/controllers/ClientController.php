@@ -1102,7 +1102,7 @@ class ClientController extends BaseController {
 
         return ClientController::postCustomerDocuments($client_id, $provider_id, $download_forms);
     }
-    
+
     public function postCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
         if($client_id=='')$client_id = Input::get('client_id');
         if($provider_id=='')$provider_id = Input::get('provider_id');
