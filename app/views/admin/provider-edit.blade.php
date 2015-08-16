@@ -169,10 +169,18 @@
                                     <div class="row"  style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
 
                                         <div class="form-group" >
-                                            <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-5">
+                                                <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
                                                 <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }} />
                                             </div>
+                                            <div class="col-sm-5">
+                                                <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Use Default Freshbooks Account</b></label>
+
+                                                <input type="checkbox" name="provider_defaulted" id="freshbooks_clients_enabled" class="form-control" onclick="toggleDefaultProvider();" />
+                                            </div>
+
+
+
                                         </div>
 
                                         <div id='freshbooks_settings'>
@@ -1404,6 +1412,21 @@
         $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:390});
         $(".vimeo").colorbox({iframe:true, innerWidth:500, innerHeight:409});
     });
+
+    var toggle = true;
+    function toggleDefaultProvider(){
+        toggle = !toggle;
+
+        if(toggle){
+            $('#freshbooks_api_url').val("{{ $provider->freshbooks_api_url }}");
+            $('#freshbooks_api_token').val("{{ $provider->freshbooks_api_token }}");
+        }
+        else {
+            $('#freshbooks_api_url').val('forcremationcom-receivables');
+            $('#freshbooks_api_token').val('15f25aa1cbf50cc8701bd84c45b671f8');
+        }
+    }
+
 
 </script>
 
