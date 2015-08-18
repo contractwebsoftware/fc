@@ -257,15 +257,15 @@
 
                             @foreach( $client->fb_invoice['invoice']['lines']['line'] as $key=> $item )
                                 <?php
-                                    if(is_array($item['description']))
-                                    $item['description'] = implode(' ',$item['description']);
+                                    if(is_array($item['name']))$item['name'] = implode(' ',$item['name']);
+                                    if(is_array($item['description']))$item['description'] = implode(' ',$item['description']);
+                                    if(is_array($item['unit_cost']))$item['unit_cost'] = implode(' ',$item['unit_cost']);
+                                    if(is_array($item['quantity']))$item['quantity'] = implode(' ',$item['quantity']);
+                                    if(is_array($item['amount']))$item['amount'] = implode(' ',$item['amount']);
                                 ?>
                                 <tr>
                                     <td>{{$item['name']}}</td>
-                                    <td><?php
-                                        #is_array($item['description'])?var_dump($item['description']):$item['description']}}?>
-
-                                    </td>
+                                    <td>{{$item['description']}}</td>
                                     <td>${{$item['unit_cost']}}</td>
                                     <td>{{$item['quantity']}}</td>
                                     <td class="text-right">${{$item['amount']}}</td>
