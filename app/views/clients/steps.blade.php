@@ -264,7 +264,7 @@
                                     <td>{{$item['name']}}</td>
                                     <td><?php
                                         #is_array($item['description'])?var_dump($item['description']):$item['description']}}?>
-                                        
+
                                     </td>
                                     <td>${{$item['unit_cost']}}</td>
                                     <td>{{$item['quantity']}}</td>
