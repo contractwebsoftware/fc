@@ -226,12 +226,12 @@
 
         //LIST INVOICE ITEMS
 */
-        ?>
+    ?>
 
 
 
     @if(is_array($client->fb_invoice))
-
+    @if(is_array($client->fb_invoice['invoice']))
         {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -267,7 +267,6 @@
                                     <td>{{$item['quantity']}}</td>
                                     <td class="text-right">${{$item['amount']}}</td>
                                 </tr>
-
                             @endforeach
                         <tr>
                             <td colspan="3" style="border-bottom:0px;"></td>
@@ -320,7 +319,7 @@ or copy and paste the following URL into your browser: {{$client->fb_invoice['in
         </fieldset>
         {{ Form::close() }}
     @endif
-
+    @endif
 
 @endif
 
