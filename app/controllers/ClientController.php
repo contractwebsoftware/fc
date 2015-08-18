@@ -1562,7 +1562,7 @@ public function postGetInvoiceItems($provider_id='', $client_id='')
     $clientData = ClientController::fillOutClientTables(Client::find($client_id));
 
 
-    if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+    if($client->fb_invoice_id != '0' and $client->fb_invoice_id != '' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
 
         $fb = ClientController::postFreshbooksApi($provider);
 

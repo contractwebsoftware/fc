@@ -231,7 +231,7 @@
 
 
     @if(is_array($client->fb_invoice))
-    @if(is_array($client->fb_invoice['invoice']))
+    @if(is_array($client->fb_invoice['invoice']) && array_key_exists('invoice_id', $client->fb_invoice['invoice']) )
         {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -262,7 +262,7 @@
                                 ?>
                                 <tr>
                                     <td>{{$item['name']}}</td>
-                                    <td>{{$item['description']}}</td>
+                                    <td>{{is_array($item['description'])?var_dump($item['description']):$item['description']}}</td>
                                     <td>${{$item['unit_cost']}}</td>
                                     <td>{{$item['quantity']}}</td>
                                     <td class="text-right">${{$item['amount']}}</td>
