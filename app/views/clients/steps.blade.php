@@ -262,7 +262,10 @@
                                 ?>
                                 <tr>
                                     <td>{{$item['name']}}</td>
-                                    <td>{{is_array($item['description'])?var_dump($item['description']):$item['description']}}</td>
+                                    <td><?php
+                                        #is_array($item['description'])?var_dump($item['description']):$item['description']}}?>
+                                        
+                                    </td>
                                     <td>${{$item['unit_cost']}}</td>
                                     <td>{{$item['quantity']}}</td>
                                     <td class="text-right">${{$item['amount']}}</td>
