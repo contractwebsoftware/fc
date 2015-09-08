@@ -1364,7 +1364,7 @@ class ClientController extends BaseController {
             exec($command);
 
 
-            $new_pdf->addPDF(public_path('provider_files/'.$provider_id.'/'.$value), 'all');
+            $new_pdf->addPDF($new_pdf_loc, 'all');
         }
 
         $new_pdf->merge('browser', $doc_name);
