@@ -1111,6 +1111,7 @@ class ClientController extends BaseController {
     }
 
     public function postCustomerDocuments($client_id='', $provider_id='', $download_forms=''){
+        if($download_forms!='')$download_file = true;
         if($client_id=='')$client_id = Input::get('client_id');
         if($provider_id=='')$provider_id = Input::get('provider_id');
         
@@ -1367,7 +1368,8 @@ class ClientController extends BaseController {
             $new_pdf->addPDF($new_pdf_loc, 'all');
         }
 
-        $new_pdf->merge('browser', $doc_name);
+        if($download_file)$new_pdf->merge('file', $doc_name);
+        else $new_pdf->merge('browser', $doc_name);
 
 
         return $new_pdf;
