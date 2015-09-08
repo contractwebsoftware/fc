@@ -1350,8 +1350,7 @@ class ClientController extends BaseController {
 
 
         $download_provider_forms = Input::get('download_provider_forms');
-        if(!is_array($download_provider_forms))$download_provider_forms = array($download_provider_forms=>$download_provider_forms);
-
+        if(is_array($download_provider_forms))
         foreach($download_provider_forms as $key=>$value){
 
 
@@ -1780,6 +1779,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
         $pdf = ClientController::getCustomerDocuments();
         $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
         $forms_url = URL::to($form_path);
+        dd($pdf);
         File::put(public_path() .$form_path, file_get_contents($pdf) );
 
 
