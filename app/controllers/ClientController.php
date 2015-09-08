@@ -1358,7 +1358,7 @@ class ClientController extends BaseController {
 
            # $new_pdf->Output(public_path('provider_files/'.$provider_id.'/'.$value), 'D');
             $pdf_loc = public_path('provider_files\\'.$provider_id.'\\'.$value);
-            $new_pdf_loc = 'temp-'.$pdf_loc;
+            $new_pdf_loc = public_path('provider_files\\'.$provider_id.'\\temp-'.$value);
             $command = '"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o "'.$new_pdf_loc.'" "'.$pdf_loc.'"';
             #dd($command);
             exec($command);
