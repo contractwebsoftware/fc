@@ -1287,6 +1287,9 @@ $(function(){
 
 @if(Session::get('step')=="1-1")
     <script>window.location.href="#step1-1";</script>
+    <?php
+        Session::set('step','1');
+    ?>
 @endif
 
 @stop
