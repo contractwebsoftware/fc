@@ -1780,7 +1780,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
         $pdf = ClientController::getCustomerDocuments();
         $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
         $forms_url = URL::to($form_path);
-        dd($pdf);
+        #dd($pdf);
         File::put(public_path() .$form_path, file_get_contents($pdf) );
 
 
