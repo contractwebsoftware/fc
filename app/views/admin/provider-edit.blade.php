@@ -8,17 +8,21 @@
 
 
 
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
+    <!-- Nav tabs nav-stacked col-xs-2 -->
+    <ul class="nav nav-pills nav-stacked col-xs-2" role="tablist">
         <li class="{{$current_tab==''||$current_tab=='company_info'?'active':''}}"><a href="#company_info" role="tab" data-toggle="tab">Company Information</a></li>
-        <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Provider Home Page</a></li>
+        <li class="{{$current_tab=='client_links'?'active':''}}"><a href="#client_links" role="tab" data-toggle="tab">Home Page</a></li>
         <li class="{{$current_tab=='provider_files'?'active':''}}"><a href="#provider_files" role="tab" data-toggle="tab">Forms</a></li>
         @if(Sentry::getUser()->role=='admin')
           <li class="{{$current_tab=='provider_zips'?'active':''}}"><a href="#provider_zips" role="tab" data-toggle="tab">Provider Locations</a></li>
           <li class="{{$current_tab=='customer_document_forms'?'active':''}}"><a href="#customer_document_forms" role="tab" data-toggle="tab">Document Builder</a></li>
-          <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
-          <li class="{{$current_tab=='provider_signatures'?'active':''}}"><a href="#provider_signatures" role="tab" data-toggle="tab">Signed Documents</a></li>
         @endif
+
+        <li class="{{$current_tab=='provider_clients'?'active':''}}"><a href="#provider_clients" role="tab" data-toggle="tab">Clients</a></li>
+        @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+            <li class="{{$current_tab=='client_invoices'?'active':''}}"><a href="#client_invoices" role="tab" data-toggle="tab">Invoices</a></li>
+        @endif
+        <li class="{{$current_tab=='provider_signatures'?'active':''}}"><a href="#provider_signatures" role="tab" data-toggle="tab">Signed Documents</a></li>
         <li class="{{$current_tab=='provider_pricing'?'active':''}}"><a href="#provider_pricing" role="tab" data-toggle="tab">Pricing</a></li>
         <li class="{{$current_tab=='provider_urns'?'active':''}}"><a href="#provider_urns" role="tab" data-toggle="tab">Urns</a></li>
         <li class="{{$current_tab=='provider_help'?'active':''}}"><a href="#provider_help" role="tab" data-toggle="tab" style="color:green;">Help</a></li>
@@ -26,7 +30,7 @@
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
+    <div class="tab-content col-xs-10">
 
 
         <div class="tab-pane {{$current_tab==''||$current_tab=='company_info'?'active':''}}" id="company_info">
@@ -446,7 +450,8 @@
                                             'other2'=>'Other 2',
                                             'other3'=>'Other 3',
                                             'other4'=>'Other 4',
-                                            'other5'=>'Other 5');
+                                            'other5'=>'Other 5',
+                                            'client_printable'=>'Client Printable Documents (PDF)');
 
 
                     ?>
@@ -955,10 +960,12 @@
                                 <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
                                 <td >{{ $client->phone }}</td>
                                 <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
-                                <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+                                <td style="font-size:11px;">@if($client->user != null) {{ $client->user->email }} @endif</td>
                                 <td class="text-right" >
                                     <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"
-                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
+                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}
+                                    <br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}
+                                    <br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
                                     <?php
                                         switch($client->status){
                                             case 0:echo 'Active';break;
@@ -992,6 +999,90 @@
         </div><!--/row-->
     </div> <!-- /END Client info tab -->
 
+@if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+
+<div class="tab-pane {{$current_tab=='client_invoices'?'active':''}}" id="client_invoices" name="client_invoices">
+    <div class="row">
+        <div class="col-xs-12">
+            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
+            <fieldset>
+                <table class="">
+                    <thead>
+                    <tr>
+                        <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
+                        </th>-->
+                        <th>Customer Name</th>
+                        <th>Deceased Name</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Customer Email</th>
+
+                        <th class="text-right">Invoice Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach( $invoiced_clients as $client )
+                        <tr>
+                            <!--<td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>-->
+                            <td >{{ $client->first_name.' '.$client->last_name }}</td>
+                            <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
+                            <td >{{ $client->phone }}</td>
+                            <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
+                            <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
+                            <td class="text-right" >
+
+
+
+
+                                @if($client->fb_invoice_id  != '')
+                                    <?php
+                                    $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+                                    $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+                                    ?>
+
+                                        <a class="btn btn-xs btn-default pull-right" href="{{ action('AdminController@getEditClient',array($client->id, "1-1") ) }}" >
+                                            View
+                                        </a>
+
+                                        <!--
+                                        {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
+                                            {{ Form::hidden('client_id',$client->id) }}
+                                            {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+                                            {{ Form::hidden('fb_client_id', $client->fb_client_id) }}
+                                            {{ Form::hidden('fb_invoice_id', $client->fb_invoice_id) }}
+
+
+                                            <a class="btn btn-xs btn-default pull-right" href="{{ action('AdminController@getEditClient',$client->id) }}" target="_blank">
+                                                Send
+                                            </a>
+
+                                        {{ Form::close() }}
+
+                                    {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form','id'=>'create_invoice_form' ]) }}
+                                        {{ Form::hidden('client_id',$client->id) }}
+                                        {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+                                        <a class="btn btn-xs btn-default pull-right" href="{{ action('AdminController@getEditClient',$client->id) }}">Create</a>
+                                    {{ Form::close() }}
+                                    -->
+
+                                @endif
+
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if(count($clients)<1)
+                        <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br /></td></tr>
+                    @endif
+                    </tbody>
+                </table>
+            </fieldset>
+            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
+
+        </div><!--/col-12-->
+    </div><!--/row-->
+</div> <!-- /END Client info tab -->
+@endif
 
 
     <div class="tab-pane {{$current_tab=='provider_signatures'?'active':''}}" id="provider_signatures">

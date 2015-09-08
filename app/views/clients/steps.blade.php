@@ -159,7 +159,7 @@
 
 
 
-    <div class="row">
+    <div class="row"  id="step1-1">
         <div class="col-md-3" >
            <button class="pull-right" onclick="$('#choose_download_forms').slideToggle();return false;">Download Client Forms</button>
         </div>
@@ -199,6 +199,81 @@
 <br />
 
 
+<div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
+    {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
+    {{ Form::hidden('client_id',$client->id) }}
+    {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+    <b>Choose the documents you would like to combine and download</b><br />
+    <a href="#" onclick="downcheckall();return false;"><b>Select All</b></a><br />
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <b>Form Builder Documents</b><br />
+            <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
+            @foreach($doc_forms as $key=>$value)
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
+                        {{$value}}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="col-sm-6">
+            <b>Uploaded PDF Forms</b><br />
+            @if(is_object($provider->provider_files))
+                @foreach($provider->provider_files as $key=>$value)
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                            <input type="checkbox" class="download-forms-cb" name="download_provider_forms[provider_form_{{$value['id']}}]" id="download_provider_forms_{{$value['id']}}" value="{{$value['file_name']}}" />
+                            {{$value['file_name']}}
+                        </div>
+                    </div>
+                @endforeach
+
+            @endif
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Download</button><br class="clear" /></div>
+    </div>
+    {{ Form::close() }}
+</div>
+
+<div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_sign_forms" class="row form-group"><br />
+    {{ Form::open(['action'=>'ClientController@postSendFormSigning','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
+    {{ Form::hidden('client_id',$client->id) }}
+    {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+    {{ Form::hidden('return_redirect_url', true) }}
+    <script>
+        var downallchecked=true;
+        function downcheckall(){
+            $('.download-forms-cb').prop('checked', downallchecked);
+            downallchecked = !downallchecked;
+        }
+        var signallchecked=true;
+        function signcheckall(){
+            $('.sign-forms-cb').prop('checked', signallchecked);
+            signallchecked = !signallchecked;
+        }
+    </script>
+    <b>Combine and Send these documents for signing </b><br />
+    <a href="#" onclick="signcheckall();return false;"><b>Select All</b></a><br />
+    <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
+    @foreach($doc_forms as $key=>$value)
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <input type="checkbox" class="sign-forms-cb" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
+                {{$value}}
+            </div>
+        </div>
+    @endforeach
+    <div class="row form-group">
+        <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Send For Signing</button><br class="clear" /></div>
+    </div>
+    {{ Form::close() }}
+</div>
 
 @if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
 
@@ -238,7 +313,7 @@
         {{ Form::hidden('fb_client_id', $client->fb_client_id) }}
         {{ Form::hidden('fb_invoice_id', $client->fb_invoice_id) }}
 
-        <fieldset>
+        <fieldset id="client_invoices" name="client_invoices">
             <div class="row">
                 <div class="col-md-12">
                     {{ '<a style="font-weight:bold;float:right;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice In Freshbooks</a>';
@@ -329,60 +404,6 @@ or copy and paste the following URL into your browser: {{$client->fb_invoice['in
 
 
 
-<div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_download_forms" class="row form-group"><br />
-    {{ Form::open(['action'=>'ClientController@postCustomerDocuments','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
-    {{ Form::hidden('client_id',$client->id) }}
-    {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-    <b>Choose the documents you would like to combine and download</b><br />
-    <a href="#" onclick="downcheckall();return false;"><b>Select All</b></a><br />
-    <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
-    @foreach($doc_forms as $key=>$value)
-        <div class="row form-group">
-          <div class="col-sm-12">
-              <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
-              {{$value}}
-          </div>
-        </div>
-    @endforeach
-    <div class="row form-group">
-      <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Download</button><br class="clear" /></div>
-    </div>
-    {{ Form::close() }}
-</div>
-
-<div style="border:1px solid #eee;height:420px;padding-left:15px;display:none;width:100%;margin-left:25px;width:80%;margin-bottom:15px;font-size:12px;" id="choose_sign_forms" class="row form-group"><br />
-    {{ Form::open(['action'=>'ClientController@postSendFormSigning','class'=>'form-horizontal','role'=>'form','target'=>'_blank']) }}
-    {{ Form::hidden('client_id',$client->id) }}
-    {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-    {{ Form::hidden('return_redirect_url', true) }}
-    <script>
-        var downallchecked=true;
-        function downcheckall(){
-            $('.download-forms-cb').prop('checked', downallchecked);
-            downallchecked = !downallchecked;
-        }
-        var signallchecked=true;
-        function signcheckall(){
-            $('.sign-forms-cb').prop('checked', signallchecked);
-            signallchecked = !signallchecked;
-        }
-    </script>
-    <b>Combine and Send these documents for signing </b><br />
-    <a href="#" onclick="signcheckall();return false;"><b>Select All</b></a><br />
-    <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
-    @foreach($doc_forms as $key=>$value)
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <input type="checkbox" class="sign-forms-cb" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
-                {{$value}}
-            </div>
-        </div>
-    @endforeach
-    <div class="row form-group">
-        <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Send For Signing</button><br class="clear" /></div>
-    </div>
-    {{ Form::close() }}
-</div>
 
 <script>
 $().ready(function(){
@@ -569,6 +590,8 @@ $("#choose_provider").click(function(){
 {{ Form::close() }}
 
 @endif
+
+
 
 @if(Session::get('step')==2 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
@@ -1262,5 +1285,8 @@ $(function(){
 
 </div>
 
+@if(Session::get('step')=="1-1")
+    <script>window.location.href="#step1-1";</script>
+@endif
 
 @stop

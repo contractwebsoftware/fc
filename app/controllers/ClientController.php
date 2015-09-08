@@ -127,6 +127,13 @@ class ClientController extends BaseController {
                     $client->fb_invoice = ClientController::postGetInvoiceItems($provider->id, $client->id);
                 }
 
+                $provider->provider_files = ProviderFiles::where('provider_id', $provider->id)
+                                                        ->where('file_type','not like','provider_logo')
+                                                        ->where('file_type','not like','provider_slide_%')
+                                                        ->where('file_name','like','%.pdf')
+                                                        ->get();
+
+#dd($provider->provider_files);
                 #echo '<pre>';dd($client->fb_invoice['invoice']['lines']['line'] );
             }
             else Session::put('inAdminGroup','');
@@ -1114,7 +1121,9 @@ class ClientController extends BaseController {
         if(Input::get('download_forms')!=null)$download_forms = Input::get('download_forms');        
         if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
         if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
-           
+
+
+
         $client = Client::find($client_id);
         $client = ClientController::fillOutClientTables($client);
         //$provider = FProvider::find($provider_id);
@@ -1316,10 +1325,48 @@ class ClientController extends BaseController {
         //echo '<pre>';dd($html);
         //download_forms
         //
-        //<p><!-- pagebreak --></p> 
+        //<p><!-- pagebreak --></p>
+
+        $doc_name = 'CremationDocuments'.date('Y-m-d').'.pdf';
+        $doc_location = public_path('provider_files/'.$provider_id.'/'.$doc_name);
+/*
         $pdf = App::make('dompdf');
         $pdf->loadHTML($html);
-        return $pdf->stream('CremationDocuments'.date('Y-m-d').'.pdf');
+        return $pdf->stream($doc_name);
+*/
+
+
+        $pdf = App::make('dompdf');
+        //$pdf = new DOMPDF();
+        $pdf->loadHTML($html);
+        //$pdf->save($doc_location);
+        $pdf->save($doc_location);
+
+        $new_pdf = new \Clegginabox\PDFMerger\PDFMerger;
+        $new_pdf->addPDF($doc_location, 'all');
+        #$new_pdf = new TCPDI(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        #$new_pdf->addPDF($doc_location, 'all');
+
+
+        $download_provider_forms = Input::get('download_provider_forms');
+        if(!is_array($download_provider_forms))$download_provider_forms = array($download_provider_forms=>$download_provider_forms);
+
+        foreach($download_provider_forms as $key=>$value){
+
+
+            #$new_pdf->setSourceFile(public_path('provider_files/'.$provider_id.'/'.$value));
+
+           # $new_pdf->Output(public_path('provider_files/'.$provider_id.'/'.$value), 'D');
+            exec('"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o '.public_path('provider_files/'.$provider_id.'/'.$value).' '.public_path('provider_files/'.$provider_id.'/'.$value).'');
+
+            $new_pdf->addPDF(public_path('provider_files/'.$provider_id.'/'.$value), 'all');
+        }
+
+        $new_pdf->merge('browser', $doc_name);
+
+
+        return $new_pdf;
+
     }
 
     //GET THE FRESHBOOKS API

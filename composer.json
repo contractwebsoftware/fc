@@ -8,7 +8,10 @@
 		"cartalyst/sentry": "2.1.*",
 		"way/generators": "1.1",
 		"barryvdh/laravel-dompdf": "*",
-		"rtconner/freshbooks-api": "dev-master"
+		"rtconner/freshbooks-api": "dev-master",
+	 	"itbz/fpdi": "dev-master",
+	 	"clegginabox/pdf-merger": "dev-master",
+		"propa/tcpdi": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

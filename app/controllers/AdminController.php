@@ -241,6 +241,8 @@ class AdminController extends BaseController {
         else $data['provider_homepage_files'] = array();
         //echo '<pre>';dd($data);
         $data['clients'] = AdminController::getProviderCustomers($id);
+        $data['invoiced_clients'] = AdminController::getProviderCustomers($id, true);
+
         //dd($data['clients']);
 
         $this->layout->content = View::make('admin.provider-edit',$data);
@@ -724,7 +726,7 @@ class AdminController extends BaseController {
                 echo 'Group was not found.';
             }
     }
-    public function getProviderCustomers($provider_id)
+    public function getProviderCustomers($provider_id, $invoiced_only=false)
     {
         Session::put('client_providers_id',$provider_id);
         $per_page = 50;
@@ -737,6 +739,8 @@ class AdminController extends BaseController {
                       ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
                 //dd("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
             });
+
+        if($invoiced_only)$clients->whereRaw("clients.fb_invoice_id !=''");
 
         $clients->orderBy('created_at', 'desc');
         $clients = $clients->paginate($per_page);
@@ -853,11 +857,11 @@ class AdminController extends BaseController {
     }
 
 
-    public function getEditClient($id)
+    public function getEditClient($id, $goto_section='')
     {
         Session::put('client_id',$id);
 
-        return Redirect::action('ClientController@getSteps');
+        return Redirect::action('ClientController@getSteps',$goto_section);
 
     }
 
