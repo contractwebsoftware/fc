@@ -1368,7 +1368,7 @@ class ClientController extends BaseController {
             $new_pdf->addPDF($new_pdf_loc, 'all');
         }
 
-        if($download_file)$new_pdf->merge('file', $doc_name);
+        if($download_file)$new_pdf->merge('download', $doc_name);
         else $new_pdf->merge('browser', $doc_name);
 
 
