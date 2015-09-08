@@ -1357,7 +1357,8 @@ class ClientController extends BaseController {
             #$new_pdf->setSourceFile(public_path('provider_files/'.$provider_id.'/'.$value));
 
            # $new_pdf->Output(public_path('provider_files/'.$provider_id.'/'.$value), 'D');
-            exec('"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o '.public_path('provider_files/'.$provider_id.'/'.$value).' '.public_path('provider_files/'.$provider_id.'/'.$value).'');
+            exec('"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o "'.public_path('provider_files/'.$provider_id.'/'.$value).'" "'.public_path('provider_files/'.$provider_id.'/'.$value).'"');
+
 
             $new_pdf->addPDF(public_path('provider_files/'.$provider_id.'/'.$value), 'all');
         }
