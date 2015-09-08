@@ -1329,7 +1329,7 @@ class ClientController extends BaseController {
         //<p><!-- pagebreak --></p>
 
         $doc_name = 'CremationDocuments'.date('Y-m-d').'.pdf';
-        $doc_location = public_path('provider_files/'.$provider_id.'/'.$doc_name);
+        $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
 /*
         $pdf = App::make('dompdf');
         $pdf->loadHTML($html);
@@ -1367,7 +1367,7 @@ class ClientController extends BaseController {
         }
 
         if($download_file){
-             $new_pdf->merge('file', $doc_name);
+             $new_pdf->merge('file', $doc_location);
              return $doc_location;
         }
         else $new_pdf->merge('browser', $doc_name);
