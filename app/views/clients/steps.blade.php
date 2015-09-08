@@ -261,14 +261,36 @@
     <b>Combine and Send these documents for signing </b><br />
     <a href="#" onclick="signcheckall();return false;"><b>Select All</b></a><br />
     <?php $doc_forms = ProviderController::getDocumentTypes(); ?>
-    @foreach($doc_forms as $key=>$value)
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <input type="checkbox" class="sign-forms-cb" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
-                {{$value}}
-            </div>
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <b>Form Builder Documents</b><br />
+            @foreach($doc_forms as $key=>$value)
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <input type="checkbox" class="sign-forms-cb" name="download_forms[customer_form_{{$key}}]" id="sign_forms_{{$key}}" value="{{$value}}" />
+                        {{$value}}
+                    </div>
+                </div>
+            @endforeach
         </div>
-    @endforeach
+
+        <div class="col-sm-6">
+            <b>Uploaded PDF Forms</b><br />
+            @if(is_object($provider->provider_files))
+                @foreach($provider->provider_files as $key=>$value)
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                            <input type="checkbox" class="download-forms-cb" name="download_provider_forms[provider_form_{{$value['id']}}]" id="download_provider_forms_{{$value['id']}}" value="{{$value['file_name']}}" />
+                            {{$value['file_name']}}
+                        </div>
+                    </div>
+                @endforeach
+
+            @endif
+        </div>
+    </div>
+
     <div class="row form-group">
         <div class="col-sm-12 "><button type="submit" name="submit" id="submit" value="submit" class="step_submit pull-left" >Send For Signing</button><br class="clear" /></div>
     </div>
