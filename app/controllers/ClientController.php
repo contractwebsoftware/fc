@@ -1364,13 +1364,13 @@ class ClientController extends BaseController {
             #dd($command);
             exec($command);
 
-
             $new_pdf->addPDF($new_pdf_loc, 'all');
         }
+        $new_pdf->merge('browser', $doc_name);
 
-        if($download_file)$new_pdf->merge('download', $doc_name);
-        else $new_pdf->merge('browser', $doc_name);
-
+        if($download_file){
+             return $doc_name;
+        }
 
         return $new_pdf;
 
@@ -1780,7 +1780,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
         $pdf = ClientController::getCustomerDocuments();
         $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
         $forms_url = URL::to($form_path);
-        File::put(public_path() .$form_path, $pdf);
+        File::put(public_path() .$form_path, file_get_contents($pdf) );
 
 
 
