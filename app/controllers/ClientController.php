@@ -1336,15 +1336,17 @@ class ClientController extends BaseController {
         return $pdf->stream($doc_name);
 */
 
-
         $pdf = App::make('dompdf');
         //$pdf = new DOMPDF();
         $pdf->loadHTML($html);
         //$pdf->save($doc_location);
         $pdf->save($doc_location);
 
+
         $new_pdf = new \Clegginabox\PDFMerger\PDFMerger;
         $new_pdf->addPDF($doc_location, 'all');
+
+
         #$new_pdf = new TCPDI(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         #$new_pdf->addPDF($doc_location, 'all');
 

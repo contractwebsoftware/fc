@@ -208,10 +208,10 @@
                                             <div class="form-group" >
                                                 <label  class="col-sm-2" for="freshbooks_clients_people">Allow Creation of Freshbooks People</label>
                                                 <div class="col-sm-10">
-                                                    <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
+                                                    <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" onclick="$('#freshbooks_clients_invoice').prop('checked', $(this).prop('checked'))" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
                                                 </div>
                                             </div>
-                                            <div class="form-group" >
+                                            <div class="form-group" style="display:none;">
                                                 <label  class="col-sm-2" for="freshbooks_clients_invoice">Allow Creation of Freshbooks Invoices</label>
                                                 <div class="col-sm-10">
                                                     <input type="checkbox" name="provider[freshbooks_clients_invoice]" id="freshbooks_clients_invoice" class="form-control" value="1" {{ ($provider->freshbooks_clients_invoice=='1'?'checked=checked':'') }} />
@@ -930,38 +930,54 @@
     </div> <!-- /END zip info tab -->
 
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.js"></script>
+<style>
+    div.container {
+        width: 80%;
+    }
+    #provider_clients_table{ table-layout: auto!important; }
+</style>
+<!--
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/1.0.0/css/dataTables.responsive.css">
+-->
+<script>
+    $(document).ready(function(){
+        $('#provider_clients_table')
+                .DataTable( {
+                    "pagingType": "full_numbers",
+                    "pageLength": 25
+                } );
 
-
+    });
+</script>
     <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
             {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links() }}
-            <fieldset>
-            <table class="">
+
+            <table class="display" cellspacing="0" width="100%" id="provider_clients_table">
                 <thead>
                     <tr>
-                        <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
-                            <label for="checkallcb" style="cursor:pointer;">Check All</label>
-                        </th>-->
                         <th>Customer Name</th>
                         <th>Deceased Name</th>
                         <th>Phone</th>
                         <th>Date</th>
                         <th>Customer Email</th>
-                        <th class="text-right">Status</th>
-                        <th class="text-right">Actions</th>
+                        <th >Status</th>
+                        <th >Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach( $clients as $client )
                         <tr>
-                                <!--<td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>-->
                                 <td >{{ $client->first_name.' '.$client->last_name }}</td>
                                 <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
                                 <td >{{ $client->phone }}</td>
                                 <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
                                 <td style="font-size:11px;">@if($client->user != null) {{ $client->user->email }} @endif</td>
-                                <td class="text-right" >
+                                <td  >
                                     <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"
                             title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}
                                     <br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}
@@ -976,7 +992,7 @@
                                     ?>
                                     </div>
                                 </td>
-                                <td class="text-right">
+                                <td >
                                     <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                     </a>&nbsp;
@@ -987,12 +1003,13 @@
                                 </td>
                         </tr>
                     @endforeach
-                    @if(count($clients)<1)
-                        <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br /></td></tr>
-                    @endif
+
                 </tbody>
             </table>
-            </fieldset>
+                @if(count($clients)<1)
+                    <br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br />
+                @endif
+
             {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links() }}
 
             </div><!--/col-12-->

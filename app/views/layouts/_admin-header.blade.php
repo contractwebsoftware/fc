@@ -3,8 +3,8 @@
    
     <div class="float-right" style="position: absolute;right: 50px;top: 20px;">
         <a href="https://drive.google.com/?tab=mo" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/google-drive.png"> Google Drive</a> &nbsp;
-        <a href="https://rightsignature.com" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/right.png"> Right Signature</a> &nbsp;
-        <a href="https://secure.freshbooks.com/loginsearch" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/leaf.png"> Freshbooks</a>
+        <!--<a href="https://rightsignature.com" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/right.png"> Right Signature</a> &nbsp;
+        <a href="https://secure.freshbooks.com/loginsearch" target="_blank" style="text-decoration:none;"><img height="24" width="24" src="http://www.forcremation.com/images/leaf.png"> Freshbooks</a>-->
     </div>
     <ul class="nav nav-pills">
             <li class="{{(strpos(Request::path(),'admin/customers')!==false || strpos(Request::path(),'clients/steps')!==false?'active':'')}}"><a href="{{ action('AdminController@getCustomers') }}">Clients</a></li>
