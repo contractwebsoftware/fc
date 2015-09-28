@@ -936,7 +936,7 @@
     div.container {
         width: 80%;
     }
-    #provider_clients_table{ table-layout: auto!important; }
+    #provider_clients_table,#provider_clients_invoice_table,#provider_clients_signed_table{ table-layout: auto!important; }
 </style>
 <!--
 <script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.min.js"></script>
@@ -945,6 +945,16 @@
 <script>
     $(document).ready(function(){
         $('#provider_clients_table')
+                .DataTable( {
+                    "pagingType": "full_numbers",
+                    "pageLength": 25
+                } );
+        $('#provider_clients_invoice_table')
+                .DataTable( {
+                    "pagingType": "full_numbers",
+                    "pageLength": 25
+                } );
+        $('#provider_clients_signed_table')
                 .DataTable( {
                     "pagingType": "full_numbers",
                     "pageLength": 25
@@ -1023,7 +1033,7 @@
         <div class="col-xs-12">
             {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
             <fieldset>
-                <table class="">
+                <table class="display" cellspacing="0" width="100%" id="provider_clients_invoice_table">
                     <thead>
                     <tr>
                         <!--<th><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
@@ -1035,7 +1045,7 @@
                         <th>Date</th>
                         <th>Customer Email</th>
 
-                        <th class="text-right">Invoice Action</th>
+                        <th>Invoice Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1047,7 +1057,7 @@
                             <td >{{ $client->phone }}</td>
                             <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
                             <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
-                            <td class="text-right" >
+                            <td >
 
 
 
@@ -1088,11 +1098,12 @@
                             </td>
                         </tr>
                     @endforeach
-                    @if(count($clients)<1)
-                        <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br /></td></tr>
-                    @endif
+
                     </tbody>
                 </table>
+                @if(count($clients)<1)
+                    <br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br />
+                @endif
             </fieldset>
             {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
 
@@ -1107,16 +1118,16 @@
             <div class="col-xs-12">
 
                 <fieldset>
-                    <table class="">
+                    <table  class="display" cellspacing="0" width="100%" id="provider_clients_signed_table">
                         <thead>
                         <tr>
-                            <th style="width:90px;">Date</th>
+                            <th>Date</th>
                             <th>Forms Sent</th>
                             <th>Client</th>
                             <th>Status</th>
-                            <th class="text-right">Original Document</th>
-                            <th class="text-right">Signed Document</th>
-                            <th class="text-right">History</th>
+                            <th >Original Document</th>
+                            <th >Signed Document</th>
+                            <th >History</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1133,30 +1144,30 @@
 
                                 <td >{{ ucwords($signed_docs['state']) }}</td>
 
-                                <td class="text-right">
+                                <td >
                                     <a href="{{ urldecode($signed_docs['pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
                                         <span class="glyphicon glyphicon-list-alt"></span> &nbsp; View
                                     </a>
                                 </td>
-                                <td class="text-right">
+                                <td >
                                     @if($signed_docs['signed-pdf-url'] != '')
                                     <a href="{{ urldecode($signed_docs['signed-pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
                                         <span class="glyphicon glyphicon-pencil"></span> &nbsp; View
                                     </a>
                                     @endif
                                 </td>
-                                <td class="text-right">
+                                <td >
                                     <a href="#" onclick="getSignedDoc('{{$signed_docs['guid'] }}')" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myModal">
                                         <span class="glyphicon glyphicon-search"></span> &nbsp; History
                                     </a>
                                 </td>
                             </tr>
                         @endforeach
-                        @if(count($signature_docs['documents']['document'])<1)
-                            <tr><td colspan="7"><br /><center><b><i style="color:green;">Your clients' documents will appear here when they are sent</i></b></center><br /></td></tr>
-                        @endif
                         </tbody>
                     </table>
+                    @if(count($signature_docs['documents']['document'])<1)
+                        <br /><center><b><i style="color:green;">Your clients' documents will appear here when they are sent</i></b></center><br />
+                    @endif
                 </fieldset>
 
                 <!-- Modal -->
