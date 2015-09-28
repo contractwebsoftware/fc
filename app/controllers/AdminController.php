@@ -729,7 +729,7 @@ class AdminController extends BaseController {
     public function getProviderCustomers($provider_id, $invoiced_only=false)
     {
         Session::put('client_providers_id',$provider_id);
-        $per_page = 50;
+        $per_page = 1000;
         $clients = Client::with('user');
         $clients->whereExists(function($query)
             {
@@ -744,8 +744,10 @@ class AdminController extends BaseController {
 
         $clients->orderBy('created_at', 'desc');
         $clients = $clients->paginate($per_page);
-
         $clients->setBaseUrl('provider_clients');
+
+        //$clients = $clients->get();
+
         foreach($clients as $client){
             $provider_id = Session::get('provider_id');
             if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
