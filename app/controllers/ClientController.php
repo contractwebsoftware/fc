@@ -1331,11 +1331,14 @@ class ClientController extends BaseController {
 
         $doc_name = 'CremationDocuments'.date('Y-m-d').'.pdf';
         $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
-/*
-        #$pdf = App::make('dompdf');
-        #$pdf->loadHTML($html);
-        #return $pdf->stream($doc_name);
-*/
+
+        #dd('test'.$getPreview);
+        if($getPreview) {
+
+            $pdf = App::make('dompdf');
+            $pdf->loadHTML($html);
+            return $pdf->stream($doc_name);
+        }
 
         $pdf = App::make('dompdf');
         //$pdf = new DOMPDF();

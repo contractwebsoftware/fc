@@ -537,7 +537,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Update</button>
                         </div>
                         <div class="col-xs-4">
-                            <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id,$this_form) ) }}">Preview Example</a>
+                            <a class="btn btn-success btn-block" id="download_forms" target="_blank" href="{{ action('ClientController@getCustomerDocuments',array(1,$provider->id,$this_form,1) ) }}">Preview Example</a>
                         </div>
                     </div>
 
