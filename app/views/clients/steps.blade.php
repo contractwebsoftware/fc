@@ -17,7 +17,13 @@
     </script>
 @endif
 
+<?php
+$save_button = 'Continue';
+?>
 @if(Session::get('inAdminGroup') && $client->id!='')
+    <?php
+        $save_button = 'Save';
+    ?>
     <div class="row">
         <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 
     </div>
@@ -176,7 +182,9 @@
                {{ Form::open(['action'=>'ClientController@postAddBillingClient','class'=>'form-horizontal','role'=>'form']) }}
                {{ Form::hidden('client_id',$client->id) }}
                {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-                    <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Recreate Invoice From Client Details':'Create Invoice')?></button>
+               {{ Form::hidden('create_invoice', 'y') }}
+
+                <button class="pull-left" type="submit" name="submit" value="submit"><?=($client->fb_client_id !=''?'Refresh Invoice from Current Client Details':'Create Invoice')?></button>
                {{ Form::close() }}
 
                <?php
@@ -303,7 +311,7 @@
     </div>
 </div>
 
-@if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+@if($client->fb_client_id !='' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
 <div class="row">
 
     <div class="col-md-12">
@@ -337,18 +345,23 @@
 
     @if(is_array($client->fb_invoice))
     @if(is_array($client->fb_invoice['invoice']) && array_key_exists('invoice_id', $client->fb_invoice['invoice']) )
-        {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
+        {{ Form::open(['action'=>'ClientController@postInvoiceClient','class'=>'form-horizontal','role'=>'form']) }}
         {{ Form::hidden('client_id',$client->id) }}
         {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
         {{ Form::hidden('fb_client_id', $client->fb_client_id) }}
         {{ Form::hidden('fb_invoice_id', $client->fb_invoice_id) }}
 
-        <fieldset id="client_invoices" name="client_invoices">
+
+        {{ Form::hidden('do_custom_invoice', 'y') }}
+
+
+
+        <fieldset id="client_invoices" name="client_invoices" style="background-color: #fff;">
             <div class="row">
                 <div class="col-md-12">
-                    {{ '<a style="font-weight:bold;float:right;" href="'.$client->fb_invoice['invoice']['links']['edit'].'" target="_blank">Edit Invoice In Freshbooks</a>';
-}}<h3>Client Invoice</h3>
-
+                    <a style="font-weight:bold;float:right;" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">Edit Invoice In Freshbooks</a>
+<h3>QukiFiles Invoice</h3>
+                    <!--
                     <table>
                         <thead>
                         <tr>
@@ -393,34 +406,217 @@
                         </tr>
 
                     </table>
+                    -->
 
+
+
+
+
+                    <script type='text/javascript' src='{{ asset('js/invoice.js') }}'></script>
+
+
+                    <div id="invoice-page-wrap">
+                        <!--   MAKE INVOICE  -->
+                        <link rel='stylesheet' type='text/css' href='{{ asset('css/invoice-style.css') }}' />
+                        <link rel='stylesheet' type='text/css' href='{{ asset('css/invoice-print.css') }}' media="print" />
+
+
+                        <!--<textarea id="header">INVOICE</textarea>-->
+                        <!--
+                                                <div id="identity">
+
+                                                    <textarea id="address">Chris Coyier
+                                                    123 Appleseed Street
+                                                    Appleville, WI 53719
+
+                                                    Phone: (555) 555-5555</textarea>
+
+                                <div id="logo">
+
+                                        <div id="logoctr">
+                                          <a href="javascript:;" id="change-logo" title="Change logo">Change Logo</a>
+                                          <a href="javascript:;" id="save-logo" title="Save changes">Save</a>
+                                          |
+                                          <a href="javascript:;" id="delete-logo" title="Delete logo">Delete Logo</a>
+                                          <a href="javascript:;" id="cancel-logo" title="Cancel changes">Cancel</a>
+                                        </div>
+
+                                        <div id="logohelp">
+                                          <input id="imageloc" type="text" size="50" value="" /><br />
+                                          (max width: 540px, max height: 100px)
+                                        </div>
+                                        <img id="image" src="images/logo.png" alt="logo" />
+                                  </div>
+
+                            </div>-->
+
+                            <div style="clear:both"></div>
+
+                            <div id="customer">
+            <!--
+            <textarea id="customer-title">Widget Corp.
+c/o Steve Widget</textarea>-->
+
+                                <table id="meta">
+                                    <tr>
+                                        <td class="meta-head totals">Invoice #</td>
+                                        <td class="meta-head totals" style="background-color:#fff; text-align:right;">{{$client->fb_invoice_id}}</td>
+                                    </tr>
+                                    <!--<tr>
+
+                                        <td class="meta-head">Date</td>
+                                        <td><textarea id="date">December 15, 2009</textarea></td>
+                                    </tr>-->
+                                    <tr>
+                                        <td class="meta-head totals">Amount Due</td>
+                                        <td class="meta-head totals" style="background-color:#fff;text-align:right;"><div class="due">${{$client->fb_invoice['invoice']['amount_outstanding']}}</div></td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+
+                            <table id="items">
+
+                                <tr>
+                                    <th style="width:150px;">Name</th>
+                                    <th>Description</th>
+                                    <th style="width:80px;">Unit Cost</th>
+                                    <th style="width:80px;">Quantity</th>
+                                    <th style="width:80px;" nowrap>Tax %</th>
+                                    <th style="width:80px;" class="text-right">Line Total</th>
+                                </tr>
+
+
+
+
+                                @foreach( $client->fb_invoice['invoice']['lines']['line'] as $key=> $item )
+                                    <?php
+                                    if(is_array($item['name']))$item['name'] = implode(' ',$item['name']);
+                                    if(is_array($item['description']))$item['description'] = implode(' ',$item['description']);
+                                    if(is_array($item['unit_cost']))$item['unit_cost'] = implode(' ',$item['unit_cost']);
+                                    if(is_array($item['quantity']))$item['quantity'] = implode(' ',$item['quantity']);
+                                    if(is_array($item['amount']))$item['amount'] = implode(' ',$item['amount']);
+                                    if(is_array($item['tax1_percent']))$item['tax1_percent'] = implode(' ',$item['tax1_percent']);
+                                    ?>
+                                        <tr class="item-row">
+                                            <td class="item-name"><div class="delete-wpr"><textarea name="custom_invoice[{{$key}}][name]">{{$item['name']}}</textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+                                            <td class="description"><textarea name="custom_invoice[{{$key}}][description]">{{$item['description']}}</textarea></td>
+                                            <td><textarea class="cost" name="custom_invoice[{{$key}}][unit_cost]">${{$item['unit_cost']}}</textarea></td>
+                                            <td><textarea class="qty" name="custom_invoice[{{$key}}][quantity]">{{$item['quantity']}}</textarea></td>
+                                            <td><textarea class="tax1_percent" name="custom_invoice[{{$key}}][tax1_percent]">{{$item['tax1_percent']}}</textarea></td>
+                                            <td class="balance"><span class="price">${{$item['amount']}}</span></td>
+                                        </tr>
+
+                                @endforeach
+
+
+                                <tr id="hiderow" style="border-bottom: none;">
+                                    <td colspan="6" style="border-bottom: none;"><a id="addrow" href="javascript:;" title="Add a row">Add a row</a></td>
+                                </tr>
+                                <!--
+                                <tr>
+                                    <td colspan="2" class="blank"> </td>
+                                    <td colspan="2" class="total-line">Subtotal</td>
+                                    <td class="total-value"><div id="subtotal">$875.00</div></td>
+                                </tr>-->
+                                <tr>
+
+                                    <td colspan="3" class="blank totals" style="border-top:none;"> </td>
+                                    <td colspan="2" class="total-line totals">Total</td>
+                                    <td class="total-value totals"><div id="total">${{$client->fb_invoice['invoice']['amount']}}</div></td>
+                                </tr>
+                                <tr style="display:none;">
+                                    <td colspan="3" class="blank totals"> </td>
+                                    <td colspan="2" class="total-line totals">Amount Paid</td>
+
+                                    <td class="total-value totals"><textarea id="paid">${{$client->fb_invoice['invoice']['paid']}}</textarea></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="blank totals"> </td>
+                                    <td colspan="2" class="total-line balance totals">Balance Due</td>
+                                    <td class="total-value balance totals"><div class="due">${{$client->fb_invoice['invoice']['amount_outstanding']}}</div></td>
+                                </tr>
+
+                            </table>
+
+                            <div id="terms">
+                                <h5>Terms</h5>
+                                <textarea id="terms_text" style="height:80px;overflow-y:auto;border:1px solid #aaa;">*Charges are only for those items that you selected or that are required. If we are required by law or by a cemetery or crematory to use any items, we will explain the reasons in writing below.
+*We charge you for our services in obtaining: Cash Advance Items such as; Coroners or Medical Examiner Release Fees.
+
+This facility is licensed and regulated by the Oregon Mortuary And Cemetery Board (971) 673-1500
+
+Print:__________________________
+
+Signature:____________________________
+
+Date:_____________________</textarea>
+                            </div>
+
+                        </div>
+
+                        <script>
+                            function PrintElem(elem)
+                            {
+                                printDiv($('<div/>').append($(elem).clone()).html());
+                            }
+
+                            function printDiv(divName) {
+                                var mywindow = window.open('', 'new div', 'height=400,width=600');
+                                mywindow.document.write('<html><head><title></title>');
+                                mywindow.document.write( "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-style.css') }}\" type=\"text/css\" />" );
+                                mywindow.document.write( "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-print.css') }}\" type=\"text/css\" />" );
+
+
+                                mywindow.document.write('</head><body >');
+                                mywindow.document.write(divName);
+                                mywindow.document.write('</body></html>');
+
+                                mywindow.print();
+                                mywindow.close();
+
+                                return true;
+                            }
+
+                        </script>
+                    <br />
                     <button class="pull-right" type="submit" name="save_invoice" value="submit">Save Invoice</button>
 
-                    <br />
+                    <button class="pull-right" type="button" name="print_invoice" value="Print" onclick="PrintElem('#client_invoices')" style="margin-right:15px;">Print Invoice</button>
+
+                        <br /><br /><br />
                     <hr>
-                    <b>Email Message</b><br /><br />
-                    <div style="margin-left:25px;">
-                        <label><b>To:</b></label> {{$client->User->email}}
-                        <!--<input type="text" name="email_to" value="{{$client->User->email}}" placeholder="Email To" />-->
-                        <input type="text" name="invoice_subject" placeholder="Email Subject" value="New invoice {{trim($client->fb_invoice['invoice']['invoice_id'],'0')}} from {{$provider->business_name}}, sent using QuikFiles" />
-                        <textarea name="invoice_message" type="text" placeholder="Email Message">To view your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}, or to download a PDF copy for your records, click the link below:
+                    <div class="no-print">
+                            <b>Email Message</b><br /><br />
+                            <div style="margin-left:25px;">
+                                <label><b>To:</b></label>
+                                <input type="text" name="invoice_to" style="border:1px solid #bbb;padding:2px;" placeholder="Email Subject" value="{{$client->User->email}}" />
+                                <Br />
+                                <label><b>Summary:</b></label>
+                                <!--<input type="text" name="email_to" value="{{$client->User->email}}" placeholder="Email To" />-->
+                                <input type="text" name="invoice_subject" style="border:1px solid #bbb;padding:2px;"  placeholder="Email Subject" value="New invoice {{trim($client->fb_invoice['invoice']['invoice_id'],'0')}} from {{$provider->business_name}}, sent using QuikFiles" /><br />
 
-{{$client->fb_invoice['invoice']['links']['client_view']}}
+                                <label><b>Message:</b></label>
+                                <textarea name="invoice_message" type="text" style="border:1px solid #bbb;padding:2px;"  placeholder="Email Message">To view your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}, or to download a PDF copy for your records, click the link below:
 
-or copy and paste the following URL into your browser: {{$client->fb_invoice['invoice']['links']['client_view']}}
-                        </textarea>
-                        <?php
-                        $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-                        $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
-                        ?>
-                        <br />
+        {{$client->fb_invoice['invoice']['links']['client_view']}}
+
+        or copy and paste the following URL into your browser: {{$client->fb_invoice['invoice']['links']['client_view']}}
+                                </textarea>
+                                <?php
+                                $domain = str_replace('https://', '', $provider->freshbooks_api_url);
+                                $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+                                ?>
+                                <br />
 
 
-                        Best regards,<br />
-                        {{$provider->business_name}} ({{$provider->email}})<br />
-                    </div>
-                    <hr>
-                    <button class="pull-right" type="submit" name="send_invoice" value="send">Send Invoice</button>
+                                Best regards,<br />
+                                {{$provider->business_name}} ({{$provider->email}})<br />
+                            </div>
+                            <hr><br />
+                            <button class="pull-right" type="submit" name="send_invoice" value="send">Send Invoice</button>
+                   </div>
                 </div>
             </div>
 
@@ -566,7 +762,7 @@ $().ready(function(){
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 <style>
@@ -726,7 +922,7 @@ $("#choose_provider").click(function(){
 <br />
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
@@ -828,7 +1024,7 @@ $("#dob").datepicker( {
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}
@@ -883,7 +1079,7 @@ Location of Deceased:<br>
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}
@@ -930,7 +1126,7 @@ Location of Deceased:<br>
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}
@@ -1032,7 +1228,7 @@ Location of Deceased:<br>
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 
@@ -1104,7 +1300,7 @@ $(function(){
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}
@@ -1151,7 +1347,7 @@ $(function(){
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 
@@ -1205,7 +1401,7 @@ $(function(){
 </div>
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Continue</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}

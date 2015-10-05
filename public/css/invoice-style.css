@@ -1,0 +1,59 @@
+
+
+#invoice-page-wrap * { margin: 0; padding: 0; }
+#invoice-page-wrap  { font: 14px/1.4 Georgia, serif; background-color:#fff;}
+#invoice-page-wrap { width: 800px; margin: 0 auto; }
+
+#invoice-page-wrap button{padding: 7px 18px;}
+
+#invoice-page-wrap textarea { border: 0; font: 14px Georgia, Serif; overflow: hidden; resize: none; box-shadow:none;}
+#invoice-page-wrap table { border-collapse: collapse; }
+#invoice-page-wrap table th { border: 1px solid black; padding: 2px; }
+#invoice-page-wrap table tr td.totals {border: 1px solid black;}
+
+#invoice-page-wrap #header { height: 15px; width: 100%; margin: 20px 0; background: #222; text-align: center; color: white; font: bold 15px Helvetica, Sans-Serif; text-decoration: uppercase; letter-spacing: 20px; padding: 8px 0px; }
+
+#invoice-page-wrap #address { width: 250px; height: 150px; float: left; }
+#invoice-page-wrap #customer { overflow: hidden; }
+/*
+#invoice-page-wrap #logo { text-align: right; float: right; position: relative; margin-top: 25px; border: 1px solid #fff; max-width: 540px; max-height: 100px; overflow: hidden; }
+#invoice-page-wrap #logo:hover, #logo.edit { border: 1px solid #000; margin-top: 0px; max-height: 125px; }
+#invoice-page-wrap #logoctr { display: none; }
+#invoice-page-wrap #logo:hover #logoctr, #logo.edit #logoctr { display: block; text-align: right; line-height: 25px; background: #eee; padding: 0 5px; }
+#invoice-page-wrap #logohelp { text-align: left; display: none; font-style: italic; padding: 10px 5px;}
+#invoice-page-wrap #logohelp input { margin-bottom: 5px; }
+#invoice-page-wrap .edit #logohelp { display: block; }
+#invoice-page-wrap .edit #save-logo, .edit #cancel-logo { display: inline; }
+#invoice-page-wrap .edit #image, #save-logo, #cancel-logo, .edit #change-logo, .edit #delete-logo { display: none; }*/
+#invoice-page-wrap #customer-title { font-size: 20px; font-weight: bold; float: left; }
+
+#invoice-page-wrap #meta { margin-top: 1px; width: 300px; float: right; }
+#invoice-page-wrap #meta td { text-align: right;  }
+#invoice-page-wrap #meta td.meta-head { text-align: left; background: #eee; }
+#invoice-page-wrap #meta td textarea { width: 100%; height: 20px; text-align: right; }
+
+#invoice-page-wrap #items { clear: both; width: 100%; margin: 30px 0 0 0; }
+#invoice-page-wrap #items th { background: #eee; }
+#invoice-page-wrap #items textarea { height: 50px; }
+#invoice-page-wrap #items tr.item-row td { border: 1px solid #ddd; vertical-align: top;  padding: 2px;}
+#invoice-page-wrap #items td.description { width: 300px; }
+#invoice-page-wrap #items td.item-name { width: 175px; }
+#invoice-page-wrap #items td.description textarea, #items td.item-name textarea { width: 100%; }
+#invoice-page-wrap #items td.total-line { border-right: 0; text-align: right; }
+#invoice-page-wrap #items td.total-value { border-left: 0; padding: 10px; }
+#invoice-page-wrap #items td.total-value textarea { height: 20px; background: none; }
+#invoice-page-wrap #items td.balance { background: #eee; }
+#invoice-page-wrap #items td.blank { border: 0; }
+
+#invoice-page-wrap #terms { text-align: center; margin: 20px 0 0 0; }
+#invoice-page-wrap #terms h5 { text-transform: uppercase; font: 13px Helvetica, Sans-Serif; letter-spacing: 10px; border-bottom: 1px solid black; padding: 0 0 8px 0; margin: 0 0 8px 0; }
+#invoice-page-wrap #terms textarea { width: 100%; text-align: center;}
+
+#invoice-page-wrap textarea:hover, #invoice-page-wrap #items td.total-value textarea:hover, #invoice-page-wrap #items td.total-value.delete:hover { background-color:#e3e9ef; }
+#invoice-page-wrap textarea:focus, #invoice-page-wrap textarea:focus { background-color:#fff8d5; }
+
+
+#invoice-page-wrap .delete-wpr { position: relative;}
+#invoice-page-wrap .delete { display: none; color: red; text-decoration: none; position: absolute; font-weight: bold; padding: 0px 3px; top: -6px; left: -22px; font-family: Verdana; font-size: 14px; }
+
+

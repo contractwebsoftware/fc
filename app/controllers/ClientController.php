@@ -1411,7 +1411,7 @@ class ClientController extends BaseController {
         $clientData = ClientController::fillOutClientTables(Client::find($client_id));
 
 
-        if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+        if(Input::get('create_invoice') == 'y' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
 
             $domain = str_replace('https://', '', $provider->freshbooks_api_url);
             $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
@@ -1478,7 +1478,7 @@ class ClientController extends BaseController {
 
 
         }
-        else Session::flash('Please Enter All Provider Freshbooks Information');
+        #else Session::flash('Please Enter All Provider Freshbooks Information');
 
         if($return_client_id) return $client->fb_client_id;
         else return Redirect::action('ClientController@getSteps');
@@ -1512,33 +1512,76 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
         //$provider = FProvider::find($provider->id);
     }
 
+    //IF COMING FROM A CUSTOM INVOICE CREATION
+    if(Input::get('do_custom_invoice') == 'y') {
 
-    if(!is_array($clientData->sale_summary_r['report']))$clientData->sale_summary_r = ClientController::getSaleTotals($clientData, $provider);
-
-    if(is_array($clientData->sale_summary_r['report'])){
-        $invoice['invoice']['client_id'] = $client->fb_client_id;
-        $invoice['invoice']['lines']['line'] = array();
-
-        foreach($clientData->sale_summary_r['report'] as $key=>$value){
-
-            array_push($invoice['invoice']['lines']['line'], array(
-                                    'name'=>$value['name'],
-                                    'description'=>$value['desc'],
-                                    'unit_cost'=>$value['price'],
-                                    'quantity'=>($value['qnt']==''?'1':$value['qnt']),
-                                    'tax1_name'=>'',
-                                    'tax2_name'=>'',
-                                    'tax1_percent'=>'',
-                                    'tax2_percent'=>''
-                                )
+            $custom_invoice_r = Input::get('custom_invoice');
 
 
-            );
+            $invoice['invoice']['client_id'] = $client->fb_client_id;
+            $invoice['invoice']['lines']['line'] = array();
 
-        }
-        //$client->sale_summary_r['total']
+            foreach ($custom_invoice_r as $key => $invoice_row) {
+
+                $tax = number_format((float)str_replace('%','',$invoice_row['tax1_percent']),2);
+                if($tax != '' and $tax != '0.00' and ((float)$tax != 0)){
+                    $tax_name = 'Tax - '.$invoice_row['name'];
+                    $tax_percent = $tax;
+                }
+                else {
+                    $tax_name = '';
+                    $tax_percent = '';
+                }
+                array_push($invoice['invoice']['lines']['line'], array(
+                        'name' => $invoice_row['name'],
+                        'description' => $invoice_row['description'],
+                        'unit_cost' => number_format((float)str_replace('$','',$invoice_row['unit_cost']),2),
+                        'quantity' => ($invoice_row['quantity'] == '' ? '1' : $invoice_row['quantity']),
+                        'tax1_name' => $tax_name,
+                        'tax2_name' => '',
+                        'tax1_percent' => $tax_percent,
+                        'tax2_percent' => '',
+                        'type' => 'Item'
+                    )
+
+
+                );
+
+            }
+
+
 
     }
+    else {
+        if (!is_array($clientData->sale_summary_r['report'])) $clientData->sale_summary_r = ClientController::getSaleTotals($clientData, $provider);
+
+        if (is_array($clientData->sale_summary_r['report'])) {
+            $invoice['invoice']['client_id'] = $client->fb_client_id;
+            $invoice['invoice']['lines']['line'] = array();
+
+            foreach ($clientData->sale_summary_r['report'] as $key => $value) {
+
+                array_push($invoice['invoice']['lines']['line'], array(
+                        'name' => $value['name'],
+                        'description' => $value['desc'],
+                        'unit_cost' => $value['price'],
+                        'quantity' => ($value['qnt'] == '' ? '1' : $value['qnt']),
+                        'tax1_name' => '',
+                        'tax2_name' => '',
+                        'tax1_percent' => '',
+                        'tax2_percent' => ''
+                    )
+
+
+                );
+
+            }
+            //$client->sale_summary_r['total']
+
+        }
+    }
+
+
 //echo '<pre>';dd($line_items_r);
 
 
@@ -1567,7 +1610,10 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
 
 
 
-        //echo '<pre>';dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+    if(Input::get('do_custom_invoice') == 'y') {
+        #echo '<pre>';
+        #dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+    }
 
         $fb->request();
 
@@ -1740,6 +1786,8 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
                     $client->fb_client_id = $fb_client_id;
                     $client->save();
                 }
+
+
 
                 //freshbooks_client_id
                 //freshbooks_recurring_id

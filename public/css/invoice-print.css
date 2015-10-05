@@ -1,0 +1,5 @@
+#hiderow,
+.delete,.no-print {
+  display: none;
+}
+#terms_text{height:300px;}

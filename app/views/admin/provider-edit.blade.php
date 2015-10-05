@@ -174,11 +174,11 @@
 
                                         <div class="form-group" >
                                             <div class="col-sm-5">
-                                                <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
+                                                <label  class="col-sm-6" for="freshbooks_clients_enabled"><b style="font-size:16px">Enable Freshbooks Integration</b></label>
                                                 <input type="checkbox" name="provider[freshbooks_clients_enabled]" id="freshbooks_clients_enabled" class="form-control" value="1" {{ ($provider->freshbooks_clients_enabled=='1'?'checked=checked':'') }} />
                                             </div>
                                             <div class="col-sm-5">
-                                                <label  class="col-sm-2" for="freshbooks_clients_enabled"><b style="font-size:16px">Use Default Freshbooks Account</b></label>
+                                                <label  class="col-sm-6" for="freshbooks_clients_enabled"><b style="font-size:16px">Use QuikFiles Freshbooks Account</b></label>
 
                                                 <input type="checkbox" name="provider_defaulted" id="freshbooks_clients_enabled" class="form-control" onclick="toggleDefaultProvider();" />
                                             </div>
@@ -205,10 +205,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-group" >
+                                            <div class="form-group" style="display:none;">
                                                 <label  class="col-sm-2" for="freshbooks_clients_people">Allow Creation of Freshbooks People</label>
                                                 <div class="col-sm-10">
-                                                    <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" onclick="$('#freshbooks_clients_invoice').prop('checked', $(this).prop('checked'))" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
+                                                    <input type="checkbox" name="provider[freshbooks_clients_people]" id="freshbooks_clients_people" checked="checked" class="form-control" value="1" {{ ($provider->freshbooks_clients_people=='1'?'checked=checked':'') }} />
                                                 </div>
                                             </div>
                                             <div class="form-group" style="display:none;">
@@ -1541,8 +1541,8 @@
             $('#freshbooks_api_token').val("{{ $provider->freshbooks_api_token }}");
         }
         else {
-            $('#freshbooks_api_url').val('forcremationcom-receivables');
-            $('#freshbooks_api_token').val('15f25aa1cbf50cc8701bd84c45b671f8');
+            $('#freshbooks_api_url').val('forcremationcom3');
+            $('#freshbooks_api_token').val('45dbba763492069606dc4125c413453a');
         }
     }
 
