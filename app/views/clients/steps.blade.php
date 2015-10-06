@@ -487,7 +487,19 @@ c/o Steve Widget</textarea>-->
                                     <th style="width:80px;" class="text-right">Line Total</th>
                                 </tr>
 
-
+                                <?php
+                                    $invoice_options_r = Array('Plan',
+                                                                'Weight',
+                                                                'Has Pacemaker',
+                                                                'Plan For Cremation Remains',
+                                                                'Certificate Shipping',
+                                                                'Certificates',
+                                                                'Filing Fee',
+                                                                'Plaque Certificate',
+                                                                'Urn'
+                                                                );
+                                    $found = false;
+                                ?>
 
 
                                 @foreach( $client->fb_invoice['invoice']['lines']['line'] as $key=> $item )
@@ -500,7 +512,22 @@ c/o Steve Widget</textarea>-->
                                     if(is_array($item['tax1_percent']))$item['tax1_percent'] = implode(' ',$item['tax1_percent']);
                                     ?>
                                         <tr class="item-row">
-                                            <td class="item-name"><div class="delete-wpr"><textarea name="custom_invoice[{{$key}}][name]">{{$item['name']}}</textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+                                            <td class="item-name"><div class="delete-wpr">
+                                                    <textarea name="custom_invoice[{{$key}}][name]">{{$item['name']}}</textarea>
+                                                    <!--
+                                                    <input type='hidden' class='select2' value="{{$item['name']}}" />
+
+                                                    <select name="custom_invoice[{{$key}}][name]" class="select2">
+                                                        @foreach($invoice_options_r as $value)
+                                                            <option value="{{$value}}" <?php if ($item['name'] == $value ) echo 'selected=selected'; $found=true; ?>>{{$value}}</option>
+                                                        @endforeach
+                                                        @if( !$found )
+                                                            <option value="{{$item['name']}}" >{{$item['name']}}</option>
+                                                        @endif
+                                                    </select>-->
+
+                                                    <a class="delete" href="javascript:;" title="Remove row">X</a></div>
+                                            </td>
                                             <td class="description"><textarea name="custom_invoice[{{$key}}][description]">{{$item['description']}}</textarea></td>
                                             <td><textarea class="cost" name="custom_invoice[{{$key}}][unit_cost]">${{$item['unit_cost']}}</textarea></td>
                                             <td><textarea class="qty" name="custom_invoice[{{$key}}][quantity]">{{$item['quantity']}}</textarea></td>
@@ -539,10 +566,7 @@ c/o Steve Widget</textarea>-->
                                 </tr>
 
                             </table>
-
-                            <div id="terms">
-                                <h5>Terms</h5>
-                                <textarea id="terms_text" style="height:80px;overflow-y:auto;border:1px solid #aaa;">*Charges are only for those items that you selected or that are required. If we are required by law or by a cemetery or crematory to use any items, we will explain the reasons in writing below.
+                        <?php $default_terms = "*Charges are only for those items that you selected or that are required. If we are required by law or by a cemetery or crematory to use any items, we will explain the reasons in writing below.
 *We charge you for our services in obtaining: Cash Advance Items such as; Coroners or Medical Examiner Release Fees.
 
 This facility is licensed and regulated by the Oregon Mortuary And Cemetery Board (971) 673-1500
@@ -551,12 +575,28 @@ Print:__________________________
 
 Signature:____________________________
 
-Date:_____________________</textarea>
+Date:_____________________";?>
+                            <div class="row">
+                                <div id="terms" class="col-xs-6 pull-left" style="padding-right:30px;">
+                                    <h5>Terms</h5>
+                                    <textarea id="terms_text" name="custom_invoice_email[fb_invoice_terms]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{($client->fb_invoice_terms!=''?$client->fb_invoice_terms:$default_terms)}}</textarea>
+                                </div>
+                                <div id="terms" class="col-xs-6 pull-right" style="padding-left:30px;">
+                                    <h5>Notes</h5>
+                                    <textarea name="custom_invoice_email[fb_invoice_notes]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{$client->fb_invoice_notes}}</textarea>
+                                </div>
                             </div>
+                        <div class="row">
+                            <br />
+                            <button class="pull-right" type="submit" name="save_invoice" value="submit">Save Invoice</button>
 
-                        </div>
+                            <button class="pull-right" type="button" name="print_invoice" value="Print" onclick="PrintElem('#client_invoices')" style="margin-right:15px;">Print Invoice</button>
+</div>
+                    </div>
 
-                        <script>
+
+
+                    <script>
                             function PrintElem(elem)
                             {
                                 printDiv($('<div/>').append($(elem).clone()).html());
@@ -580,10 +620,6 @@ Date:_____________________</textarea>
                             }
 
                         </script>
-                    <br />
-                    <button class="pull-right" type="submit" name="save_invoice" value="submit">Save Invoice</button>
-
-                    <button class="pull-right" type="button" name="print_invoice" value="Print" onclick="PrintElem('#client_invoices')" style="margin-right:15px;">Print Invoice</button>
 
                         <br /><br /><br />
                     <hr>
@@ -591,7 +627,8 @@ Date:_____________________</textarea>
                             <b>Email Message</b><br /><br />
                             <div style="margin-left:25px;">
                                 <label><b>To:</b></label>
-                                <input type="text" name="invoice_to" style="border:1px solid #bbb;padding:2px;" placeholder="Email Subject" value="{{$client->User->email}}" />
+                                <input type="text" name="custom_invoice_email[fb_invoice_email]" style="border:1px solid #bbb;padding:2px;" placeholder="Email Subject"
+                                       value="{{($client->fb_invoice_email!=''?$client->fb_invoice_email:$client->User->email)}}" />
                                 <Br />
                                 <label><b>Summary:</b></label>
                                 <!--<input type="text" name="email_to" value="{{$client->User->email}}" placeholder="Email To" />-->

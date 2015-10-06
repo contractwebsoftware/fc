@@ -1515,40 +1515,48 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
     //IF COMING FROM A CUSTOM INVOICE CREATION
     if(Input::get('do_custom_invoice') == 'y') {
 
-            $custom_invoice_r = Input::get('custom_invoice');
+        $custom_invoice_r = Input::get('custom_invoice');
+
+        $custom_invoice_notes_r = Input::get('custom_invoice_email');
 
 
-            $invoice['invoice']['client_id'] = $client->fb_client_id;
-            $invoice['invoice']['lines']['line'] = array();
-
-            foreach ($custom_invoice_r as $key => $invoice_row) {
-
-                $tax = number_format((float)str_replace('%','',$invoice_row['tax1_percent']),2);
-                if($tax != '' and $tax != '0.00' and ((float)$tax != 0)){
-                    $tax_name = 'Tax - '.$invoice_row['name'];
-                    $tax_percent = $tax;
-                }
-                else {
-                    $tax_name = '';
-                    $tax_percent = '';
-                }
-                array_push($invoice['invoice']['lines']['line'], array(
-                        'name' => $invoice_row['name'],
-                        'description' => $invoice_row['description'],
-                        'unit_cost' => number_format((float)str_replace('$','',$invoice_row['unit_cost']),2),
-                        'quantity' => ($invoice_row['quantity'] == '' ? '1' : $invoice_row['quantity']),
-                        'tax1_name' => $tax_name,
-                        'tax2_name' => '',
-                        'tax1_percent' => $tax_percent,
-                        'tax2_percent' => '',
-                        'type' => 'Item'
-                    )
 
 
-                );
 
+        $client->fb_invoice_terms = $invoice['invoice']['terms'] = $custom_invoice_notes_r['fb_invoice_terms'];
+        $client->fb_invoice_notes = $invoice['invoice']['notes'] = $custom_invoice_notes_r['fb_invoice_notes'];
+        $client->save();
+
+        $invoice['invoice']['client_id'] = $client->fb_client_id;
+        $invoice['invoice']['lines']['line'] = array();
+
+        foreach ($custom_invoice_r as $key => $invoice_row) {
+
+            $tax = number_format((float)str_replace('%','',$invoice_row['tax1_percent']),2);
+            if($tax != '' and $tax != '0.00' and ((float)$tax != 0)){
+                $tax_name = 'Tax - '.$invoice_row['name'];
+                $tax_percent = $tax;
             }
+            else {
+                $tax_name = '';
+                $tax_percent = '';
+            }
+            array_push($invoice['invoice']['lines']['line'], array(
+                    'name' => $invoice_row['name'],
+                    'description' => $invoice_row['description'],
+                    'unit_cost' => number_format((float)str_replace('$','',$invoice_row['unit_cost']),2),
+                    'quantity' => ($invoice_row['quantity'] == '' ? '1' : $invoice_row['quantity']),
+                    'tax1_name' => $tax_name,
+                    'tax2_name' => '',
+                    'tax1_percent' => $tax_percent,
+                    'tax2_percent' => '',
+                    'type' => 'Item'
+                )
 
+
+            );
+
+        }
 
 
     }
@@ -1597,15 +1605,14 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
 
 
     if($create_new)$fb->setMethod('invoice.create');
-        else {
-            $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
-            $fb->setMethod('invoice.update');
-        }
+    else {
+        $invoice['invoice']['invoice_id'] = $client->fb_invoice_id;
+        $fb->setMethod('invoice.update');
+    }
 
 
-        // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
-        $fb->post( $invoice );
-
+    // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
+    $fb->post( $invoice );
 
 
 
@@ -1628,6 +1635,8 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
             if($create_new){
                 $invoice_id = $res['invoice_id'];
                 $client->fb_invoice_id = $invoice_id;
+
+
                 $client->save();
             }
 
@@ -1644,6 +1653,11 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
             $client->save();
             //dd($fb->getResponse());
         }
+
+
+    if(Input::get('send_invoice')!=''){
+        ClientController::postUpdateInvoiceItems();
+    }
 
     if($return_invoice_id) return $client->fb_invoice_id;
     else return Redirect::action('ClientController@getSteps');
@@ -1728,6 +1742,37 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 
         if(Input::get('send_invoice')!=''){
 
+
+
+
+            //UPDATE THE CLIENT EMAIL ADDRESS IN FRESHBOOKS
+            $email = Input::get('custom_invoice_email');
+            $fb->setMethod('client.update');
+
+            $fb->post( array('client' => array('client_id' => $client->fb_client_id, 'email'=>$email['fb_invoice_email']) ) );
+
+            #dd($fb->getGeneratedXML()); // You can view what the XML looks like that we're about to send over the wire
+
+            $fb->request();
+
+            if($fb->success()) {
+                #Session::flash('success','Successfully '.$type.' Freshbooks entry');
+                #dd($fb->getResponse());
+                $res = $fb->getResponse();
+
+                $client->fb_invoice_email = $email['fb_invoice_email'];
+                $client->save();
+
+
+            } else {
+                echo $fb->getError();
+                Session::flash('error','Errors Updating Freshbooks Invoice Email');
+
+                var_dump($fb->getResponse());
+            }
+
+
+
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb_client_info = array(
                 'invoice_id' => $client->fb_invoice_id,
@@ -1752,6 +1797,11 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
                 Session::flash('error', 'Errors Emailing Freshbooks Invoice'.tostring($fb->getError()));
                 var_dump($fb->getResponse());
             }
+
+
+
+
+
 
         }
         else {
