@@ -566,7 +566,7 @@ c/o Steve Widget</textarea>-->
                                 </tr>
 
                             </table>
-                        <?php $default_terms = "*Charges are only for those items that you selected or that are required. If we are required by law or by a cemetery or crematory to use any items, we will explain the reasons in writing below.
+                        <!--*Charges are only for those items that you selected or that are required. If we are required by law or by a cemetery or crematory to use any items, we will explain the reasons in writing below.
 *We charge you for our services in obtaining: Cash Advance Items such as; Coroners or Medical Examiner Release Fees.
 
 This facility is licensed and regulated by the Oregon Mortuary And Cemetery Board (971) 673-1500
@@ -575,11 +575,11 @@ Print:__________________________
 
 Signature:____________________________
 
-Date:_____________________";?>
+Date:_____________________-->
                             <div class="row">
                                 <div id="terms" class="col-xs-6 pull-left" style="padding-right:30px;">
                                     <h5>Terms</h5>
-                                    <textarea id="terms_text" name="custom_invoice_email[fb_invoice_terms]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{($client->fb_invoice_terms!=''?$client->fb_invoice_terms:$default_terms)}}</textarea>
+                                    <textarea id="terms_text" name="custom_invoice_email[fb_invoice_terms]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{($client->fb_invoice_terms!=''?$client->fb_invoice_terms:$provider->freshbooks_terms)}}</textarea>
                                 </div>
                                 <div id="terms" class="col-xs-6 pull-right" style="padding-left:30px;">
                                     <h5>Notes</h5>

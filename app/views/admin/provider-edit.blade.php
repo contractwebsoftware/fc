@@ -169,7 +169,14 @@
                                         <div class="col-sm-5"><input type="text" placeholder="Administrative Coordinator First Name" name="provider[admin_fn]" id="admin_fn" class="form-control" value="{{ $provider->admin_fn }}" /></div>
                                         <div class="col-sm-5"><input type="text" placeholder="Administrative Coordinator Last Name" name="provider[admin_ln]" id="admin_ln" class="form-control" value="{{ $provider->admin_ln }}" /></div>
                                     </div>
-                                    
+
+                                    <div class="form-group" >
+                                        <label  class="col-sm-2" for="freshbooks_terms">Default Invoice Terms</label>
+                                        <div class="col-sm-10">
+                                            <textarea name="provider[freshbooks_terms]" id="freshbooks_terms" class="form-control" >{{ $provider->freshbooks_terms }}</textarea>
+                                        </div>
+                                    </div>
+
                                     <div class="row"  style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
 
                                         <div class="form-group" >
