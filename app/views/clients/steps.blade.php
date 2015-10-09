@@ -360,7 +360,7 @@ $save_button = 'Continue';
             <div class="row">
                 <div class="col-md-12">
                     <a style="font-weight:bold;float:right;" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">Edit Invoice In Freshbooks</a>
-<h3>QukiFiles Invoice</h3>
+<h3>QuikFiles Invoice</h3>
                     <!--
                     <table>
                         <thead>
