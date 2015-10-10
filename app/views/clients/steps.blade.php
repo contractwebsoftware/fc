@@ -26,7 +26,7 @@ $save_button = 'Continue';
     ?>
     <div class="row">
         <div class="col-md-12 pull-left">
-            <a href="{{ action('AdminController@getCustomers') }}">&lt; &nbsp;Back to Clients</a>  <br />
+            <a href="{{ action('AdminController@getCustomers') }}">&lt; &nbsp;Back to Clients List</a>  <br />
             <a href="{{ action('AdminController@getEditProvider', array($provider->id, 'provider_clients') ) }}">&lt; &nbsp;Back to Provider</a><br />
 
         </div>
