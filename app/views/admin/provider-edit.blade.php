@@ -1033,7 +1033,7 @@
         </div><!--/row-->
     </div> <!-- /END Client info tab -->
 
-@if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_people == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+@if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
 
 <div class="tab-pane {{$current_tab=='client_invoices'?'active':''}}" id="client_invoices" name="client_invoices">
     <div class="row">
@@ -1075,10 +1075,15 @@
                                     $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
                                     ?>
 
-                                        <a class="btn btn-xs btn-default pull-right" href="{{ action('AdminController@getEditClient',array($client->id, "1-1") ) }}" >
-                                            View
-                                        </a>
 
+
+                                        @if($provider->freshbooks_api_url == 'forcremationcom3')
+                                            <a class="btn btn-xs btn-default pull-right" href="{{ action('AdminController@getEditClient',array($client->id, "1-1") ) }}" >
+                                                View
+                                            </a>
+                                        @else
+                                            <a class="btn btn-xs btn-default pull-right" href="https://{{$domain}}.freshbooks.com/showInvoice?invoiceid={{$client->fb_invoice_id}}" target="_blank">Edit Invoice In Freshbooks</a>
+                                        @endif
                                         <!--
                                         {{ Form::open(['action'=>'ClientController@postUpdateInvoiceItems','class'=>'form-horizontal','role'=>'form']) }}
                                             {{ Form::hidden('client_id',$client->id) }}

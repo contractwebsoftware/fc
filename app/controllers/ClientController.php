@@ -1518,11 +1518,11 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
         $custom_invoice_r = Input::get('custom_invoice');
 
         $custom_invoice_notes_r = Input::get('custom_invoice_email');
+        $custom_invoice_po = Input::get('custom_invoice_po');
 
 
 
-
-
+        $invoice['invoice']['po_number'] = $custom_invoice_po;
         $client->fb_invoice_terms = $invoice['invoice']['terms'] = $custom_invoice_notes_r['fb_invoice_terms'];
         $client->fb_invoice_notes = $invoice['invoice']['notes'] = $custom_invoice_notes_r['fb_invoice_notes'];
         $client->save();

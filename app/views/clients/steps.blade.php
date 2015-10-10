@@ -25,7 +25,12 @@ $save_button = 'Continue';
         $save_button = 'Save';
     ?>
     <div class="row">
-        <div class="col-md-4 pull-left"><a href="{{ action('AdminController@getCustomers') }}">Back to Clients</a></div> 
+        <div class="col-md-12 pull-left">
+            <a href="{{ action('AdminController@getCustomers') }}">&lt; &nbsp;Back to Clients</a>  <br />
+            <a href="{{ action('AdminController@getEditProvider', array($provider->id, 'provider_clients') ) }}">&lt; &nbsp;Back to Provider</a><br />
+
+        </div>
+
     </div>
 
     <div class="row">
@@ -460,7 +465,13 @@ c/o Steve Widget</textarea>-->
                                 <table id="meta">
                                     <tr>
                                         <td class="meta-head totals">Invoice #</td>
-                                        <td class="meta-head totals" style="background-color:#fff; text-align:right;">{{$client->fb_invoice_id}}</td>
+                                        <td class="meta-head totals" style="background-color:#fff; text-align:right;">{{$client->fb_invoice['invoice']['number']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="meta-head totals">PO #</td>
+                                        <td class="meta-head totals" style="background-color:#fff; text-align:right;">
+                                            <textarea name="custom_invoice_po">{{is_array($client->fb_invoice['invoice']['po_number']) ? implode(',',$client->fb_invoice['invoice']['po_number']) : $client->fb_invoice['invoice']['po_number']}}</textarea>
+                                        </td>
                                     </tr>
                                     <!--<tr>
 

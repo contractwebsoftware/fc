@@ -43,14 +43,14 @@
 					@foreach( $providers as $provider )
 					<tr>
 						<td><?php
-                                                        switch($provider->provider_status){
-                                                            case 0:echo 'UnApproved';break;
-                                                            case 1:echo 'Approved';break;
-                                                            case 2:echo 'Deleted';break;
-                                                            default:echo 'UnApproved';break;
-                                                        }       
-                                                    ?>
-                                                </td>
+								switch($provider->provider_status){
+									case 0:echo 'UnApproved';break;
+									case 1:echo 'Approved';break;
+									case 2:echo 'Deleted';break;
+									default:echo 'UnApproved';break;
+								}
+							?>
+						</td>
 						<td>{{ $provider->business_name }}</td>
 						<td>{{ $provider->client_count }}</td>
 						<td>{{ date('m/d/Y',strtotime($provider->created_at)) }}</td>
@@ -61,10 +61,10 @@
 								<a href="{{ action('AdminController@getEditProvider',$provider->id) }}" class="btn btn-xs btn-default">
 									<span class="glyphicon glyphicon-pencil"></span> Edit info
 								</a>
-                                                            <?php
-                                                            if($provider->provider_status == 2)echo '<a href="'.action('AdminController@getUnDeleteProvider',$provider->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
-                                                            else echo '<a href="'.action('AdminController@getDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> Delete</a>';
-                                                            ?>
+								<?php
+								if($provider->provider_status == 2)echo '<a href="'.action('AdminController@getUnDeleteProvider',$provider->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+								else echo '<a href="'.action('AdminController@getDeleteProvider',$provider->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> Delete</a>';
+								?>
 							</div>
 						</td>
 					</tr>
