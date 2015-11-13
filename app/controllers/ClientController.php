@@ -1299,35 +1299,24 @@ class ClientController extends BaseController {
                 //has_pace_maker
 
                 ## TRANSFORM BOOLEANS
-                if(is_object($class)) {
+                switch($class->$key){
+                    case '0': $class->$key = 'No'; break;
+                    case '1': $class->$key = 'Yes'; break;
 
-
-                    switch ($class->$key) {
-                        case '0':
-                            $class->$key = 'No';
-                            break;
-                        case '1':
-                            $class->$key = 'Yes';
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    ## TRANSFORM DATES
-                    switch ($key) {
-                        case 'dob':
-                        case 'dod':
-                            if ($class->$key == '0000-00-00') $class->$key = '';
-                            else $class->$key = date('m/d/Y', strtotime($class->$key));
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    $html = str_replace('{{' . $val . '}}', $class->$key, $html);
+                    default: break;
                 }
+
+                ## TRANSFORM DATES
+                switch($key){
+                    case 'dob':
+                    case 'dod':
+                        if($class->$key == '0000-00-00')$class->$key = '';
+                        else $class->$key = date('m/d/Y', strtotime($class->$key)); break;
+
+                    default: break;
+                }
+
+                $html = str_replace('{{' . $val . '}}', $class->$key, $html);
                 $html = str_replace('{{' . $val . '}}', '', $html);
 
             }
