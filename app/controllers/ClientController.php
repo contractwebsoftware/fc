@@ -1299,6 +1299,7 @@ class ClientController extends BaseController {
                 //has_pace_maker
 
                 ## TRANSFORM BOOLEANS
+                if(is_object($class))
                 switch($class->$key){
                     case '0': $class->$key = 'No'; break;
                     case '1': $class->$key = 'Yes'; break;
