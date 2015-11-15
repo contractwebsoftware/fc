@@ -49,6 +49,12 @@ else $provider_name = '';
             <?php
                 if(Sentry::getUser())$client = Client::where('user_id',Sentry::getUser()->id)->first();
                 else  $client = new Client();
+                if(!is_object($client)){
+                    Session::flush();
+                    Sentry::logout();
+                    $client = new Client();
+                }
+
                 $name = $client->first_name;
                 //print_r($name);
             ?>
