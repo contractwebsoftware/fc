@@ -3,13 +3,15 @@
 class ClientController extends BaseController {
 
 	protected $layout = 'layouts.client';
-	
+	var $default_provider_id = 35;
+
 	public function getLogin()
 	{
 		return View::make('clients.login');
 	}
 	public function getSteps($goToStep=0, $jsonReturn=false, $client=null)
 	{
+
             //dd(Session::get('inAdminGroup'));
             if(Input::get('client_id')!=''){
                 //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
@@ -77,7 +79,7 @@ class ClientController extends BaseController {
                 $provider = Session::get('provider');
                 $provider = ClientController::updateProvider($provider->id);
             }
-            else $provider = ClientController::updateProvider(1); 
+            else $provider = ClientController::updateProvider($this->default_provider_id);
             
             
                 //echo '<br>INPUTS:<br />'; print_r(Input::get());  
@@ -250,7 +252,7 @@ class ClientController extends BaseController {
             $provider_zip = DB::table('provider_zips')->where('zip', Input::get('set_zip'))->first();
             
             if(count($provider_zip)>0)$provider_id = $provider_zip->provider_id;
-            else $provider_id = 1;
+            else $provider_id = $this->default_provider_id;
             
             ClientController::updateProvider($provider_id);
             //print_r(Session::all());
@@ -318,7 +320,7 @@ class ClientController extends BaseController {
             if($plan_change == true){
                 if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
                 else {
-                    $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
                     $mail_data['provider'] = FProvider::find($provider_id);
                 }
                 $mail_data['client'] = $client;
@@ -424,7 +426,7 @@ class ClientController extends BaseController {
                 //dd(DB::getQueryLog());
                 if($cliend_product_r == null){
                     $cliend_product_r = new ClientProducts();
-                    $cliend_product_r->provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $cliend_product_r->provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
                     $cliend_product_r->client_id = $client->id;
                 }
                 $cliend_product_r->product_id = $client_product['product_id'];
@@ -438,7 +440,7 @@ class ClientController extends BaseController {
             if($new_client){
                 if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
                 else {
-                    $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
                     $mail_data['provider'] = FProvider::find($provider_id);
                 }
                 $mail_data['client'] = $client;
@@ -509,7 +511,7 @@ class ClientController extends BaseController {
                 
                 if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
                 else {
-                    $provider_id = Session::get('provider_id')==''?1:Session::get('provider_id');
+                    $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
                     $mail_data['provider'] = FProvider::find($provider_id);
                 }
                 $mail_data['client'] = $client;
@@ -660,7 +662,7 @@ class ClientController extends BaseController {
             //dd($provider_id->provider_id);
             if($provider_id!=null)$client->FProvider = FProvider::find($provider_id->provider_id);
             if($client->FProvider == null){
-                $client->FProvider = FProvider::find(1);  
+                $client->FProvider = FProvider::find($this->default_provider_id);
             }
             
             
