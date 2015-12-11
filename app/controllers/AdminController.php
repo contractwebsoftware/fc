@@ -496,7 +496,7 @@ class AdminController extends BaseController {
         $provider->fill($input['provider']);
         if(!array_key_exists('change_form',$input)){
             $provider->save();
-            Session::flash('success','Provider\'s Custome Documents has been updated');
+            Session::flash('success','Provider\'s Customer Documents has been updated');
         }
 
         if(array_key_exists('edit_custom_form',$input))$key = $input['edit_custom_form'];
@@ -534,7 +534,8 @@ class AdminController extends BaseController {
 
             $name = $file->getClientOriginalName();
 
-            $provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
+            $provider_file = null;
+            if($input['provider_files_type'] != 'client_printable')$provider_file = ProviderFiles::where('provider_id', $input['provider']['id'])->where('file_type', $input['provider_files_type'])->first();
             if ($provider_file == null || $provider_file == "") $provider_file = new ProviderFiles();
             $provider_file->provider_id = $input['provider']['id'];
             $provider_file->file_name = $name;
