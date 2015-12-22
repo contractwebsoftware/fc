@@ -228,6 +228,12 @@ $save_button = 'Continue';
                     <div class="col-sm-12">
                         <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
                         {{$value}}
+                        <!--
+                        @if(strpos(strtolower($value), '.pdf') !== false)
+                        @else
+                            <a href="{{asset('provider_files/'.$provider->id.'/'.$value)}}">{{$value}}</a>
+                        @endif
+                        -->
                     </div>
                 </div>
             @endforeach
