@@ -227,13 +227,10 @@ $save_button = 'Continue';
                 <div class="row form-group">
                     <div class="col-sm-12">
                         <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
-                        {{$value}}
-                        <!--
-                        @if(strpos(strtolower($value), '.pdf') !== false)
-                        @else
-                            <a href="{{asset('provider_files/'.$provider->id.'/'.$value)}}">{{$value}}</a>
-                        @endif
-                        -->
+
+                        <a href="{{action('ClientController@postCustomerDocuments', [622, $provider->id, 'customer_form_9','1'] )}}" target="_blank">{{$value}}</a>
+
+
                     </div>
                 </div>
             @endforeach
