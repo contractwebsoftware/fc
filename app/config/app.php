@@ -13,7 +13,7 @@ return array(
 	|
 	*/
 
-	'debug' => (gethostname()=='provider.forcremation.com' ? false : true),
+	'debug' => false,
 
 	/*
 	|--------------------------------------------------------------------------
