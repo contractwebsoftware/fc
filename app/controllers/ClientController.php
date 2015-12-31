@@ -1388,7 +1388,7 @@ class ClientController extends BaseController {
         //if($download_file){
              $new_pdf->merge('file', $doc_location);
              //return $doc_location;
-             Redirect::away($doc_location);
+            return Redirect::to('provider_files\\'.$provider_id.'\\'.$doc_name);
         //}
         //else {
         //    $new_pdf->merge('browser', $doc_name);
