@@ -228,7 +228,7 @@ $save_button = 'Continue';
                     <div class="col-sm-12">
                         <input type="checkbox" class="download-forms-cb" name="download_forms[customer_form_{{$key}}]" id="download_forms_{{$key}}" value="{{$value}}" />
 
-                        <a href="{{action('ClientController@postCustomerDocuments', [622, $provider->id, ('customer_form_'.$key) ,'1'] )}}" target="_blank">{{$value}}</a>
+                        <a href="{{action('ClientController@postCustomerDocuments', [$client->id, $provider->id, ('customer_form_'.$key) ,'1'] )}}" target="_blank">{{$value}}</a>
 
 
                     </div>

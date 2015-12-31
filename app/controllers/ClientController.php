@@ -1128,7 +1128,8 @@ class ClientController extends BaseController {
 
 
 
-        $client = Client::find($client_id);
+        $client = Client::findOrFail($client_id);
+        //dd($client);
         $client = ClientController::fillOutClientTables($client);
         //$provider = FProvider::find($provider_id);
         $provider = ClientController::updateProvider($provider_id);
@@ -1301,13 +1302,23 @@ class ClientController extends BaseController {
                 //has_pace_maker
 
                 ## TRANSFORM BOOLEANS
-                switch($class->$key){
-                    case '0': $class->$key = 'No'; break;
-                    case '1': $class->$key = 'Yes'; break;
+                if(is_object($class)) {
+                    switch ($class->$key) {
+                        case '0':
+                            $class->$key = 'No';
+                            break;
+                        case '1':
+                            $class->$key = 'Yes';
+                            break;
 
-                    default: break;
+                        default:
+                            break;
+                    }
                 }
-
+                else {
+                    $class = new Client();
+                    $class->$key = '';
+                }
                 ## TRANSFORM DATES
                 switch($key){
                     case 'dob':
@@ -1374,13 +1385,17 @@ class ClientController extends BaseController {
             $new_pdf->addPDF($new_pdf_loc, 'all');
         }
 
-        if($download_file){
+        //if($download_file){
              $new_pdf->merge('file', $doc_location);
-             return $doc_location;
-        }
-        else $new_pdf->merge('browser', $doc_name);
+             //return $doc_location;
+             Redirect::away($doc_location);
+        //}
+        //else {
+        //    $new_pdf->merge('browser', $doc_name);
 
-        return $new_pdf;
+        //}
+
+        //return $new_pdf;
 
     }
 
