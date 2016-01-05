@@ -1,4 +1,6 @@
 <?php
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
 
 return array(
 
@@ -13,7 +15,7 @@ return array(
 	|
 	*/
 
-	'debug' => true,
+	'debug' => $_ENV['DEBUG'],
 
 	/*
 	|--------------------------------------------------------------------------

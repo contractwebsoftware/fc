@@ -11,7 +11,8 @@
 		"rtconner/freshbooks-api": "dev-master",
 	 	"itbz/fpdi": "dev-master",
 	 	"clegginabox/pdf-merger": "dev-master",
-		"propa/tcpdi": "dev-master"
+		"propa/tcpdi": "dev-master",
+		"vlucas/phpdotenv": "^2.2"
 	},
 	"autoload": {
 		"classmap": [

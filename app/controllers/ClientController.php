@@ -11,7 +11,6 @@ class ClientController extends BaseController {
 	}
 	public function getSteps($goToStep=0, $jsonReturn=false, $client=null)
 	{
-
             //dd(Session::get('inAdminGroup'));
             if(Input::get('client_id')!=''){
                 //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
