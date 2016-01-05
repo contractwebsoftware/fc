@@ -1442,7 +1442,7 @@ class ClientController extends BaseController {
                 'organization' => $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name,
                 'first_name' => $client->first_name,
                 'last_name' => $client->last_name,
-                'email' => $client->User->email,
+                'email' => $client_user->email,
                 //'username' => $provider->email,
                 'work_phone' => $client->phone,
                 'fax' => $client->fax,
