@@ -1122,7 +1122,7 @@ class ClientController extends BaseController {
         
         
         if(Input::get('download_forms')!=null)$download_forms = Input::get('download_forms');        
-        if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
+        if($download_forms == '')$download_forms = array();
         if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
 
 
@@ -1335,6 +1335,7 @@ class ClientController extends BaseController {
             $html .= '<p style="page-break-after:always;"></p>';
 
         }
+        if($html == '')$html .= '<p style="page-break-after:always;"></p>';
 
         //echo '<pre>';dd($html);
         //download_forms
