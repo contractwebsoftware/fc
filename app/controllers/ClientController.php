@@ -1335,7 +1335,7 @@ class ClientController extends BaseController {
             $html .= '<p style="page-break-after:always;"></p>';
 
         }
-        if($html == '')$html .= '<p style="page-break-after:always;"></p>';
+
 
         //echo '<pre>';dd($html);
         //download_forms
@@ -1354,24 +1354,24 @@ class ClientController extends BaseController {
         }
 
         $pdf = App::make('dompdf');
-        //$pdf = new DOMPDF();
-        $pdf->loadHTML($html);
-        //$pdf->save($doc_location);
-        $pdf->save($doc_location);
+        if($html != ''){
+            $pdf->loadHTML($html);
+            $pdf->save($doc_location);
+        }
 
 
         $new_pdf = new \Clegginabox\PDFMerger\PDFMerger;
-        $new_pdf->addPDF($doc_location, 'all');
+        if($html != '')$new_pdf->addPDF($doc_location, 'all');
 
 
         #$new_pdf = new TCPDI(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         #$new_pdf->addPDF($doc_location, 'all');
 
 
+        //MERGE ANY PROVIDER UPLOADED FORMED
         $download_provider_forms = Input::get('download_provider_forms');
         if(is_array($download_provider_forms))
         foreach($download_provider_forms as $key=>$value){
-
 
             #$new_pdf->setSourceFile(public_path('provider_files/'.$provider_id.'/'.$value));
 
@@ -1386,7 +1386,8 @@ class ClientController extends BaseController {
         }
 
         //if($download_file){
-             $new_pdf->merge('file', $doc_location);
+            //IF WE HAVE ANY FORM BUILDER FORMS THEN MERGE THEM IN
+            if($html != '')$new_pdf->merge('file', $doc_location);
              //return $doc_location;
             return Redirect::to('provider_files\\'.$provider_id.'\\'.$doc_name);
         //}
