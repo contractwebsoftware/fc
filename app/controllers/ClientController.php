@@ -1335,7 +1335,7 @@ class ClientController extends BaseController {
             $html .= '<p style="page-break-after:always;"></p>';
 
         }
-
+		if($html == '')$html = '<html></html>';
 
         //echo '<pre>';dd($html);
         //download_forms
@@ -1361,8 +1361,8 @@ class ClientController extends BaseController {
 
 
         $new_pdf = new \Clegginabox\PDFMerger\PDFMerger;
-        if($html != '')$new_pdf->addPDF($doc_location, 'all');
-
+        if($html != '<html></html>')$new_pdf->addPDF($doc_location, 'all');
+		
 
         #$new_pdf = new TCPDI(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         #$new_pdf->addPDF($doc_location, 'all');
@@ -1376,6 +1376,7 @@ class ClientController extends BaseController {
             #$new_pdf->setSourceFile(public_path('provider_files/'.$provider_id.'/'.$value));
 
            # $new_pdf->Output(public_path('provider_files/'.$provider_id.'/'.$value), 'D');
+		    $pdf_loc = '';
             $pdf_loc = public_path('provider_files\\'.$provider_id.'\\'.$value);
             $new_pdf_loc = public_path('provider_files\\'.$provider_id.'\\temp-'.$value);
             $command = '"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o "'.$new_pdf_loc.'" "'.$pdf_loc.'"';
@@ -1387,7 +1388,7 @@ class ClientController extends BaseController {
 
         //if($download_file){
             //IF WE HAVE ANY FORM BUILDER FORMS THEN MERGE THEM IN
-            if($html != '')$new_pdf->merge('file', $doc_location);
+            if($html != '')$new_pdf->merge('browser', $doc_location);
              //return $doc_location;
             return Redirect::to('provider_files\\'.$provider_id.'\\'.$doc_name);
         //}
