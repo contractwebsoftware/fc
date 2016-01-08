@@ -12,7 +12,7 @@
 	 	"itbz/fpdi": "dev-master",
 	 	"clegginabox/pdf-merger": "dev-master",
 		"propa/tcpdi": "dev-master",
-		"vlucas/phpdotenv": "^2.2"
+		"vlucas/phpdotenv": "^2.2@dev"
 	},
 	"autoload": {
 		"classmap": [
