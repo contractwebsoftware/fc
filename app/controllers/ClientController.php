@@ -1342,8 +1342,12 @@ class ClientController extends BaseController {
         //
         //<p><!-- pagebreak --></p>
 
+        $local = false;
+        if(strpos(public_path(), '/Users/')!==false)$local = true;
+
         $doc_name = 'CremationDocuments'.date('Y-m-d').'.pdf';
-        $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
+        if($local)$doc_location = public_path('provider_files/'.$provider_id.'/'.$doc_name);
+        else $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
 
         #dd('test'.$getPreview);
         if($getPreview) {
@@ -1381,23 +1385,24 @@ class ClientController extends BaseController {
             $new_pdf_loc = public_path('provider_files\\'.$provider_id.'\\temp-'.$value);
             $command = '"C:\Program Files\gs\gs9.16\bin\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dBATCH -dQUIET -o "'.$new_pdf_loc.'" "'.$pdf_loc.'"';
             #dd($command);
-            exec($command);
+            if(!$local)exec($command);
 
             $new_pdf->addPDF($new_pdf_loc, 'all');
         }
 
-        //if($download_file){
+        if($download_file){
             //IF WE HAVE ANY FORM BUILDER FORMS THEN MERGE THEM IN
+            $new_pdf->merge('file', $doc_location);
+            return $doc_location;
+        }
+        else {
             if($html != '')$new_pdf->merge('browser', $doc_location);
-             //return $doc_location;
+            //return $doc_location;
             return Redirect::to('provider_files\\'.$provider_id.'\\'.$doc_name);
-        //}
-        //else {
-        //    $new_pdf->merge('browser', $doc_name);
 
-        //}
+        }
 
-        //return $new_pdf;
+        return $new_pdf;
 
     }
 
