@@ -125,6 +125,7 @@
                         </ul>
 		</div>
 		<div class="col-xs-12 col-md-6 text-right">
+            <!--
 			{{ Form::open(['action'=>'AdminController@getCustomers','method'=>'GET']) }}
 			<div class="input-group">
 			  	<input type="text" class="form-control" name="q" value="{{Input::get('q')}}">
@@ -133,6 +134,7 @@
                                 </span>
 			</div>
 			{{ Form::close() }}
+                    -->
 		</div>
 	</div>
         <hr><style>div.tooltip-inner{min-width: 250px;}</style>
