@@ -12,3 +12,4 @@ node_modules
 public/css/.sass-cache
 public/provider_files
 /.idea
+app/config/.env
