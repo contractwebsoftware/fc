@@ -828,7 +828,7 @@ class AdminController extends BaseController {
                       ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
             });
         }
-        $clients = $clients->orderBy('clients.created_at', 'desc')->paginate($per_page);
+        $clients = $clients->orderBy('clients.created_at', 'desc')->get(); //->paginate($per_page);
         //$queries = DB::getQueryLog();
         //print_r( end($queries)); 
 

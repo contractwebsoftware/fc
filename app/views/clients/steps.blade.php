@@ -26,11 +26,8 @@ $save_button = 'Continue';
     ?>
     <div class="row">
         <div class="col-md-12 pull-left">
-            <a href="{{ action('AdminController@getCustomers') }}">&lt; &nbsp;Back to Clients List</a>  <br />
-            <a href="{{ action('AdminController@getEditProvider', array($provider->id, 'provider_clients') ) }}">&lt; &nbsp;Back to Provider</a><br />
-
+            <a href="{{ action('AdminController@getEditProvider', array($provider->id, 'provider_clients') ) }}">&lt; &nbsp;Back to Provider Clients</a><br />
         </div>
-
     </div>
 
     <div class="row">
@@ -367,8 +364,12 @@ $save_button = 'Continue';
         <fieldset id="client_invoices" name="client_invoices" style="background-color: #fff;">
             <div class="row">
                 <div class="col-md-12">
-                    <a style="font-weight:bold;float:right;" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">Edit Invoice In Freshbooks</a>
-<h3>QuikFiles Invoice</h3>
+                    <!-- IF THIS IS THE DEFAULT FRESHBOOKS ACCOUNT -->
+                    @if(!$provider->is_default)
+                        <a style="font-weight:bold;float:right;" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">
+                            Edit Invoice In Freshbooks</a>
+                        <h3>QuikFiles Invoice</h3>
+                    @endif
                     <!--
                     <table>
                         <thead>

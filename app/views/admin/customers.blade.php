@@ -1,5 +1,23 @@
 @section('content')
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.js"></script>
+    <style>
+        div.container {
+            width: 80%;
+        }
+        #provider_clients_table,#provider_clients_invoice_table,#provider_clients_signed_table{ table-layout: auto!important; }
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('#clients_table')
+                    .DataTable( {
+                        "pagingType": "full_numbers",
+                        "pageLength": 25
+                    } );
+
+        });
+    </script>
 
      <div class="row">
         <div class="col-xs-12 col-md-6">
@@ -7,7 +25,7 @@
         </div>
         <div class="col-xs-12 col-md-6 text-right">
 
-            <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#myModal" style="float:right;">Create Client</button>
+            <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#myModal" style="    float:right;">Create Client</button>
 
 
             <div class="modal fade" id="myModal">
@@ -119,23 +137,23 @@
 	</div>
         <hr><style>div.tooltip-inner{min-width: 250px;}</style>
 	<div class="page-body">
-            {{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}
+            {{--{{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}--}}
             
             {{ Form::open(['action'=>'AdminController@postMassUpdateClients','class'=>'form-horizontal','role'=>'form']) }}
            
             
-                <select name="mass_edit_type" style="float:left;margin-right:15px;">
-                    <option value="">Select Mass Action</option>
-                    <option value="delete">Delete</option>
-                    <option value="undelete">UnDelete</option>
-                    <option value="undelete">Active</option>
-                    <option value="preneed">Pre-Need</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <input type="submit" name="mass_update" value="Update" />
-               
+            <select name="mass_edit_type" style="float:left;margin-right:15px;">
+                <option value="">Select Mass Action</option>
+                <option value="delete">Delete</option>
+                <option value="undelete">UnDelete</option>
+                <option value="undelete">Active</option>
+                <option value="preneed">Pre-Need</option>
+                <option value="completed">Completed</option>
+            </select>
+            <input type="submit" name="mass_update" value="Update" style="float:left;" />
+
                 
-            <table class="table table-striped client_table">
+            <table class="display" cellspacing="0" width="100%" id="clients_table">
                 <thead>
                     <tr>
                         <th style="width:70px"><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
@@ -193,7 +211,7 @@
             </table>
             {{ Form::close() }}
             
-            {{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}
+            {{--{{ $clients->appends(array('status' => Input::get('status'), 'q'=>Input::get('q'), 'preneed'=>Input::get('preneed')))->links() }}--}}
  
 	</div>
 

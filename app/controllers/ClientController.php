@@ -83,8 +83,12 @@ class ClientController extends BaseController {
             
                 //echo '<br>INPUTS:<br />'; print_r(Input::get());  
                 //echo '<br>$provider:<br />'; print_r($provider);  
-          
-            
+
+            ## IS THIS PROVIDER OUR DEFAULT QUIKFILES PROVIDER
+            $provider->is_default = FALSE;
+            if($provider->freshbooks_api_url == 'forcremationcom3' || $provider->freshbooks_api_token == '45dbba763492069606dc4125c413453a')
+                $provider->is_default = TRUE;
+            else $provider->is_default = FALSE;
            
             /*
              * USE THE PROVIDERS PRODUCT PRICES IF THEY HAVE ANY 

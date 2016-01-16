@@ -183,3 +183,4 @@ return array(
 	'cipher' => MCRYPT_RIJNDAEL_256,
 
 );
+if(!$_ENV['DEBUG'])error_reporting(E_ERROR | E_PARSE);
