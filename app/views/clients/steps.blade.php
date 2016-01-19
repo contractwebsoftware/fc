@@ -650,15 +650,25 @@ Date:_____________________-->
                                 <input type="text" name="invoice_subject" style="border:1px solid #bbb;padding:2px;"  placeholder="Email Subject" value="New invoice {{trim($client->fb_invoice['invoice']['invoice_id'],'0')}} from {{$provider->business_name}}, sent using QuikFiles" /><br />
 
                                 <label><b>Message:</b></label>
+
+                                @if(!$provider->is_default)
                                 <textarea name="invoice_message" type="text" style="border:1px solid #bbb;padding:2px;"  placeholder="Email Message">To view your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}, or to download a PDF copy for your records, click the link below:
 
         {{$client->fb_invoice['invoice']['links']['client_view']}}
 
         or copy and paste the following URL into your browser: {{$client->fb_invoice['invoice']['links']['client_view']}}
                                 </textarea>
-                                <?php
+                                @else
+                                <textarea name="invoice_message" type="text" style="border:1px solid #bbb;padding:2px;"  placeholder="Email Message">Attached is your invoice from {{$provider->business_name}} for ${{$client->fb_invoice['invoice']['amount_outstanding']}}
+                                </textarea>
+                                @endif
+
+
+
+                            <?php
                                 $domain = str_replace('https://', '', $provider->freshbooks_api_url);
                                 $domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
+
                                 ?>
                                 <br />
 
@@ -667,7 +677,12 @@ Date:_____________________-->
                                 {{$provider->business_name}} ({{$provider->email}})<br />
                             </div>
                             <hr><br />
-                            <button class="pull-right" type="submit" name="send_invoice" value="send">Send Invoice</button>
+                        @if($provider->is_default)
+                            <input class="pull-right btn" type="submit" name="send_invoice_pdf" value="Send Invoice PDF" />
+                        @else
+                            <input class="pull-right btn" type="submit" name="send_invoice" value="Send Invoice" />
+                        @endif
+
                    </div>
                 </div>
             </div>

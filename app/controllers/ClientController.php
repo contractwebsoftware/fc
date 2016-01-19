@@ -1618,7 +1618,7 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
     }
 
 
-//echo '<pre>';dd($line_items_r);
+    //echo '<pre>';dd($line_items_r);
 
 
     if($client->fb_invoice_id=='0' || $client->fb_invoice_id=='')$create_new = true;
@@ -1682,8 +1682,7 @@ function postInvoiceClient($provider_id='', $client_id='', $return_invoice_id=fa
             //dd($fb->getResponse());
         }
 
-
-    if(Input::get('send_invoice')!=''){
+    if(Input::get('send_invoice')!='' || Input::get('send_invoice_pdf')!=''){
         ClientController::postUpdateInvoiceItems();
     }
 
@@ -1761,17 +1760,12 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
     $client_user = User::find($client->user_id);
     $clientData = ClientController::fillOutClientTables(Client::find($client_id));
 
-
-
     if($client->fb_invoice_id!='' ) {
 
 
         $fb = ClientController::postFreshbooksApi($provider);
 
         if(Input::get('send_invoice')!=''){
-
-
-
 
             //UPDATE THE CLIENT EMAIL ADDRESS IN FRESHBOOKS
             $email = Input::get('custom_invoice_email');
@@ -1826,14 +1820,48 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
                 var_dump($fb->getResponse());
             }
 
+        }
+        else if(Input::get('send_invoice_pdf')!=''){
 
 
 
+
+            $fb->setMethod('invoice.getPDF');
+            $fb->post( array('invoice_id' => $client->fb_invoice_id) );
+
+            $fb->request();
+            if ($fb->success()) {
+                Session::flash('success', 'Successfully Emailed Freshbooks PDF Invoice');
+                #dd($fb->getResponse());
+                $email_r = Input::get('custom_invoice_email');
+                $fb_client_info = array(
+                    'invoice_id' => $client->fb_invoice_id,
+                    'subject'   => Input::get('invoice_subject'),
+                    'message_body'   => Input::get('invoice_message'),
+                    'to'        => $email_r['fb_invoice_email']
+                );
+                $fb_client_info['data'] = $fb->getResponse();
+
+                #echo '<pre>';dd($fb_client_info['message']);
+
+                Mail::send('emails.client-send-invoice', $fb_client_info, function($message) use($fb_client_info)
+                {
+                    $message->subject($fb_client_info['subject']);
+                    $message->to($fb_client_info['to']);
+                    $message->attachData($fb_client_info['data'], 'Invoice.pdf' );
+                });
+
+            }
+            else {
+                #echo $fb->getError();
+                #dd($fb->getError());
+                Session::flash('error', 'Errors Emailing Freshbooks PDF Invoice'.tostring($fb->getError()));
+                var_dump($fb->getResponse());
+            }
 
 
         }
         else {
-
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb_client_info = array(
@@ -1886,8 +1914,8 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 
 }
 
-    function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
-    {
+function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
+{
 
         $forms_included = $com = '';
 

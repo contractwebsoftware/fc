@@ -1274,6 +1274,9 @@ class AdminController extends BaseController {
             return Redirect::action('AdminController@getBillingPage', ['plan_basic'=>$plan_basic,'plan_premium'=>$plan_premium]);
     } */
 
+
+
+
     public function postAddBillingClient($provider_id)
     {
 

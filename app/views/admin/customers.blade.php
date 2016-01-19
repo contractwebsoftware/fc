@@ -110,11 +110,11 @@
 			<ul class="nav nav-pills">
 			  <li class="disabled"><a href="#">Filter:</a></li>
 			  <?php
-                            if(array_key_exists('status', $_GET))$status = $_GET['status'];
-                            else $status='';
-                            if(array_key_exists('preneed', $_GET))$preneed = $_GET['preneed'];
-                            else $preneed='';
-                          ?>
+                    if(array_key_exists('status', $_GET))$status = $_GET['status'];
+                    else $status='';
+                    if(array_key_exists('preneed', $_GET))$preneed = $_GET['preneed'];
+                    else $preneed='';
+              ?>
 			  <li {{ ($status=="2" && !array_key_exists('q', $_GET)?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'2')) ) }}">All</a></li>
               <!-- Active=0 Completed=2 Deleted=3 -->
               <li {{ (($status=="0"||$status=="") && ($status=="" || $preneed=="0"||$preneed=="")?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'0')) ) }}">Active</a></li>
@@ -122,7 +122,7 @@
 			  <li {{ ($status=="1"?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'1')) ) }}">Completed</a></li>
 			  <li {{ ($status=="3"?'class="active"':'') }}><a href="{{ URL::to(action('AdminController@getCustomers') ."?". http_build_query(array('status'=>'3')) ) }}">Deleted</a></li>
                           
-                        </ul>
+             </ul>
 		</div>
 		<div class="col-xs-12 col-md-6 text-right">
             <!--
