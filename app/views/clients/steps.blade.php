@@ -316,7 +316,7 @@ $save_button = 'Continue';
     </div>
 </div>
 
-@if($client->fb_client_id !='' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
+@if($client->fb_client_id !='' and ($provider->freshbooks_clients_invoice == '1' || $provider->freshbooks_clients_enabled == '1') and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
 <div class="row">
 
     <div class="col-md-12">
