@@ -78,8 +78,13 @@ function update_balance() {
 
 function update_price() {
   var row = $(this).parents('.item-row');
+
+  //console.log(row.find('.item-name textarea').val()+':'+ row.find('.cost').val() );
+
   var price = row.find('.cost').val().replace("$","") * row.find('.qty').val();
-  var tax1_percent = ((row.find('.tax1_percent').val().replace("%","") / 100) + 1) * row.find('.qty').val();
+  var tax1_percent = ((row.find('.tax1_percent').val().replace("%","") / 100) + 1); // * row.find('.qty').val()
+
+  //console.log(row.find('.item-name textarea').val()+':'+ price);
 
   tax1_percent = roundNumber(tax1_percent,2);
   price = roundNumber(price,2);
@@ -87,7 +92,7 @@ function update_price() {
   price = roundNumber(tax1_percent * price,2);
   isNaN(price) ? row.find('.price').html("N/A") : row.find('.price').html("$"+price);
 
-
+  //console.log(row.find('.item-name textarea').val()+':'+price);
 
   update_total();
 }

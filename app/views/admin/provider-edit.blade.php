@@ -1331,8 +1331,19 @@
                                             </div>
                                     </div>
                             </div>
+
                             <div class="form-group">
-                                    <label for="deathcert_each" class="col-xs-12 col-md-6">Each Death Certificate</label>
+                                <label for="deathcert_each" class="col-xs-12 col-md-6">First Death Certificate</label>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" id="deathcert_first" name="pricing[deathcert_first]" value="{{ $pricing->deathcert_first }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                    <label for="deathcert_each" class="col-xs-12 col-md-6">Each Additional Death Certificate</label>
                                     <div class="col-xs-12 col-md-6">
                                             <div class="input-group">
                                                     <span class="input-group-addon">$</span>

@@ -516,7 +516,7 @@ c/o Steve Widget</textarea>-->
                                     $found = false;
                                 ?>
 
-
+{{--{{ '<pre>'.dd($client->fb_invoice['invoice']['lines']) }}--}}
                                 @foreach( $client->fb_invoice['invoice']['lines']['line'] as $key=> $item )
                                     <?php
                                     if(is_array($item['name']))$item['name'] = implode(' ',$item['name']);
@@ -1339,9 +1339,10 @@ $(function(){
 <h3>Certified Death Certificates <p>Please tell us how you want to receive the death certificates</p></h3>
 <div class="row form-group">
    <div class="col-sm-12">
-       How many copies of the death certificate do you need? &nbsp; - &nbsp;
-       Each Certificate: <span style="font-weight:bold;">${{$provider->pricing_options->deathcert_each}}</span><br>
-       <input name="cremains_info[number_of_certs]" type="text" value="{{$client->CremainsInfo->number_of_certs}}" />
+       How many copies of the death certificate do you need? <br />
+       First Certificate: <span style="font-weight:bold;">${{$provider->pricing_options->deathcert_first}}</span>, &nbsp;
+       Each Additional Certificate: <span style="font-weight:bold;">${{$provider->pricing_options->deathcert_each}}</span><br>
+       <input name="cremains_info[number_of_certs]" type="text" value="{{ ($client->CremainsInfo->number_of_certs == '' || $client->CremainsInfo->number_of_certs == '0' ? 1 : $client->CremainsInfo->number_of_certs) }}" />
 
    </div>
 </div>
@@ -1456,7 +1457,8 @@ $(function(){
            <?php
                if(is_array($client->sale_summary_r['report']))
                foreach($client->sale_summary_r['report'] as $key=>$value){
-                   echo '<tr><td>'.$value['name'].'</td><td>'.$value['desc'].'</td><td >'.$value['price'].'</td></tr>';
+                    if(@$value['line_price'] != '')$value['price'] = $value['line_price'];
+                    echo '<tr><td>'.$value['name'].'</td><td>'.$value['desc'].'</td><td >'.$value['price'].'</td></tr>';
                }
            ?>
 
