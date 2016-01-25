@@ -421,7 +421,7 @@ $save_button = 'Continue';
 
 
 
-                    <script type='text/javascript' src='{{ asset('js/invoice.js') }}'></script>
+                    <script type='text/javascript' src='{{ asset('js/invoice.js?v=2') }}'></script>
 
 
                     <div id="invoice-page-wrap">
