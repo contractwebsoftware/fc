@@ -1039,7 +1039,7 @@ class ClientController extends BaseController {
                 $saleSummary['report']['number_of_certs']['qnt'] = ($client->CremainsInfo->number_of_certs - 1);
                 $saleSummary['report']['number_of_certs']['price'] = number_format((float)$provider->pricing_options->deathcert_each, 2, '.', '');
                 $saleSummary['report']['number_of_certs']['line_price'] = number_format((float)$provider->pricing_options->deathcert_each * (($client->CremainsInfo->number_of_certs > 1) ? ($client->CremainsInfo->number_of_certs - 1) : 0), 2, '.', '');
-                $TOTAL_PRICE += $saleSummary['report']['number_of_certs']['price'];
+                $TOTAL_PRICE += $saleSummary['report']['number_of_certs']['line_price'];
             }
 
             $saleSummary['report']['filing_fee']['name'] = 'Filing Fee';
