@@ -930,16 +930,28 @@ class ClientController extends BaseController {
 
                 $client = Client::where('user_id',Sentry::getUser()->id)->first();
 
-               
-                //dd($client);
+                $provider = new FProvider();
+                if($client->FProvider!=null) {
+                   $provider = FProvider::find($client->FProvider->id);
+                }
+                elseif(is_object(Session::get('provider'))) {
+                   $provider = Session::get('provider');
+                   #$provider = ClientController::updateProvider($provider->id);
+                }
+                else $provider = FProvider::find($this->default_provider_id);
+
+               //dd($client);
                
                 $mail_data['client'] = $client;
                 $mail_data['login'] = $input['user']['email'];
-                $mail_data['pass']= Input::get('register_password');
+                $mail_data['pass'] = Input::get('register_password');
+                #$mail_data['provider_contact'] = 'Funeral and Cremation Services of Orange County, CA. FD1567, 351 N Hewes St, Suite A, Orange, CA 92869';
+                $mail_data['provider_contact'] = $provider->business_name.', '.$provider->address.', '.$provider->city.', '.$provider->state.' '.$provider->zip;
+
                 Mail::send('emails.client-welcome', $mail_data, function($message) use ($input)
                 {
-                   
-                 //dd();
+
+                    //dd();
                     //$message->from('us@example.com', 'Laravel');
                     $message->to($input['user']['email'])->cc('forcremation@gmail.com');
                     //$message->attach($pathToFile);

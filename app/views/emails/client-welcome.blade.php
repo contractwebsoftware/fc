@@ -13,7 +13,7 @@
         We wait for your instructions - and are here day or night.<br />
         Your Login and Access information is provided below for when you return to http://www.forcremation.com<br />
         We have the simplest, most convenient method for cremation and look forward to serving you.<br />
-        Funeral and Cremation Services of Orange County, CA. FD1567, 351 N Hewes St, Suite A, Orange, CA 92869<br /><br />
+        {{ $provider_contact }}<br /><br />
 
         Account Login: {{$login}}<br />
         Account Password: {{$pass}}<br />
