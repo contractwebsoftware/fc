@@ -12,7 +12,8 @@
 	 	"itbz/fpdi": "dev-master",
 	 	"clegginabox/pdf-merger": "dev-master",
 		"propa/tcpdi": "dev-master",
-		"vlucas/phpdotenv": "^2.2@dev"
+		"vlucas/phpdotenv": "^2.2@dev",
+		"guzzlehttp/guzzle": "~4.0"
 	},
 	"autoload": {
 		"classmap": [

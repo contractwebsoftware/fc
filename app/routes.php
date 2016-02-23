@@ -65,11 +65,12 @@ Route::get('test', function(){
 Route::get('test2',function(){
     //return User::all();
     /*
-    Mail::send('emails.welcome', array('provider'=>new FProvider(),'pass'=>'testpass'), function($message)
+    Mail::send('emails.provider-welcome', array('provider'=>new FProvider(),'pass'=>'testpass'), function($message)
         {
 
             $message->from('forcremation@gmail.com', 'ForCremation');
-            $message->to('bendavol@gmail.com')->cc('forcremation@gmail.com');
+
+            $message->to('bendavol@gmail.com');
             //$message->attach($pathToFile);
         });*/
             
