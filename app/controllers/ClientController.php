@@ -940,13 +940,14 @@ class ClientController extends BaseController {
                 }
                 else $provider = FProvider::find($this->default_provider_id);
 
-               //dd($client);
+                //dd($client);
                
                 $mail_data['client'] = $client;
                 $mail_data['login'] = $input['user']['email'];
                 $mail_data['pass'] = Input::get('register_password');
                 #$mail_data['provider_contact'] = 'Funeral and Cremation Services of Orange County, CA. FD1567, 351 N Hewes St, Suite A, Orange, CA 92869';
                 $mail_data['provider_contact'] = $provider->business_name.', '.$provider->address.', '.$provider->city.', '.$provider->state.' '.$provider->zip;
+                $mail_data['provider'] = $provider;
 
                 Mail::send('emails.client-welcome', $mail_data, function($message) use ($input)
                 {
