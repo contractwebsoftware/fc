@@ -41,7 +41,7 @@ class ClientController extends BaseController {
             if($client->CremainsInfo == null)$client->CremainsInfo = New CremainsInfo();
             if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
             if($client->User == null)$client->User = New User();
-            
+
             //echo 'SESSION<br />';
             //print_r(Session::all());
             
@@ -1357,7 +1357,8 @@ class ClientController extends BaseController {
                 switch($key){
                     case 'dob':
                     case 'dod':
-                        if($class->$key == '0000-00-00')$class->$key = '';
+
+                        if($class->$key == '0000-00-00'  || $class->$key == '11/30/-0001' || $class->$key == null  || $class->$key == '01/01/1970' || date('m/d/Y', strtotime($class->$key)) == '01/01/1970')$class->$key = '';
                         else $class->$key = date('m/d/Y', strtotime($class->$key)); break;
 
                     default: break;

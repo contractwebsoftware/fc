@@ -962,9 +962,19 @@ $("#choose_provider").click(function(){
 </div>
 
 <div class="row form-group">
-    <div class="col-sm-6" style="@if(!Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br /><input name="deceased_info[dod]" id="dod" class="calendar" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dod))}}" /></div>
+    <div class="col-sm-6" style="@if(!Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br />
+        <?php
+            $dod = date('m/d/Y', strtotime($client->DeceasedInfo->dod));
+            if($dod == '01/01/1970' || $dod == '11/30/-0001')$dod = '';
+        ?>
+        <input name="deceased_info[dod]" id="dod" class="calendar" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{ $dod }}" /></div>
 
-    <div class="col-sm-6">Date of Birth<br /><input name="deceased_info[dob]" id="dob" type="text" class="calendar" placeholder="Date of Birth MM/DD/YYYY" value="{{date('m/d/Y', strtotime($client->DeceasedInfo->dob))}}" /></div>
+    <div class="col-sm-6">Date of Birth<br />
+        <?php
+            $dob = date('m/d/Y', strtotime($client->DeceasedInfo->dob));
+            if($dob == '01/01/1970' || $dob == '11/30/-0001')$dob = '';
+        ?>
+        <input name="deceased_info[dob]" id="dob" type="text" class="calendar" placeholder="Date of Birth MM/DD/YYYY" value="{{ $dob }}" /></div>
 </div>
 
 <div class="row form-group">
