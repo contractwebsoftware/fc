@@ -15,7 +15,7 @@ return array(
 	|
 	*/
 
-	'debug' => $_ENV['DEBUG'],
+	'debug' => false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -183,4 +183,4 @@ return array(
 	'cipher' => MCRYPT_RIJNDAEL_256,
 
 );
-if(!$_ENV['DEBUG'])error_reporting(E_ERROR | E_PARSE);
+if(!false)error_reporting(E_ERROR | E_PARSE); //$_ENV['DEBUG']
