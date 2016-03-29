@@ -31,7 +31,6 @@ class UserController extends BaseController {
             {
                 // Try to authenticate the user
                 $user = Sentry::authenticate($credentials, false);
-
             }
             catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
             {
@@ -54,7 +53,11 @@ class UserController extends BaseController {
             {
                 Session::flash('error','User is not activated');
             }
-            if(Sentry::getUser()->role=='admin') {
+            if(!$user){
+                Session::flash('error','Wrong password, please try again!');
+                return Redirect::back();
+            }
+            elseif($user->role=='admin') {
                 //dd(Session::get('provider'));
 
                 return Redirect::action('AdminController@getProviders');
