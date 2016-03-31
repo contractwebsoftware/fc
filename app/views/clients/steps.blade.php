@@ -719,13 +719,9 @@ $().ready(function(){
    <div class="col-md-6"><h3 class="pull-left">Cremation Package</h3></div>
    <div class="col-md-6">
 
-       @if( is_object($provider) )
-           @if($provider->id == '1')
                <a href="#" {{ (Session::get('inAdminGroup')=='Provider'?'style="display:none"':'') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">
                    Select a different provider?
                </a>
-           @endif
-       @endif
 
 
    </div>
