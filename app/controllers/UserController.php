@@ -365,15 +365,21 @@ class UserController extends BaseController {
 
     public function getCreateUser($user_info='') {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+
         try
         {
+            $pass = '';
             $input = Input::all();
             if($user_info == '')$user_info = $input['user'];
+            if($user_info['password'] == '')$pass = $user_info['pass'];
+            else $pass = $user_info['password'];
+
             //dd('test');
+
             // Create the user
             $user = Sentry::createUser(array(
                 'email'     => $user_info['email'],
-                'password'  => $user_info['password'],
+                'password'  => $pass,
                 'first_name'  => $user_info['first_name'],
                 'last_name'  => $user_info['last_name'],
                 'role'  => 'admin',
