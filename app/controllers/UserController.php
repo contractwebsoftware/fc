@@ -324,8 +324,9 @@ class UserController extends BaseController {
 
             $user->fill($input['user']);
             $user->save();
+            if(!isset($input['user']['password']))$input['user']['password'] = '';
 
-            if($input['pass']!='')$input['user']['password'] = $input['pass'];
+            if(isset($input['pass']))$input['user']['password'] = $input['pass'];
 
             // Okay all validation passed, we change the password
             if($input['user']['password']!=''){
@@ -365,14 +366,14 @@ class UserController extends BaseController {
 
     public function getCreateUser($user_info='') {
         if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
-
+        $user = null;
         try
         {
             $pass = '';
             $input = Input::all();
             if($user_info == '')$user_info = $input['user'];
-            if($user_info['password'] == '')$pass = $user_info['pass'];
-            else $pass = $user_info['password'];
+            if(isset($input['pass']))$pass = $input['pass'];
+            elseif(isset($input['password'])) $pass = $input['password'];
 
             //dd('test');
 
