@@ -734,7 +734,8 @@ $().ready(function(){
            <?php
            //print_r($states);
            foreach($states as $key=>$row){
-               echo '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
+                if($row->name_shor == 'CA' || $row->name_shor == 'OR' || $row->name_shor == 'WA')
+                echo '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
            }
            ?>
        </select>

@@ -7,11 +7,15 @@ class StepController extends BaseController {
 	public function getCities(){
             //print_r($_GET);
             //->groupBy('e_city')->orderBy('e_city')
-            $city = DB::table('funeral_homes')->where('e_state', 'like', Input::get('state'))->groupBy('e_city')->orderBy('e_city','asc')->get();
+            //$city = DB::table('funeral_homes')->where('e_state', 'like', Input::get('state'))->groupBy('e_city')->orderBy('e_city','asc')->get();
+            $city = FuneralHomes::select('e_city','id')->where('e_state', 'like', Input::get('state'))->groupBy('e_city')->get();
             $json_r = array();
-            
-            //asort($city);
-            
+
+            $city = $city->sortBy(function($city)
+            {
+                return $city->e_city;
+            });
+
             foreach($city as $key=>$row){
                 $json_r[$row->e_city.'---'.$row->id] = $row->e_city;
             }
