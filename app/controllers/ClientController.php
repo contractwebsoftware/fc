@@ -160,12 +160,13 @@ class ClientController extends BaseController {
                         <option value="">--</option>';
 
                         foreach($states as $key=>$row){
-                            $html .= '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
+                            if($row->name_shor == 'CA' || $row->name_shor == 'OR' || $row->name_shor == 'WA')
+                                $html .= '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
                         }
 
-        $html .= ' </select>
+        $html .= ' </select><!--
                     <br /><b>Select City</b>:<br />
-                    <select id="city" name="city"><option value="">--</option></select>
+                    <select id="city" name="city"><option value="">--</option></select>-->
                     <br /><b>Select Provider</b>:<br />
                     <select id="new_provider" name="new_provider"><option value="">--</option></select>
                     <br />
@@ -185,8 +186,10 @@ class ClientController extends BaseController {
             <script src="'. asset('js/jquery.chained.remote.min.js') .'"></script>
             <script>
 
-                $("#city").remoteChained("#state", "'.action('StepController@getCities').'");
-                $("#new_provider").remoteChained("#city", "'.action('StepController@getProvidersByCity').'");
+                //$("#city").remoteChained("#state", "'.action('StepController@getCities').'");
+                //$("#new_provider").remoteChained("#city", "'.action('StepController@getProvidersByCity').'");
+                
+                $("#new_provider").remoteChained("#state", "'.action('StepController@getProvidersByState').'");
                 $("#new_provider").on("change", function(){
                     $("#new_provider option:contains(\'funeralhome-\')").attr("disabled",true);
                     $("#new_provider option[value*=\'funeralhome-\']").attr("disabled", true );
