@@ -57,7 +57,7 @@ class StepController extends BaseController {
             //$providers = FProvider::where('state')->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
 
 
-            $providers = DB::select(DB::raw(" SELECT providers.id, providers.business_name
+            $providers = DB::select(DB::raw(" SELECT providers.id, providers.business_name, providers.city
                                                 FROM providers, provider_zips, zips 
                                                 WHERE providers.id = provider_zips.provider_id 
                                                         and providers.provider_status = 1
@@ -79,7 +79,7 @@ class StepController extends BaseController {
             //dd($providers);
 
             foreach($providers as $key=>$row){
-                $json_r['provider-'.$row->id] = $row->business_name;
+                $json_r['provider-'.$row->id] = $row->city.' - '.$row->business_name;
             }
 
 
