@@ -739,12 +739,12 @@ $().ready(function(){
            }
            ?>
        </select>
-   </div>
+   </div><!--
    <div class="col-md-3">
        <select id="city" name="city">
            <option value="">--</option>
        </select>
-   </div>
+   </div>-->
    <div class="col-md-3">
        <select id="new_provider" name="new_provider">
            <option value="">--</option>
@@ -859,8 +859,9 @@ $('.required-Y,.required-y').on('click change blur focus',function(){
    $(this).prop('checked',true);
 });
 
-$("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
-$("#new_provider").remoteChained("#city", "{{action('StepController@getProvidersByCity')}}");
+//$("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
+//$("#new_provider").remoteChained("#city", "{{action('StepController@getProvidersByCity')}}");
+$("#new_provider").remoteChained("#state", "{{action('StepController@getProvidersByState')}}");
 $('#new_provider').on('change', function(){
    $("#new_provider option:contains('funeralhome-')").attr("disabled",true);
    $("#new_provider option[value*='funeralhome-']").attr('disabled', true );
