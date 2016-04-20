@@ -728,7 +728,7 @@ $().ready(function(){
 </div>
 
 <div id="select_location" class="row pull-left" style="display:none;">
-   <div class="col-md-3">
+   <div class="col-md-4 text-right">
        <select id="state" name="state" class="pull-right">
            <option value="">--</option>
            <?php
@@ -745,12 +745,12 @@ $().ready(function(){
            <option value="">--</option>
        </select>
    </div>-->
-   <div class="col-md-3">
+   <div class="col-md-4 text-left">
        <select id="new_provider" name="new_provider">
            <option value="">--</option>
        </select>
    </div>
-   <div class="col-md-2">
+   <div class="col-md-4 text-left">
        <button class="btn btn-primary" id="choose_provider">Select Provider</button>
    </div>
    <br style="float:none;clear:both;" /><Br />
