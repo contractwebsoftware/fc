@@ -730,7 +730,7 @@ $().ready(function(){
 <div id="select_location" class="row pull-left" style="display:none;">
    <div class="col-md-4 text-right">
        <select id="state" name="state" class="pull-right">
-           <option value="">--</option>
+           <option value="">Select State</option>
            <?php
            //print_r($states);
            foreach($states as $key=>$row){
@@ -747,7 +747,7 @@ $().ready(function(){
    </div>-->
    <div class="col-md-4 text-left">
        <select id="new_provider" name="new_provider">
-           <option value="">--</option>
+           <option value="">Select Provider</option>
        </select>
    </div>
    <div class="col-md-4 text-left">
