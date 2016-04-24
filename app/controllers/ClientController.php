@@ -203,7 +203,7 @@ class ClientController extends BaseController {
 
                 $("#choose_provider").click(function(){
                     //window.top.location.href = "'.action('ClientController@getSteps1').'?provider_id="+$("#new_provider").val();
-                    window.top.location.href = "http://provider.forcremation.com/clients/steps1?provider_id=="+$("#new_provider").val();
+                    window.top.location.href = "http://provider.forcremation.com/clients/steps1?provider_id="+$("#new_provider").val();
                     return false;
                 });
 
