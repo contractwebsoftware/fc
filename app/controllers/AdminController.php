@@ -854,7 +854,7 @@ class AdminController extends BaseController {
         }
         $data['clients'] = $clients;
         $data['provider'] = FProvider::where('user_id',Sentry::getUser()->id)->first();
-        $data['providers'] = FProvider::orderBy('business_name','asc')->get();
+        $data['providers'] = FProvider::where('deleted_at','=',NULL)->where('admin_provider',0)->orderBy('business_name','asc')->get();
         $this->layout->content = View::make('admin.customers',$data);
 
     }
