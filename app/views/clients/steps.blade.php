@@ -1417,7 +1417,7 @@ $(function(){
            <option value="ship_to_you" {{ ($client->CremainsInfo->cremation_shipping_plan=="ship_to_you"?'selected':'') }}> Ship to address via certified registered mail - Add ${{$provider->pricing_options->ship_to_you}} </option>
        </select>
    </div>
-   <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship remains.</span></div>
+   <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship cremains.</span></div>
 </div>
 
 
