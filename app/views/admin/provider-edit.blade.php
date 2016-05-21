@@ -177,6 +177,13 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group" >
+                                        <label  class="col-sm-2" for="freshbooks_terms">Client Terms</label>
+                                        <div class="col-sm-10">
+                                            <textarea name="provider[terms]" id="terms" class="form-control" >{{ $provider->terms }}</textarea>
+                                        </div>
+                                    </div>
+
                                     <div class="row"  style="<?php if(Sentry::getUser()->role!='admin')echo 'display:none;'; ?>">
 
                                         <div class="form-group" >

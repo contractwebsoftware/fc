@@ -497,11 +497,13 @@ class ClientController extends BaseController {
                 if(!array_key_exists('confirmed_legal_auth',$input['client']))$input['client']['confirmed_legal_auth'] = null;
                 if(!array_key_exists('confirmed_correct_info',$input['client']))$input['client']['confirmed_correct_info'] = null;
                 if(!array_key_exists('confirmed_legal_auth_name',$input['client']))$input['client']['confirmed_legal_auth_name'] = null;
+                if(!array_key_exists('confirmed_terms',$input['client']))$input['client']['confirmed_terms'] = null;
                 if(!array_key_exists('confirmed_correct_info_initial',$input['client']))$input['client']['confirmed_correct_info_initial'] = null;
                 
                 $validate_inputs = ['Confirmed Legal Authorization Checkbox'=>$input['client']['confirmed_legal_auth'],
                                     'Confirmed Correct Information Checkbox'=>$input['client']['confirmed_correct_info'],
                                     'Your Name'=>$input['client']['confirmed_legal_auth_name'],
+                                    'Confirmed Terms Checkbox'=>$input['client']['confirmed_terms'],
                                     'Your Initials'=>$input['client']['confirmed_correct_info_initial']];
                 $rules = ['Confirmed Legal Authorization Checkbox'=>'required','Confirmed Correct Information Checkbox'=>'required',
                             'Your Name'=>'required','Your Initials'=>'required'];
@@ -1188,6 +1190,7 @@ class ClientController extends BaseController {
             'client_agreed_to_ftc',
             'client_confirmed_legal_auth',
             'client_confirmed_legal_auth_name',
+            'client_confirmed_terms',
             'client_confirmed_correct_info',
             'client_confirmed_correct_info_initial',
             'client_feedback_questions_text',

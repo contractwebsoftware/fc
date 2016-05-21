@@ -1506,6 +1506,7 @@ $(function(){
        <label for="confirmed_correct_info" >I confirm that the information provided is correct</label><br>
    </div>
 </div>
+
 <div class="row form-group {{($errors->first('Your Initials')!=''?'has-error has-feedback':'')}}">
    <div class="col-sm-12">
        Enter initials here: <input type="text" class="form-control" id="confirmed_correct_info_initial" name="client[confirmed_correct_info_initial]" value="{{$client->confirmed_correct_info_initial}}" />
@@ -1518,6 +1519,21 @@ $(function(){
 
    </div>
 </div>
+
+@if($provider->terms != '')
+    <div class="row form-group" >
+        <div class="col-sm-12" style="margin:15px 15px;height:100px;width:97%;overflow-y:scroll;border:1px solid #ccc;background-color:#efefefef;">
+                {{ nl2br($provider->terms) }}
+        </div>
+    </div>
+    <div class="row form-group {{($errors->first('Confirmed Terms Checkbox')!=''?'has-error has-feedback':'')}}">
+        <div class="col-sm-12">
+            <input id="confirmed_terms" type="checkbox" value="1" name="client[confirmed_terms]" {{($client->confirmed_terms=="1"?'checked=checked':'')}}>
+            <label for="confirmed_terms">I Agree To the Terms</label><br>
+        </div>
+    </div>
+
+@endif
 
 <div class="row form-group">
    <div class="col-sm-12"><br>
