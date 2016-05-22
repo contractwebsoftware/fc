@@ -92,12 +92,13 @@ class RightSignature
 
     function sendReminder($doc_guid='')
     {
-        $url = $this->secure_base_url . "/api/documents/".$doc_guid."/send_reminders.xml";
+        $url = $this->secure_base_url . "/api/documents/$doc_guid/send_reminders.xml";
         $header = Array();
+		$xml = "<?xml version='1.0' encoding='UTF-8'?><document></document>";
+        $response = $this->httpRequest($url, $header, "POST", $xml);
+//dd($response);
 
-        $response = $this->httpRequest($url, $header, "POST");
-
-        return $response;
+        return  $response;
 
     }
 
