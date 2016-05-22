@@ -423,22 +423,26 @@ class ClientController extends BaseController {
                 $client->CremainsInfo->fill($input['cremains_info']);
                 $client->CremainsInfo->save(); 
             }
-            
-            
+            $provider_id = Input::get('provider_id');
+            if($provider_id == '')$provider_id = Session::get('provider_id');
+            if($provider_id == '')$provider_id = $this->default_provider_id;
+
             if(is_array(Input::get('client_product'))){
                 $client_product = Input::get('client_product');
                 
-                $cliend_product_r = ClientProducts::where('provider_id', Input::get('provider_id'))->where('client_id', Input::get('client_id'))->first();
-                //dd(DB::getQueryLog());
+                $cliend_product_r = ClientProducts::where('provider_id', $provider_id)->where('client_id', Input::get('client_id'))->first();
+                #dd(Input::all());
                 if($cliend_product_r == null){
+
                     $cliend_product_r = new ClientProducts();
-                    $cliend_product_r->provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
+                    $cliend_product_r->provider_id = $provider_id;
                     $cliend_product_r->client_id = $client->id;
                 }
                 $cliend_product_r->product_id = $client_product['product_id'];
                 $cliend_product_r->price = $client_product['price'][$client_product['product_id']];
                 $cliend_product_r->note = $client_product['note'];
                 $cliend_product_r->save();
+                #dd( DB::getQueryLog());
                 
             }
             
@@ -1489,7 +1493,7 @@ class ClientController extends BaseController {
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb_client_info = array(
-                'organization' => $clientData->DeceasedInfo->first_name.' '.$clientData->DeceasedInfo->last_name,
+                'organization' => $clientData->DeceasedInfo->last_name.', '.$clientData->DeceasedInfo->first_name,
                 'first_name' => $client->first_name,
                 'last_name' => $client->last_name,
                 'email' => $client_user->email,
@@ -1904,7 +1908,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 
             // For complete list of arguments see FreshBooks docs at http://developers.freshbooks.com
             $fb_client_info = array(
-                'organization' => $clientData->DeceasedInfo->first_name . ' ' . $clientData->DeceasedInfo->last_name,
+                'organization' => $clientData->DeceasedInfo->last_name. ', ' . $clientData->DeceasedInfo->first_name,
             );
 
             if ($client->fb_client_id == '') {

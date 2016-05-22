@@ -1605,6 +1605,23 @@ class AdminController extends BaseController {
         return $recipient_details;
     }
 
+    /**
+     * @param string $doc_guid
+     * Resend the right signature document
+     */
+    function getResendSignatureDocument($doc_guid = ''){
+        //https://rightsignature.com/api/documents/ABCDEFGHIJKLMN0P/send_reminders.xml
+
+        $url = 'https://rightsignature.com/api/documents/'.$doc_guid.'/send_reminders.xml';
+        
+        if($doc_guid == '')$doc_guid = Input::get('doc_guid');
+        $rightsignature = new RightSignature();
+        $rightsignature->debug = false;
+
+        $doc = $rightsignature->sendReminder($doc_guid);
+
+        return 'Document Resent Successfully';
+    }
     
 }
 

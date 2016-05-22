@@ -90,6 +90,17 @@ class RightSignature
         return $response;
     }
 
+    function sendReminder($doc_guid='')
+    {
+        $url = $this->secure_base_url . "/api/documents/".$doc_guid."/send_reminders.xml";
+        $header = Array();
+
+        $response = $this->httpRequest($url, $header, "POST");
+
+        return $response;
+
+    }
+
     function sendDocuments($doc_data)
     {
         $url = $this->secure_base_url . "/api/documents.xml";

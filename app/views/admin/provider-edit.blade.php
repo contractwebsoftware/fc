@@ -1167,7 +1167,11 @@
                                     <a href="{{ urldecode($signed_docs['pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
                                         <span class="glyphicon glyphicon-list-alt"></span> &nbsp; View
                                     </a>
+                                    <a href="#" onclick="resendSignatureDocument('{{ $signed_docs['guid'] }}'); return false;" target="_blank" class="btn btn-xs btn-default">
+                                        <span class="glyphicon glyphicon-envelope"></span> &nbsp; Send Reminder
+                                    </a>
                                 </td>
+
                                 <td >
                                     @if($signed_docs['signed-pdf-url'] != '')
                                     <a href="{{ urldecode($signed_docs['signed-pdf-url']) }}" target="_blank" class="btn btn-xs btn-default">
@@ -1176,7 +1180,7 @@
                                     @endif
                                 </td>
                                 <td >
-                                    <a href="#" onclick="getSignedDoc('{{$signed_docs['guid'] }}')" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myModal">
+                                    <a href="#" onclick="getSignedDoc('{{ $signed_docs['guid'] }}'); return false;" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myModal">
                                         <span class="glyphicon glyphicon-search"></span> &nbsp; History
                                     </a>
                                 </td>
@@ -1216,6 +1220,11 @@
         function getSignedDoc(guid) {
             $.get('{{ action('AdminController@getSignedDoc') }}/'+guid, function (data) {
                 $('#doc_info').html(data);
+            });
+        }
+        function resendSignatureDocument(guid) {
+            $.get('{{ action('AdminController@getResendSignatureDocument') }}/'+guid, function (data) {
+                alert(data);
             });
         }
     </script>
