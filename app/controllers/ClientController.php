@@ -52,7 +52,7 @@ class ClientController extends BaseController {
             //print_r($client); echo '</pre><Br /><br />';
             
 
-            $steps_r = Step::whereRaw("status='1' and display_in_menu='1'")->get();
+            $steps_r = Step::whereRaw("status='1' and display_in_menu='1'")->orderBy('step_number','asc')->get();
            
             
             $states = DB::table('state')->distinct()->get();
