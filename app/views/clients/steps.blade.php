@@ -710,7 +710,7 @@ $().ready(function(){
 
 
 @if(Session::get('step')==1 || Session::get('inAdminGroup')!='')
-{{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+{{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -840,7 +840,7 @@ $("#dob").datepicker( {
 
 @endif
 @if(Session::get('step')==2 || Session::get('inAdminGroup')!='')
-{{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+{{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -932,7 +932,7 @@ $("#dob").datepicker( {
 
 @if(Session::get('step')==3 || Session::get('inAdminGroup')!='')
 
-    {{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+    {{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
     {{ Form::hidden('client_id',$client->id) }}
     {{ Form::hidden('step',Session::get('step')) }}
     {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
