@@ -359,6 +359,8 @@ class ClientController extends BaseController {
             $client = ClientController::registerUser();
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
+                $input['deceased_info']['dob'] = str_replace('/', '-', $input['deceased_info']['dob']);
+                $input['deceased_info']['dod'] = str_replace('/', '-', $input['deceased_info']['dod']);
 
                 if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
                 if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
