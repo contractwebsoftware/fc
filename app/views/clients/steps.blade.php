@@ -707,187 +707,10 @@ $().ready(function(){
 </script>
 @endif
 
+
+
 @if(Session::get('step')==1 || Session::get('inAdminGroup')!='')
-
 {{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
-{{ Form::hidden('client_id',$client->id) }}
-{{ Form::hidden('step',Session::get('step')) }}
-{{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
-
-<fieldset id="step1">
-<div class="row">
-   <div class="col-md-6"><h3 class="pull-left">Cremation Package</h3></div>
-   <div class="col-md-6">
-
-               <a href="#" {{ (Session::get('inAdminGroup')=='Provider'?'style="display:none"':'') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">
-                   Select a different provider?
-               </a>
-
-
-   </div>
-</div>
-
-<div id="select_location" class="row pull-left" style="display:none;">
-   <div class="col-md-4 text-right">
-       <select id="state" name="state" class="pull-right">
-           <option value="">Select State</option>
-           <?php
-           //print_r($states);
-           foreach($states as $key=>$row){
-                if($row->name_shor == 'CA' || $row->name_shor == 'OR' || $row->name_shor == 'WA')
-                echo '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
-           }
-           ?>
-       </select>
-   </div><!--
-   <div class="col-md-3">
-       <select id="city" name="city">
-           <option value="">--</option>
-       </select>
-   </div>-->
-   <div class="col-md-4 text-left">
-       <select id="new_provider" name="new_provider">
-           <option value="">Select Provider</option>
-       </select>
-   </div>
-   <div class="col-md-4 text-left">
-       <button class="btn btn-primary" id="choose_provider">Select Provider</button>
-   </div>
-   <br style="float:none;clear:both;" /><Br />
-</div>
-
-<div class="row form-group">
-   <div class="col-sm-12">
-       <div>
-       <strong>Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
-       {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
-
-       <strong>Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
-       {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Package A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
-       </div>
-
-       <strong><u>Select Your Package</u></strong><br />
-       Please select a package from the drop down below:<br />
-       <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
-           <option value="0">Select Plan</option>
-           <option value="1" {{ ($client->CremainsInfo->package_plan=="1" || $client->CremainsInfo->package_plan=="" || $client->CremainsInfo->package_plan=="0"?'selected':'') }}>Plan A</option>
-           <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
-       </select><br />
-
-       <!--
-       <strong>Plan A Description</strong>:<br />
-       Basic cremation services, care of your loved one in climatically controlled environment, local transportation, obtaining signatures and filing the death certificate, securing permits from the state, ordering certified copies of the death certificate, preparation for shipping of the urn with cremains inside the U.S. (Shipping for additional cost) Basic urn provided or you may chose an urn from our catalog for an additional cost.<br /><br />
-
-       <strong>Plan B Description</strong>:<br />
-       Same as plan A, but choose one of the Urns from our list, included in the cost.<br /><br />
-       -->
-
-       <b><u>Package Additions</u></b><br />
-       <?php
-
-           if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.'">
-                        <label for="custom1_req">'.$provider->pricing_options->custom1_text.': $'.$provider->pricing_options->custom1.'</label>
-                        <input id="custom1_req" type="checkbox" '.($provider->pricing_options->custom1_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom1_req.'" name="cremains_info[custom1]" '.($client->CremainsInfo->custom1=="1"?'checked=checked':'').' value="1" />
-                        </div>';
-
-
-           if($provider->pricing_options->custom2_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom2_included.'">
-                        <label for="custom2_req">'.$provider->pricing_options->custom2_text.': $'.$provider->pricing_options->custom2.'</label>
-                        <input id="custom2_req"  type="checkbox" '.($provider->pricing_options->custom2_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom2_req.'" name="cremains_info[custom2]" '.($client->CremainsInfo->custom2=="1"?'checked=checked':'').' value="1" />
-                        </div>';
-
-           if($provider->pricing_options->custom3_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom3_included.'">
-                        <label for="custom3_req">'.$provider->pricing_options->custom3_text.': $'.$provider->pricing_options->custom3.'</label>
-                        <input id="custom3_req" type="checkbox" '.($provider->pricing_options->custom3_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom3_req.'" name="cremains_info[custom3]" '.($client->CremainsInfo->custom3=="1"?'checked=checked':'').' value="1" />
-                        </div>';
-      ?>
-
-       <br /><br />
-   </div>
-</div>
-
-
-<div class="row form-group">
-   <div class="col-sm-12">
-       Please select the status:<br />
-       <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation
-           <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />
-       <select name="deceased_info[cremation_reason]" class="form-control">
-           <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
-           <option value="a_death_is_pending" {{ ($client->DeceasedInfo->cremation_reason=="a_death_is_pending"?'selected':'') }}>A death is pending</option>
-           <option value="a_death_has_occurred" {{ ($client->DeceasedInfo->cremation_reason=="a_death_has_occurred"?'selected':'') }}>A death has occurred</option>
-       </select>
-
-       <br />
-       <font style="color:red;font-weight:bold;" class="hideInAdmin">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
-
-   </div>
-</div>
-
-<div class="row form-group">
-   <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >{{$save_button}}</button><br class="clear" /></div>
-</div>
-</fieldset>
-<style>
-label {float:left;margin-right:15px;font-weight:normal;}
-.price-options {clear:both;float:none;margin-left:15px;}
-</style>
-<script src="{{ asset('js/jquery.chained.remote.min.js') }}"></script>
-<script>
-$('#submit').click(function(){
-   if($('#package_plan').val()=='0'){alert('Please Select A Package Plan');return false;}
-
-
-});
-
-function plan_options(){
-   if($('#package_plan').val()=='1')$('.included-1, .included-3').slideDown();
-   else $('.included-1').hide();
-   if($('#package_plan').val()=='2')$('.included-2, .included-3').slideDown();
-   else $('.included-2').hide();
-}
-plan_options();
-
-$('#package_plan').on('change',function(){
-       plan_options();
-
-});
-
-$('.required-Y,.required-y').on('click change blur focus',function(){
-   //alert($(this).prop('checked',checked'));
-   $(this).prop('checked',true);
-});
-
-//$("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
-//$("#new_provider").remoteChained("#city", "{{action('StepController@getProvidersByCity')}}");
-$("#new_provider").remoteChained("#state", "{{action('StepController@getProvidersByState')}}");
-$('#new_provider').on('change', function(){
-   $("#new_provider option:contains('funeralhome-')").attr("disabled",true);
-   $("#new_provider option[value*='funeralhome-']").attr('disabled', true );
-
-   var val = $(this).val();
-   if(val == "" || val.toLowerCase().indexOf("funeralhome-") >= 0){
-       $("#new_provider option:contains('provider-')").attr("selected",true);
-       $("#new_provider option[value*='provider-']").attr('selected', true );
-   }
-});
-
-$("#choose_provider").click(function(){
-   //alert('going to ?set_zip='+$("#zip").val());
-   window.location.href="{{action('ClientController@getSteps1')}}?provider_id="+$("#new_provider").val();
-   return false;
-});
-
-</script>
-{{ Form::close() }}
-
-@endif
-
-
-
-@if(Session::get('step')==2 || Session::get('inAdminGroup')!='')
-{{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -1016,8 +839,8 @@ $("#dob").datepicker( {
 {{ Form::close() }}
 
 @endif
-@if(Session::get('step')==3 || Session::get('inAdminGroup')!='')
-{{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+@if(Session::get('step')==2 || Session::get('inAdminGroup')!='')
+{{ Form::open(['action'=>'ClientController@postSteps3','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
@@ -1105,6 +928,188 @@ $("#dob").datepicker( {
 {{ Form::close() }}
 
 @endif
+
+
+@if(Session::get('step')==3 || Session::get('inAdminGroup')!='')
+
+    {{ Form::open(['action'=>'ClientController@postSteps4','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+    {{ Form::hidden('client_id',$client->id) }}
+    {{ Form::hidden('step',Session::get('step')) }}
+    {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
+
+    <fieldset id="step1">
+        <div class="row">
+            <div class="col-md-6"><h3 class="pull-left">Cremation Package</h3></div>
+            <div class="col-md-6">
+
+                <a href="#" {{ (Session::get('inAdminGroup')=='Provider'?'style="display:none"':'') }} onclick="$('#select_location').slideToggle();return false;" class="pull-right">
+                    Select a different provider?
+                </a>
+
+
+            </div>
+        </div>
+
+        <div id="select_location" class="row pull-left" style="display:none;">
+            <div class="col-md-4 text-right">
+                <select id="state" name="state" class="pull-right">
+                    <option value="">Select State</option>
+                    <?php
+                    //print_r($states);
+                    foreach($states as $key=>$row){
+                    if($row->name_shor == 'CA' || $row->name_shor == 'OR' || $row->name_shor == 'WA')
+                    echo '<option value="'.$row->name_shor.'">'.$row->name_long.'</option>';
+                    }
+                    ?>
+                </select>
+            </div><!--
+<div class="col-md-3">
+   <select id="city" name="city">
+       <option value="">--</option>
+   </select>
+</div>-->
+            <div class="col-md-4 text-left">
+                <select id="new_provider" name="new_provider">
+                    <option value="">Select Provider</option>
+                </select>
+            </div>
+            <div class="col-md-4 text-left">
+                <button class="btn btn-primary" id="choose_provider">Select Provider</button>
+            </div>
+            <br style="float:none;clear:both;" /><Br />
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div>
+                    <strong>Package A: ${{$provider->pricing_options->basic_cremation}}</strong> <br />
+                    {{$provider->pricing_options->package_a_desc!=''?$provider->pricing_options->package_a_desc:'Basic Service Fee, care of your loved one in climatically controlled environment, obtaining Cremation Authorizations and filing the Death Certificate with State of California @ $585, Cash Advance of disposition permit $12.00, Crematory fee, Cremation container and Basic urn @ $190.' }}  <br /><br />
+
+                    <strong>Package B: ${{$provider->pricing_options->premium_cremation}}</strong> <br />
+                    {{$provider->pricing_options->package_b_desc!=''?$provider->pricing_options->package_b_desc:'Premium Package includes all services of Package A plus an urn. Refer to the General Price List for our urn selection.' }}  <br /><br />
+                </div>
+
+                <strong><u>Select Your Package</u></strong><br />
+                Please select a package from the drop down below:<br />
+                <select name="cremains_info[package_plan]" id="package_plan" class="form-control">
+                    <option value="0">Select Plan</option>
+                    <option value="1" {{ ($client->CremainsInfo->package_plan=="1" || $client->CremainsInfo->package_plan=="" || $client->CremainsInfo->package_plan=="0"?'selected':'') }}>Plan A</option>
+                    <option value="2" {{ ($client->CremainsInfo->package_plan=="2"?'selected':'') }}>Plan B</option>
+                </select><br />
+
+                <!--
+                <strong>Plan A Description</strong>:<br />
+                Basic cremation services, care of your loved one in climatically controlled environment, local transportation, obtaining signatures and filing the death certificate, securing permits from the state, ordering certified copies of the death certificate, preparation for shipping of the urn with cremains inside the U.S. (Shipping for additional cost) Basic urn provided or you may chose an urn from our catalog for an additional cost.<br /><br />
+
+                <strong>Plan B Description</strong>:<br />
+                Same as plan A, but choose one of the Urns from our list, included in the cost.<br /><br />
+                -->
+
+                <b><u>Package Additions</u></b><br />
+                <?php
+
+                if($provider->pricing_options->custom1_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom1_included.'">
+                    <label for="custom1_req">'.$provider->pricing_options->custom1_text.': $'.$provider->pricing_options->custom1.'</label>
+                    <input id="custom1_req" type="checkbox" '.($provider->pricing_options->custom1_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom1_req.'" name="cremains_info[custom1]" '.($client->CremainsInfo->custom1=="1"?'checked=checked':'').' value="1" />
+                    </div>';
+
+
+                if($provider->pricing_options->custom2_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom2_included.'">
+                    <label for="custom2_req">'.$provider->pricing_options->custom2_text.': $'.$provider->pricing_options->custom2.'</label>
+                    <input id="custom2_req"  type="checkbox" '.($provider->pricing_options->custom2_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom2_req.'" name="cremains_info[custom2]" '.($client->CremainsInfo->custom2=="1"?'checked=checked':'').' value="1" />
+                    </div>';
+
+                if($provider->pricing_options->custom3_text!='')echo '<div class="price-options included-'.$provider->pricing_options->custom3_included.'">
+                    <label for="custom3_req">'.$provider->pricing_options->custom3_text.': $'.$provider->pricing_options->custom3.'</label>
+                    <input id="custom3_req" type="checkbox" '.($provider->pricing_options->custom3_req=='Y'?'checked=checked readonly':'').' class="required-'.$provider->pricing_options->custom3_req.'" name="cremains_info[custom3]" '.($client->CremainsInfo->custom3=="1"?'checked=checked':'').' value="1" />
+                    </div>';
+                ?>
+
+                <br /><br />
+            </div>
+        </div>
+
+
+        <div class="row form-group">
+            <div class="col-sm-12">
+                Please select the status:<br />
+                <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation
+                <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />
+                <select name="deceased_info[cremation_reason]" class="form-control">
+                    <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
+                    <option value="a_death_is_pending" {{ ($client->DeceasedInfo->cremation_reason=="a_death_is_pending"?'selected':'') }}>A death is pending</option>
+                    <option value="a_death_has_occurred" {{ ($client->DeceasedInfo->cremation_reason=="a_death_has_occurred"?'selected':'') }}>A death has occurred</option>
+                </select>
+
+                <br />
+                <font style="color:red;font-weight:bold;" class="hideInAdmin">If the Death has occurred, Please CALL US now, so we can begin to help.</font><br />
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-10 warn-login-text"></div>
+            <div class="col-sm-2"><button type="submit" name="submit" id="submit" value="submit" class="step_submit" >{{$save_button}}</button><br class="clear" /></div>
+        </div>
+    </fieldset>
+    <style>
+        label {float:left;margin-right:15px;font-weight:normal;}
+        .price-options {clear:both;float:none;margin-left:15px;}
+    </style>
+    <script src="{{ asset('js/jquery.chained.remote.min.js') }}"></script>
+    <script>
+        $('#submit').click(function(){
+            if($('#package_plan').val()=='0'){alert('Please Select A Package Plan');return false;}
+
+
+        });
+
+        function plan_options(){
+            if($('#package_plan').val()=='1')$('.included-1, .included-3').slideDown();
+            else $('.included-1').hide();
+            if($('#package_plan').val()=='2')$('.included-2, .included-3').slideDown();
+            else $('.included-2').hide();
+        }
+        plan_options();
+
+        $('#package_plan').on('change',function(){
+            plan_options();
+
+        });
+
+        $('.required-Y,.required-y').on('click change blur focus',function(){
+            //alert($(this).prop('checked',checked'));
+            $(this).prop('checked',true);
+        });
+
+        //$("#city").remoteChained("#state", "{{action('StepController@getCities')}}");
+        //$("#new_provider").remoteChained("#city", "{{action('StepController@getProvidersByCity')}}");
+        $("#new_provider").remoteChained("#state", "{{action('StepController@getProvidersByState')}}");
+        $('#new_provider').on('change', function(){
+            $("#new_provider option:contains('funeralhome-')").attr("disabled",true);
+            $("#new_provider option[value*='funeralhome-']").attr('disabled', true );
+
+            var val = $(this).val();
+            if(val == "" || val.toLowerCase().indexOf("funeralhome-") >= 0){
+                $("#new_provider option:contains('provider-')").attr("selected",true);
+                $("#new_provider option[value*='provider-']").attr('selected', true );
+            }
+        });
+
+        $("#choose_provider").click(function(){
+            //alert('going to ?set_zip='+$("#zip").val());
+            window.location.href="{{action('ClientController@getSteps1')}}?provider_id="+$("#new_provider").val();
+            return false;
+        });
+
+    </script>
+    {{ Form::close() }}
+
+@endif
+
+
+
+
 @if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps5','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
