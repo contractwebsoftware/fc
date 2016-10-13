@@ -358,19 +358,14 @@ class ClientController extends BaseController {
 	{
             $client = ClientController::registerUser();
             if(is_array(Input::get('deceased_info'))){
-                
                 $input['deceased_info'] = Input::get('deceased_info');
                 $input['deceased_info']['dob'] = str_replace('/', '-', $input['deceased_info']['dob']);
-                $parts = explode('-',$input['deceased_info']['dob']);
-                $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
-                if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = $yyyy_mm_dd;
-
                 $input['deceased_info']['dod'] = str_replace('/', '-', $input['deceased_info']['dod']);
-                $parts = explode('-',$input['deceased_info']['dod']);
-                $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
 
+                dd($input['deceased_info']['dob']);
 
-                if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = $yyyy_mm_dd;
+                if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+                if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
                 //echo '<pre>';dd($input['deceased_info']);
                 $client->DeceasedInfo->fill($input['deceased_info']);
                 $client->DeceasedInfo->save(); 
