@@ -297,6 +297,10 @@ class ClientController extends BaseController {
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
                 if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
+
+                if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+                if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
+
                 $client->DeceasedInfo->fill($input['deceased_info']);
                 $client->DeceasedInfo->save(); 
             }
@@ -362,7 +366,7 @@ class ClientController extends BaseController {
                 $input['deceased_info']['dob'] = str_replace('/', '-', $input['deceased_info']['dob']);
                 $input['deceased_info']['dod'] = str_replace('/', '-', $input['deceased_info']['dod']);
 
-                dd($input['deceased_info']['dob']);
+                #dd($input['deceased_info']['dob']);
 
                 if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
                 if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
