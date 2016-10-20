@@ -192,7 +192,7 @@ $save_button = 'Continue';
                <?php
                if($client->fb_client_id  != ''){
                    $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-                   $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+                   $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('https://','', str_replace('https://','',$domain)))));
 
                    //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
@@ -332,7 +332,7 @@ $save_button = 'Continue';
             /*
         if($client->fb_invoice_id  != ''){
             $domain = str_replace('https://', '', $provider->freshbooks_api_url);
-            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('http://','', str_replace('https://','',$domain)))));
+            $domain = str_replace('/','', str_replace('api/2.1/xml-in','', str_replace('.freshbooks.com','', str_replace('https://','', str_replace('https://','',$domain)))));
             //$domain = substr($domain, 0, strpos($domain, '.freshbooks.com'));
 
             #echo '<br /><a style="margin-left:15px;margin-top:10px;font-weight:bold;" href="https://'.$domain.'.freshbooks.com/showInvoice?invoiceid='.$client->fb_invoice_id.'" target="_blank">Edit Invoice In Freshbooks</a>';
@@ -1459,7 +1459,7 @@ $(function(){
 <h3>Payment Summary <p>Itemization of goods and services <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="If you need to change a choice that affects the summary then return to the page and change the selection your summary will update.">?</a></p>
 
 @if($provider->ProviderPriceSheet!=null)
-   <a style="font-weight:bold;font-size:12px;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)!=''?asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name):'href="http://www.californiacremationservices.com/pricelist.pdf"'}}" target="_blank" >View Pricing Sheet</a>
+   <a style="font-weight:bold;font-size:12px;" href="{{asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name)!=''?asset('provider_files/'.$provider->id.'/'.$provider->ProviderPriceSheet->file_name):'href="https://www.californiacremationservices.com/pricelist.pdf"'}}" target="_blank" >View Pricing Sheet</a>
 @endif
 </h3>
 

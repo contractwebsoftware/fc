@@ -15,7 +15,7 @@
         Account Login: {{$provider->email}}<br />
         Account Password: {{$pass}}<br />
         Your Membership Plan: {{($provider->plan_id=='1' || $provider->plan_id=='0'?'Basic':'Premium')}}.
-        Website: http://app.forcremation.com/users/login<br /><br />
+        Website: https://provider.forcremation.com/users/login<br /><br />
 
     </body>
 </html>
