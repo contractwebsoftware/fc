@@ -607,7 +607,7 @@ class AdminController extends BaseController {
             $provider_products->save();
         }
 
-        Session::flash('success','Provider\'s Custome Documents has been updated');
+        Session::flash('success','Provider\'s Customer Documents has been updated');
         return Redirect::action('AdminController@getEditProvider', array('id' => $input['provider']['id'],'tab'=>'provider_urns'));
     }
 

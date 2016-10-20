@@ -14,18 +14,18 @@
                 <tr>
                     <td valign=top style="vertical-align:top;" align=center>
                         <a href="http://www.youtube.com/embed/zFpbwTJhN10?rel=0&amp;wmode=transparent&rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="youtube" style="vertical-align:top;font-weight:bold;font-size:16px;">Watch the video about<br />becoming a Provider</a> <br/>
-                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/travis.png" style="height:63px;width:auto;"><br />
+                        <img src="/img/travis.png" style="height:63px;width:auto;"><br />
 
                     </td>
                     <td valign=top style="vertical-align:top;" align=center>
                         <a href="http://www.youtube.com/embed/k4EueEuaDAQ?rel=0&amp;wmode=transparent&rel=0;HD=1;showinfo=0;controls=0;autoplay=1" target="_blank" class="youtube" style="vertical-align:top;font-weight:bold;font-size:16px;" >Meet Susan</a><br />
-                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/susan.png" style="height:63px;width:auto;"><br />
+                        <img src="/img/susan.png" style="height:63px;width:auto;"><br />
 
 
                     </td>
                     <td valign=top style="vertical-align:top;" align=center>
                         <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer" style="vertical-align:top;font-weight:bold;font-size:16px;">Provider Tutorial</a><br />
-                        <img src="http://www.forcremation.com/wp-content/themes/forcremation/images/icon-video.png" alt="It’s Easy" style="height:45px;width:auto;"><br />
+                        <img src="/img/icon-video.png" alt="It’s Easy" style="height:45px;width:auto;"><br />
 
                     </td>
                 </tr>
@@ -38,14 +38,14 @@
     </div>
    
 	
-<!-- Easy FancyBox 1.5.6 using FancyBox 1.3.6 - RavanH (http://status301.net/wordpress-plugins/easy-fancybox/) -->
+<!-- Easy FancyBox 1.5.6 using FancyBox 1.3.6 - RavanH (http://status301.net/wordpress-plugins/easy-fancybox/)
     
     <link rel="stylesheet" href="http://www.forcremation.com/wp-content/plugins/easy-fancybox/fancybox/jquery.fancybox-1.3.6.pack.css?ver=1.5.6" type="text/css" media="screen" />
     <script type='text/javascript' src='http://www.forcremation.com/wp-content/plugins/easy-fancybox/fancybox/jquery.fancybox-1.3.6.pack.js?ver=1.5.6'></script>
     <script type='text/javascript' src='http://www.forcremation.com/wp-content/plugins/easy-fancybox/jquery.easing.pack.js?ver=1.3'></script>
     <script type='text/javascript' src='http://www.forcremation.com/wp-content/plugins/easy-fancybox/jquery.mousewheel.pack.js?ver=3.1.3'></script>
     <script type="text/javascript">
-       
+
         /* <![CDATA[ */
             var fb_timeout = null;
             var fb_opts = { 'overlayShow' : true, 'hideOnOverlayClick' : true, 'showCloseButton' : true, 'centerOnScroll' : true, 'enableEscapeButton' : true, 'autoScale' : true };
@@ -62,7 +62,7 @@
     </script>
     <script type="text/javascript">
     jQuery(document).on('ready post-load', easy_fancybox_handler );
-    </script>
+    </script>-->
     <style type="text/css">
 	.fancybox-hidden{display:none}.rtl #fancybox-left{left:auto;right:0px}.rtl #fancybox-right{left:0px;right:auto}.rtl #fancybox-right-ico{background-position:-40px -30px}.rtl #fancybox-left-ico{background-position:-40px -60px}.rtl .fancybox-title-over{text-align:right}.rtl #fancybox-left-ico,.rtl #fancybox-right-ico{right:-9999px}.rtl #fancybox-right:hover span{right:auto;left:20px}.rtl #fancybox-left:hover span{right:20px}#fancybox-img{max-width:none;max-height:none}
 	#fancybox-outer{background-color:#fff}

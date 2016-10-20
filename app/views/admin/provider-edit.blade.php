@@ -400,8 +400,8 @@
                         <div class="col-xs-9">
                         Add the following HTML to your site to display a widget with link
                             <textarea class="client_url" ><iframe src="http://forcremation.com/providers/badges.php?provider_id={{$provider->id}}" style="width:100%;height:200px;overflow:hidden;margin:0px;padding:0px;" frameborder="0"></iframe></textarea><br />
-                            <i>Example: <br />
-                            <iframe src="http://forcremation.com/providers/badges.php?provider_id={{$provider->id}}" style="width:300px;height:200px;overflow:hidden;margin:0px;padding:0px;" frameborder="0"></iframe></i>
+                            <!--<i>Example: <br />
+                            <iframe src="http://forcremation.com/providers/badges.php?provider_id={{$provider->id}}" style="width:300px;height:200px;overflow:hidden;margin:0px;padding:0px;" frameborder="0"></iframe></i>-->
                         </div>
                     </div>
                </fieldset>
