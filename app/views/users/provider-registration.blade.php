@@ -24,7 +24,7 @@
 
                     </td>
                     <td valign=top style="vertical-align:top;" align=center>
-                        <a href="https://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer" style="vertical-align:top;font-weight:bold;font-size:16px;">Provider Tutorial</a><br />
+                        <a href="https://provider.forcremation.com/img/logging-in-forcremation.mp4" class="video_layer" style="vertical-align:top;font-weight:bold;font-size:16px;">Provider Tutorial</a><br />
                         <img src="/img/icon-video.png" alt="It’s Easy" style="height:45px;width:auto;"><br />
 
                     </td>

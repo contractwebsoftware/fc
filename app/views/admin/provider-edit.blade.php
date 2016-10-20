@@ -1520,11 +1520,11 @@
                 <h3>Provder Help</h3>
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <a href="http://www.forcremation.com/images/Provider-Set-up.mp4" class="video_layer">Provider Setup</a><br />
-                        <a href="http://www.forcremation.com/images/logging-in-forcremation.mp4" class="video_layer">Provider Login</a><br />
-                        <a href="http://www.forcremation.com/images/Provider-Pricing.mp4" class="video_layer">Provider Pricing</a><br />
-                        <a href="http://www.forcremation.com/images/Forms-ForCremation.mp4" class="video_layer">How To Upload Forms</a><br />
-                        <a href="http://www.forcremation.com/images/urns-and-urn-pricing.mp4" class="video_layer">Urns and Urn Pricing</a>
+                        <a href="https://provider.forcremation.com/img/Provider-Set-up.mp4" class="video_layer">Provider Setup</a><br />
+                        <a href="https://provider.forcremation.com/img/logging-in-forcremation.mp4" class="video_layer">Provider Login</a><br />
+                        <a href="https://provider.forcremation.com/img/Provider-Pricing.mp4" class="video_layer">Provider Pricing</a><br />
+                        <a href="https://provider.forcremation.com/img/Forms-ForCremation.mp4" class="video_layer">How To Upload Forms</a><br />
+                        <a href="https://provider.forcremation.com/img/urns-and-urn-pricing.mp4" class="video_layer">Urns and Urn Pricing</a>
 
 
                         <br /><br />
