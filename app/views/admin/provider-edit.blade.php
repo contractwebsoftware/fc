@@ -1479,7 +1479,7 @@
                                 <input type="hidden" name="product[{{$product->id}}][product_id]" value="{{$product->id}}" />
                             @endif
                             <tr>
-                                <td valign="top"><img src="{{ $product->image }}" style="width:150px;height:auto;" /><input type="hidden" name="product[{{ $product->id }}][image]" value="{{ $product->image }}" /></td>
+                                <td valign="top"><img src="{{ str_replace('http:','https:',$product->image) }}" style="width:150px;height:auto;" /><input type="hidden" name="product[{{ $product->id }}][image]" value="{{ $product->image }}" /></td>
                                 <td valign="top" style="padding:0 5px;"><input type="text" name="product[{{ $product->id }}][name]" value="{{ $product->name }}"/></td>
                                 <td valign="top" style="padding:0 5px;"><table><tr><td align="right" style="padding-top:0px;padding-right:5px;">$</td><td width="85%" align="left"><input type="text" name="product[{{ $product->id }}][price]" value="{{ $product->price }}"/></td></tr></table></div></td>
                                 <td valign="top"><textarea name="product[{{ $product->id }}][description]" id="urn_description{{ $product->id }}" style="width:100%;height:130px;">{{ $product->description }}</textarea></td>

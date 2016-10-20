@@ -1277,7 +1277,7 @@ Location of Deceased:<br>
                <div class="item">
                    <table style="border:none;">
                        <tr><td style="width:230px;">
-                       <img src="{{ $product->image }}" style="max-width:200px;width:auto;height:auto;max-height:200px;" />
+                       <img src="{{ str_replace('http:','https:',$product->image) }}" style="max-width:200px;width:auto;height:auto;max-height:200px;" />
                        </td><td valign="top">
                            <h4>{{ $product->name }}</h4><Br />
                            Description: {{ $product->description }}<Br /><Br />
