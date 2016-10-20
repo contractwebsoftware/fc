@@ -203,7 +203,7 @@ class ClientController extends BaseController {
 
                 $("#choose_provider").click(function(){
                     //window.top.location.href = "'.action('ClientController@getSteps1').'?provider_id="+$("#new_provider").val();
-                    window.top.location.href = "http://provider.forcremation.com/clients/steps1?provider_id="+$("#new_provider").val();
+                    window.top.location.href = "https://provider.forcremation.com/clients/steps1?provider_id="+$("#new_provider").val();
                     return false;
                 });
 
@@ -236,8 +236,8 @@ class ClientController extends BaseController {
         if ($provider->ProviderFiles == null) $provider->ProviderFiles = new ProviderFiles();
         $provider->ProviderPriceSheet = ProviderFiles::where('provider_id', $provider->id)->where('file_type', 'pricing')->first();
         $provider->provider_logo = ProviderFiles::where('provider_id', $provider->id)->where('file_type','like','provider_logo')->first();
-        if ($provider->provider_logo == null)$provider->provider_logo = 'http://forcremation.com/providers/badges/logo.png?v=2';
-        else $provider->provider_logo = 'http://provider.forcremation.com/provider_files/'.$provider->id.'/logo.png';
+        if ($provider->provider_logo == null)$provider->provider_logo = 'https://forcremation.com/providers/badges/logo.png?v=2';
+        else $provider->provider_logo = 'https://provider.forcremation.com/provider_files/'.$provider->id.'/logo.png';
 
 
         if (is_object($client)) {
