@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'https://provider.forcremation.com',
 
 	/*
 	|--------------------------------------------------------------------------

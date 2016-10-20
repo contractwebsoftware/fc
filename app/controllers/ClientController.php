@@ -1988,7 +1988,7 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 
         $pdf = ClientController::getCustomerDocuments();
         $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
-        $forms_url = URL::to($form_path);
+        $forms_url = secure_url(URL::to($form_path));
         #dd($pdf);
         File::put(public_path() .$form_path, file_get_contents($pdf) );
 
