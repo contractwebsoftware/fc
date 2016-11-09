@@ -1033,7 +1033,7 @@ $("#dob").datepicker( {
         <div class="row form-group">
             <div class="col-sm-12">
                 Please select the status:<br />
-                <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> Medical Donation
+                <input name="deceased_info[medical_donation]" type="checkbox" value="1" {{ ($client->DeceasedInfo->medical_donation=="1"?'checked':'') }}> <strong>Whole Body Donation</strong>
                 <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Selecting a status helps define for the provider the type of help needed, it can always be changed at any time select which one best fits your situation at this time.">?</a><br />
                 <select name="deceased_info[cremation_reason]" class="form-control">
                     <option value="planning_for_future" {{ ($client->DeceasedInfo->cremation_reason=="planning_for_future"?'selected':'') }}>Planning for Future</option>
