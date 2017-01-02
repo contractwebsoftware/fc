@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => 'postmaster@sandbox8cf07f866a56449cac052de1ab26fbbe.mailgun.org',
+	'username' => 'postmaster@provider.forcremation.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => '16c741e10a44162670b4b52cc8c9ab5f',
+	'password' => '2030e7ca95fa37f065c30d9e462c00a4',
 
 	/*
 	|--------------------------------------------------------------------------
