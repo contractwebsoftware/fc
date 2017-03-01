@@ -964,6 +964,7 @@ class ClientController extends BaseController {
                 $mail_data['provider_contact'] = $provider->business_name.', '.$provider->address.', '.$provider->city.', '.$provider->state.' '.$provider->zip;
                 $mail_data['provider'] = $provider;
 
+                if(strpos($input['user']['email'], '@user.com')!==false)
                 Mail::send('emails.client-welcome', $mail_data, function($message) use ($input)
                 {
 
@@ -1893,6 +1894,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 
                 #echo '<pre>';dd($fb_client_info['message']);
 
+                if(strpos($fb_client_info['to'], '@user.com')!==false)
                 Mail::send('emails.client-send-invoice', $fb_client_info, function($message) use($fb_client_info)
                 {
                     $message->subject($fb_client_info['subject']);
