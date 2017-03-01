@@ -92,8 +92,8 @@ return array(
 	| connection so that the application will be able to send messages.
 	|
 	*/
-
-	'password' => '2030e7ca95fa37f065c30d9e462c00a4',
+	'password' => '98j34df!@#8jsdf8jJSNCVP',
+	//'password' => '2030e7ca95fa37f065c30d9e462c00a4',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -119,6 +119,6 @@ return array(
 	|
 	*/
 
-	'pretend' => false,
+	'pretend' => true,
 
 );
