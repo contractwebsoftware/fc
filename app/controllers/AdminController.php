@@ -1499,8 +1499,8 @@ class AdminController extends BaseController {
         }
         #echo '<pre>';dd($docs);
         if(is_array($docs))
-        if(array_key_exists('documents',$docs))
-        if(array_key_exists('document', $docs['documents'])) {
+        if(@array_key_exists('documents',$docs))
+        if(@array_key_exists('document', $docs['documents'])) {
             #echo '<pre>';dd($docs['documents']['document']);
             if (!array_key_exists('0', $docs['documents']['document'])) {
                 $temp_doc = $docs['documents']['document'];
