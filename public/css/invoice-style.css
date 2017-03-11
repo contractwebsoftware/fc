@@ -57,3 +57,6 @@
 #invoice-page-wrap .delete { display: none; color: red; text-decoration: none; position: absolute; font-weight: bold; padding: 0px 3px; top: -6px; left: -22px; font-family: Verdana; font-size: 14px; }
 
 
+@media print {
+    .no-print, .no-print * { display: none !important; }
+}

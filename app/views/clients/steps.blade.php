@@ -366,7 +366,7 @@ $save_button = 'Continue';
                 <div class="col-md-12">
                     <!-- IF THIS IS THE DEFAULT FRESHBOOKS ACCOUNT -->
                     @if(!$provider->is_default)
-                        <a style="font-weight:bold;float:right;" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">
+                        <a style="font-weight:bold;float:right;" class="no-print" href="{{ $client->fb_invoice['invoice']['links']['edit'] }}" target="_blank">
                             Edit Invoice In Freshbooks</a>
                         <h3>QuikFiles Invoice</h3>
                     @endif
@@ -603,9 +603,9 @@ Date:_____________________-->
                             </div>
                         <div class="row">
                             <br />
-                            <button class="pull-right" type="submit" name="save_invoice" value="submit">Save Invoice</button>
+                            <button class="pull-right no-print" type="submit" name="save_invoice" value="submit">Save Invoice</button>
 
-                            <button class="pull-right" type="button" name="print_invoice" value="Print" onclick="PrintElem('#client_invoices')" style="margin-right:15px;">Print Invoice</button>
+                            <button class="pull-right no-print" type="button" name="print_invoice" value="Print" onclick="PrintElem('#client_invoices')" style="margin-right:15px;">Print Invoice</button>
 </div>
                     </div>
 
@@ -618,18 +618,24 @@ Date:_____________________-->
                             }
 
                             function printDiv(divName) {
-                                var mywindow = window.open('', 'new div', 'height=400,width=600');
-                                mywindow.document.write('<html><head><title></title>');
-                                mywindow.document.write( "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-style.css') }}\" type=\"text/css\" />" );
-                                mywindow.document.write( "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-print.css') }}\" type=\"text/css\" />" );
+                                var mywindow = window.open('', 'new div', 'height=400,width=800');
+                                var html = '';
+                                //html += "<script src='https://code.jquery.com/jquery-2.2.4.min.js' > <\/script>";
+                                html += "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-style.css') }}\" type=\"text/css\" />";
+                                html += "<link rel=\"stylesheet\" href=\"{{ asset('css/invoice-print.css') }}\" type=\"text/css\" />";
+                                //html += "<a href='#' onclick='window.print();' class='no-print'>Print<\/a>";
+                                html += divName;
+                                html += '';
 
 
-                                mywindow.document.write('</head><body >');
-                                mywindow.document.write(divName);
-                                mywindow.document.write('</body></html>');
+                                mywindow.document.write(html);
 
-                                mywindow.print();
-                                mywindow.close();
+                                setTimeout(function(){
+                                    //do what you need here
+                                    mywindow.print();
+                                    mywindow.close();
+                                }, 1000);
+
 
                                 return true;
                             }
