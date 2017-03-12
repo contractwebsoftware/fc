@@ -15,7 +15,7 @@ return array(
 	|
 	*/
 
-	'driver' => 'mailgun',
+	'driver' => 'smtp',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -27,8 +27,8 @@ return array(
 	| the Postmark mail service, which will provide reliable delivery.
 	|
 	*/
-
 	'host' => 'smtp.mailgun.org',
+	//'host' => 'provider.forcremation.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -79,8 +79,8 @@ return array(
 	| connection. You may also set the "password" value below this one.
 	|
 	*/
-
-	'username' => 'postmaster@provider.forcremation.com',
+		'username' => 'postmaster@provider.forcremation.com',
+	//'username' => 'SRV2\emailer',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -92,8 +92,8 @@ return array(
 	| connection so that the application will be able to send messages.
 	|
 	*/
+	//'password' => 'Cremation1945',
 	'password' => '98j34df!@#8jsdf8jJSNCVP',
-	//'password' => '2030e7ca95fa37f065c30d9e462c00a4',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -119,6 +119,6 @@ return array(
 	|
 	*/
 
-	'pretend' => true,
+	'pretend' => false,
 
 );
