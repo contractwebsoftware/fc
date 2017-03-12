@@ -358,9 +358,12 @@ class ClientController extends BaseController {
             
             return ClientController::getSteps(0, false, $client);	
 	}
+
 	public function postSteps3()
 	{
             $client = ClientController::registerUser();
+            if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
+
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
 
@@ -375,7 +378,8 @@ class ClientController extends BaseController {
             
 
             return ClientController::getSteps();	            
-        }
+    }
+
 	public function postSteps4()
 	{
             $client = ClientController::registerUser();
@@ -391,7 +395,8 @@ class ClientController extends BaseController {
             }
             
             return ClientController::getSteps();	
-        }
+    }
+
 	public function postSteps5()
 	{
             $client = ClientController::registerUser();
