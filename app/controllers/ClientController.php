@@ -1343,9 +1343,9 @@ class ClientController extends BaseController {
                     case 'sales':
                         $class = $client;
                         $class->summary_sheet = ClientController::getCustomerPaymentSummary($client, $provider);
-
                         break;
-
+                    
+                    
                     default:
                         break;
                 }
@@ -1388,6 +1388,14 @@ class ClientController extends BaseController {
             $html .= '<p style="page-break-after:always;"></p>';
 
         }
+        
+        if(Input::get('download_invoice') != ''){
+
+            $html .= ClientController::getInvoicePDF($client->id, $provider->id, false);
+            $html .= '<p style="page-break-after:always;"></p>';
+
+        }
+        
 		if($html == '')$html = '<html></html>';
 
         //echo '<pre>';dd($html);
@@ -2094,6 +2102,68 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 
         dd(file_get_contents($file_url));
         #return file_get_contents($file_url);
+
+    }
+
+    function getInvoicePDF($client_id='', $provider_id='', $download=true){
+
+        $client = Client::find($client_id);
+        $client = ClientController::fillOutClientTables($client);
+
+        if($client->DeceasedFamilyInfo == null)$client->DeceasedFamilyInfo = New DeceasedFamilyInfo();
+        if($client->DeceasedInfo == null)$client->DeceasedInfo = New DeceasedInfo();
+        if($client->CremainsInfo == null)$client->CremainsInfo = New CremainsInfo();
+        if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
+        if($client->User == null)$client->User = New User();
+
+
+        $provider = ClientController::updateProvider($provider_id);
+
+
+        ## IS THIS PROVIDER OUR DEFAULT QUIKFILES PROVIDER
+        $provider->is_default = FALSE;
+        if($provider->freshbooks_api_url == 'forcremationcom3' || $provider->freshbooks_api_token == '45dbba763492069606dc4125c413453a')
+            $provider->is_default = TRUE;
+        else $provider->is_default = FALSE;
+
+        /*
+         * USE THE PROVIDERS PRODUCT PRICES IF THEY HAVE ANY
+         */
+        $products = ProviderProducts::where('provider_id',$provider->id)->get();
+        if($products == null || count($products)<1)$products = Products::get();
+
+        $client_product = ClientProducts::where('provider_id',$provider->id)->where('client_id',$client->id)->first();
+        if($client_product == null || count($client_product)<1){
+            $client_product = new ClientProducts();
+            $client_product->product_id = 1;
+        }
+        /* END PROVIDER PRODUCTS */
+
+
+        $client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+
+        if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+            $client->fb_invoice = ClientController::postGetInvoiceItems($provider->id, $client->id);
+        }
+
+        $html = '<style>';
+        $html .= file_get_contents( asset('css/invoice-style.css') );
+        $html .= file_get_contents( asset('css/invoice-print.css') );
+        //$html .= file_get_contents( asset('packages/Bootflat/css/bootstrap.min.css') );
+        $html .= ' textarea{background-color:#fff!important;}*{width:auto!important;}#items{width:700px!important;} ';
+        $html .= '</style>';
+
+        $html .= View::make('providers.invoice', ['client' => $client, 'provider' => $provider])->render();
+
+        if($download){
+            $pdf = App::make('dompdf');
+            #$pdf->set_paper(DEFAULT_PDF_PAPER_SIZE, 'portrait');
+            #$pdf->set_paper(array(0,0,900,1200));
+            $pdf->loadHTML($html);
+            return $pdf->stream("Client Invoice".date('Y-m-d').".pdf");
+        }
+        else return $html;
+
 
     }
 

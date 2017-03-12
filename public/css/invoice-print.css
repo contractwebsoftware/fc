@@ -3,3 +3,5 @@
   display: none;
 }
 #terms_text{height:300px;}
+
+#invoice-page-wrap #meta{ float: none!important;width:250px!important; }
