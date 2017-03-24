@@ -17,7 +17,7 @@
 
         Account Login: {{$login}}<br />
         Account Password: {{$pass}}<br />
-        Website: http://app.forcremation.com/users/login<br /><br />
+        Website: https://provider.forcremation.com/clients/steps?login=y<br /><br />
 
     </body>
 </html>
