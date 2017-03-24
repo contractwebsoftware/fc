@@ -16,7 +16,8 @@ return array(
 	*/
 
 	'debug' => false,
-
+	'log_level' => 'warning',
+	'log' => 'daily',
 	/*
 	|--------------------------------------------------------------------------
 	| Application URL
@@ -111,6 +112,7 @@ return array(
 		'Cartalyst\Sentry\SentryServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Barryvdh\DomPDF\ServiceProvider',
+		'Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider',
 	),
 
 	/*

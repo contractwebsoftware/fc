@@ -23,6 +23,8 @@ Route::get('clients/steps/id={id}', function($id)
 Route::group(array('before' => 'Sentry|inGroup:Admin'), function()
 {
     Route::controller('admin','AdminController');
+
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 });
 Route::group(array('before' => 'Sentry|inGroup:Provider'), function()
 {
@@ -84,6 +86,6 @@ Route::get('/',function(){
 
 
 App::missing(function($exception) {
-    Log::info("Route Missing Path:: ".Request::path());
-    Log::info("Route Missing: ".implode(',',$_SERVER));
+    //Log::info("Route Missing Path:: ".Request::path());
+    //Log::info("Route Missing: ".implode(',',$_SERVER));
 });

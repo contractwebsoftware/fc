@@ -24,7 +24,15 @@
     -->
         @if(Sentry::getUser()->role=='admin')
 
-        {{ Form::open(['action'=>'AdminController@postAdminSetting']) }}
+            <Br />
+            <center>
+                <a href='#' onclick="$('#logs_div').show();return false;" style="float:right;font-weight:bold;"><i class="glyphicon glyphicon-wrench"></i> View logs</a>
+            </center>
+            <br />
+            <iframe src="{{ asset('/logs') }}" id="logs_div" style="width:100%;height:700px;display:none;"></iframe>
+
+
+            {{ Form::open(['action'=>'AdminController@postAdminSetting']) }}
         <fieldset>
             <legend>Administrator Settings</legend>
             <p>
@@ -42,7 +50,7 @@
         </fieldset>                
         {{ Form::close() }}
 
-        
+
         <script src="//cdn.ckeditor.com/4.4.4/full/ckeditor.js"></script>
         <script>
              CKEDITOR.replace( 'admin_settings[provider_registration_letter]',
