@@ -27,8 +27,9 @@ return array(
 	| the Postmark mail service, which will provide reliable delivery.
 	|
 	*/
-	'host' => 'smtp.mailgun.org',
+	//'host' => 'smtp.mailgun.org',
 	//'host' => 'provider.forcremation.com',
+	'host' => 'smtp.gmail.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -42,6 +43,7 @@ return array(
 	*/
 
 	'port' => 587,
+	//'port' => 465,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +56,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'info@forcremation.com', 'name' => 'ForCremation Support'),
+	'from' => array('address' => 'forcremationapp@gmail.com', 'name' => 'ForCremation Support'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +82,7 @@ return array(
 	|
 	*/
 		'username' => 'postmaster@provider.forcremation.com',
-	//'username' => 'SRV2\emailer',
+	'username' => 'forcremationapp@gmail.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -92,8 +94,8 @@ return array(
 	| connection so that the application will be able to send messages.
 	|
 	*/
-	//'password' => 'Cremation1945',
-	'password' => '98j34df!@#8jsdf8jJSNCVP',
+	'password' => 'Cremation1945',
+	//'password' => '98j34df!@#8jsdf8jJSNCVP',
 
 	/*
 	|--------------------------------------------------------------------------
