@@ -62,7 +62,7 @@ $save_button = 'Continue';
                     {{ Form::hidden('client[id]',$client->id) }}
                     {{ Form::hidden('old_client_email', $client->User->email) }}
 
-                        <input name="client[email]" type="email" placeholder="Client Email" required value="{{ $client->User->email }}"/>
+                        <input name="client[email]" type="email"  placeholder="Client Email" required value="{{ $client->User->email }}"/>
                         Edit Password:<br />
                         <input name="password" type="password" placeholder="Client Password" value=""/>
                         <input name="confirm_password" type="password" placeholder="Confirm Password" value=""/>
