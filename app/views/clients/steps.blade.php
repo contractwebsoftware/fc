@@ -62,7 +62,7 @@ $save_button = 'Continue';
                     {{ Form::hidden('client[id]',$client->id) }}
                     {{ Form::hidden('old_client_email', $client->User->email) }}
 
-                        <input name="client[email]" type="text" placeholder="Client Email" value="{{ $client->User->email }}"/>
+                        <input name="client[email]" type="email" placeholder="Client Email" required value="{{ $client->User->email }}"/>
                         Edit Password:<br />
                         <input name="password" type="password" placeholder="Client Password" value=""/>
                         <input name="confirm_password" type="password" placeholder="Confirm Password" value=""/>
@@ -1123,7 +1123,7 @@ $(function(){
 </div>
 <div class="row form-group">
    <div class="col-sm-6"><input type="text" placeholder="Phone Number" name="cremains_info[shipto_phone]" value="{{$client->CremainsInfo->shipto_phone}}" ></div>
-   <div class="col-sm-6"><input type="text" placeholder="Email Address" name="cremains_info[shipto_email]" value="{{$client->CremainsInfo->shipto_email}}" > </div>
+   <div class="col-sm-6"><input type="email" placeholder="Email Address" name="cremains_info[shipto_email]" required value="{{$client->CremainsInfo->shipto_email}}" > </div>
 </div>
 <div class="row form-group">
    <div class="col-sm-12">

@@ -195,6 +195,8 @@ class RightSignature
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLINFO_HEADER_OUT, true);
             #curl_setopt($curl, CURLOPT_HEADER,true);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);        // Timeout in seconds
+            curl_setopt($curl, CURLOPT_TIMEOUT, 60);
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
