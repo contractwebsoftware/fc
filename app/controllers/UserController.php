@@ -53,7 +53,7 @@ class UserController extends BaseController {
             {
                 Session::flash('error','User is not activated');
             }
-            if(!$user){
+            if(!is_object($user)){
                 Session::flash('error','Wrong password, please try again!');
                 return Redirect::back();
             }
