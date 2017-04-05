@@ -51,8 +51,8 @@ App::error(function(Exception $exception, $code)
 {
 
 	Log::error($exception);
-	//header("Location: https://provider.forcremation.com/clients/steps");
-	//die();
+	header("Location: https://provider.forcremation.com/clients/steps");
+	die();
 });
 
 /*
