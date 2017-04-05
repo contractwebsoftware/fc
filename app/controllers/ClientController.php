@@ -291,8 +291,8 @@ class ClientController extends BaseController {
 	public function postSteps2()
 	{
             if(Session::get('client_id')==null || Session::get('client_id')=='')$plan_change = false;
-            else $plan_change = true; 
-                
+            else $plan_change = true;
+
             $client = ClientController::registerUser();
             if(is_array(Input::get('deceased_info'))){
                 $input['deceased_info'] = Input::get('deceased_info');
@@ -361,23 +361,41 @@ class ClientController extends BaseController {
 
 	public function postSteps3()
 	{
-            $client = ClientController::registerUser();
-            if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
 
-            if(is_array(Input::get('deceased_info'))){
-                $input['deceased_info'] = Input::get('deceased_info');
+            if(Session::get('inAdminGroup')==''){
 
-                #dd($input['deceased_info']['dob']);
+                $rules = array( 'g-recaptcha-response' => 'required|recaptcha');
 
-                if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
-                if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
-                //echo '<pre>';dd($input['deceased_info']);
-                $client->DeceasedInfo->fill($input['deceased_info']);
-                $client->DeceasedInfo->save(); 
+                $validator = Validator::make(Input::all(), $rules);
+
+                if ($validator->fails())
+                {
+                    $messages = $validator->messages();
+                    return Redirect::to('/clients/steps')->withErrors($validator);
+                }
+
+
             }
-            
 
-            return ClientController::getSteps();	            
+
+
+         $client = ClientController::registerUser();
+        if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
+
+        if(is_array(Input::get('deceased_info'))){
+            $input['deceased_info'] = Input::get('deceased_info');
+
+            #dd($input['deceased_info']['dob']);
+
+            if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+            if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
+            //echo '<pre>';dd($input['deceased_info']);
+            $client->DeceasedInfo->fill($input['deceased_info']);
+            $client->DeceasedInfo->save();
+        }
+
+
+        return ClientController::getSteps();
     }
 
 	public function postSteps4()

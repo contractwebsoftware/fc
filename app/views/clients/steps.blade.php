@@ -530,6 +530,23 @@ $().ready(function(){
    </div>
 </div>
 <br />
+
+    <!--<script src='https://www.google.com/recaptcha/api.js'></script>
+    <button
+            class="g-recaptcha"
+            data-sitekey="6LfrxhsUAAAAAEwSJx2WxFGTi61127nCIkFJgCV9"
+            data-callback="YourOnSubmitFn">
+        Submit
+    </button>-->
+
+@if(Session::get('inAdminGroup')=='')
+    <div class="row form-group">
+        <div class="col-sm-10">
+            {{ Form::captcha() }}
+        </div>
+    </div>
+@endif
+
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
    <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
@@ -634,6 +651,7 @@ $("#dob").datepicker( {
 
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
+   </div>
    <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
 </div>
 </fieldset>

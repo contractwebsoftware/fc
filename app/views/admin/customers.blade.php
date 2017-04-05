@@ -7,13 +7,40 @@
             width: 80%;
         }
         #provider_clients_table,#provider_clients_invoice_table,#provider_clients_signed_table{ table-layout: auto!important; }
+        #clients_table_processing{
+            position: absolute;
+            font-weight: bold;
+            background-color: #428bca;
+            color: #fff;
+            padding: 15px 25px;
+            margin-top: -60px;
+            left: 50%;
+            margin-left: -100px;
+            width: 150px;
+            border-radius: 5px;
+        }
     </style>
     <script>
         $(document).ready(function(){
             $('#clients_table')
                     .DataTable( {
                         "pagingType": "full_numbers",
-                        "pageLength": 25
+                        "pageLength": 25,
+                        "processing": true,
+                        "serverSide": true,
+                        "order": [[ 4, "desc" ]],
+                        "ajax": {
+                            "url": "{{ action('AdminController@getCustomerList') }}",
+                            "type": "GET",
+                            "data": function ( d ) {
+                                d.status = "{{ Input::get('status') }}";
+                                d.preneed = "{{ Input::get('preneed') }}";
+
+                                d.page = $('#clients_table').DataTable().page.info().page+1;
+                                // etc
+                            }
+                        },
+                        "dom": '<"top"ilfp>rt<"bottom"flp><"clear">'
                     } );
 
         });
@@ -39,7 +66,7 @@
                     <div class="form-group">
                         <input type="text" id="first_name" placeholder="First Name"/>
                         <input type="text" id="last_name" placeholder="Last Name"/>
-                        <input type="text" id="new_client_email" placeholder="Login Email"/>
+                        <input type="email" id="new_client_email" placeholder="Login Email"/>
                         <input type="text" id="new_client_password" placeholder="Login Password"/>
 
 
@@ -89,6 +116,12 @@
                      {
                         var items = [];
                         if(data){
+                            if(data.message){
+                                alert(data.message);
+                                $('#save_new_client').prop('disabled',false).fadeTo(1);
+                                $('#new_client_email').focus().css('border','1px solid red');
+                                return false;
+                            }
                             if(data.client_id)
                             window.location.href="{{ action('ClientController@getSteps1')}}?provider_id="+$('#create_client_provider_id').val()+"&client_id="+data.client_id;
                         }
@@ -153,62 +186,26 @@
                 <option value="completed">Completed</option>
             </select>
             <input type="submit" name="mass_update" value="Update" style="float:left;" />
-
+                <Br style="float:none;clear:both;"/>
                 
             <table class="display" cellspacing="0" width="100%" id="clients_table">
                 <thead>
                     <tr>
-                        <th style="width:70px"><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                        <th style="width:30px"><input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
                            <label for="checkallcb" style="cursor:pointer;white-space:nowrap;">All</label>
                         </th>
-                        <th>Customer Name</th>
-                        <th>Deceased Name</th>
-                        <th>Phone</th>
-                        <th>Date</th>
-                        <th>Provider</th>
-                        <th>Customer Email</th>
-                        <th class="text-right">Status</th>
-                        <th class="text-right">Actions</th>
+                        <th style="width:10%">Customer Name</th>
+                        <th style="width:10%">Deceased Name</th>
+                        <th style="width:5%">Phone</th>
+                        <th style="width:5%">Date</th>
+                        <th style="width:15%">Provider</th>
+                        <th style="width:15%">Customer Email</th>
+                        <th style="width:5%" class="text-right">Status</th>
+                        <th style="width:5%" class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach( $clients as $client )
-                        @if(($client->preneed == "y" && Input::get('preneed')=='1') || Input::get('preneed')!='1')
-                        <tr >
-                            <td ><input type="checkbox" class="clients_mass_action" name="edit_clients[{{$client->id}}]" value="{{$client->id}}" /></td>
-                            <td >{{ $client->first_name.' '.$client->last_name }}</td>
-                            <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
-                            <td >{{ $client->phone }}</td>
-                            <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
-                            <td >@if($client->FProvider != null)<a href="{{ action('AdminController@getEditProvider',$client->FProvider->id) }}"> {{  $client->FProvider->business_name }} </a> @endif</td>
-                            <td >@if($client->user != null) {{ $client->user->email }} @endif</td>
 
-                            <td class="text-right" >
-                                <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"  
-                        title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}<br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}<br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
-                                <?php
-                                    switch($client->status){
-                                        case 0:echo 'Active';break;
-                                        case 1:echo 'Completed';break;
-                                        case 3:echo 'Deleted';break;
-                                    }   
-                                    if($client->preneed == "y")echo '/Pre-Need';
-                                ?>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>&nbsp;
-                                <?php
-                                if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
-                                else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
-                                ?>
-
-                            </td>
-                        </tr>
-                        @endif
-                    @endforeach
             </tbody>
             </table>
             {{ Form::close() }}

@@ -782,7 +782,7 @@ class AdminController extends BaseController {
         if(Input::get('per')){
             $per_page = Input::get('per');
         }
-
+        /*
         $q = Input::get('q');
         if(strlen($q)>=3)
         {
@@ -816,10 +816,7 @@ class AdminController extends BaseController {
         }
         if(Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!=''){
             //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
-            /*$clients->leftJoin('clients_providers', function($join)
-                {
-                    $join->on('clients_providers.client_id', '=', 'clients.id')->andOn('clients_providers.provider_id','=',Session::get('logged_in_provider_id'));
-                })*/
+
             //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
             $clients->whereExists(function($query)
             {
@@ -852,12 +849,183 @@ class AdminController extends BaseController {
             else $client->preneed = "n";
 
         }
-        $data['clients'] = $clients;
+        $data['clients'] = $clients;*/
         $data['provider'] = FProvider::where('user_id',Sentry::getUser()->id)->first();
         $data['providers'] = FProvider::where('deleted_at','=',NULL)->where('admin_provider',0)->orderBy('business_name','asc')->get();
         $this->layout->content = View::make('admin.customers',$data);
 
     }
+
+
+    public function getCustomerList()
+    {
+        if(!Sentry::getUser())return Redirect::action('UserController@getLogout');
+        $per_page = 25;
+        $return_data = null;
+        $order['column'] = '4';
+        $order['dir'] = 'desc';
+        $total_count = 0;
+
+        if(Input::get('length')){
+            $per_page = Input::get('length');
+        }
+        if(Input::get('order')){
+            $order_r = Input::get('order');
+            if($order_r[0]['column'] != '0') {
+                $order['column'] = $order_r[0]['column'];
+                $order['dir'] = $order_r[0]['dir'];
+            }
+        }
+
+        $cols_r = Array('0'=>'',
+                            '1'=>'client_first_name',
+                            '2'=>'deceased_first_name',
+                            '3'=>'clients.phone',
+                            '4'=>'client_created',
+                            '5'=>'client_provider_id',
+                            '6'=>'users.email',
+                            '7'=>'clients.status',
+                            '8'=>'clients.first_name'
+            );
+
+
+        $search_r = Input::get('search');
+        $q = $search_r['value'];
+
+        if(strlen($q)>=3)
+        {
+            $clients = Client::select(DB::raw('clients.*, clients_providers.provider_id as client_provider_id, clients.first_name as client_first_name, clients.last_name as client_last_name, clients.created_at as client_created, deceased_info.last_name as deceased_first_name, deceased_info.*, users.*,cremains_info.shipto_email'))
+                ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
+                ->join('users', 'clients.user_id', '=', 'users.id')
+                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
+                ->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id')
+
+                ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
+                ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
+                ->orWhere('clients.zip','like','%'.$q.'%')->orWhere('clients.city','like','%'.$q.'%')
+                ->orWhere('clients.first_name','like','%'.$q.'%')->orWhere('clients.last_name','like','%'.$q.'%')
+                ->orWhere('clients.created_at','like','%'.$q.'%')
+                ->orWhere('deceased_info.first_name','like','%'.$q.'%')->orWhere('deceased_info.last_name','like','%'.$q.'%')
+                ->orWhere('deceased_info.city','like','%'.$q.'%')->orWhere('deceased_info.state','like','%'.$q.'%')
+                ->orWhere('deceased_info.address','like','%'.$q.'%')->orWhere('deceased_info.phone','like','%'.$q.'%')
+                ->orWhere('deceased_info.zip','like','%'.$q.'%')
+                ->orWhere('cremains_info.shipto_email','like','%'.$q.'%')
+                ->orWhere('cremains_info.shipto_first_name','like','%'.$q.'%');
+
+            $clients_count = $clients;
+
+            if($clients == null)$clients = Client::with('user');
+
+        }
+
+        else {
+            //$clients = Client::with('user');
+            $clients = Client::select(DB::raw('clients.*, clients_providers.provider_id as client_provider_id, clients.first_name as client_first_name, clients.last_name as client_last_name, clients.created_at as client_created, deceased_info.last_name as deceased_first_name, deceased_info.*, users.*,cremains_info.shipto_email'))
+                ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
+                ->join('users', 'clients.user_id', '=', 'users.id')
+                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
+                ->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id');
+
+            $clients_count = Client::select(DB::raw('clients.id'));
+            if(Input::get('status')!="")
+            {
+                if(Input::get('status')==0 || Input::get('status')==1){
+                    $clients->where('clients.status','like',Input::get('status'));
+                    $clients_count->where('clients.status','like',Input::get('status'));
+                }
+                elseif(Input::get('status')==2){
+                    $clients->where('clients.status','like','%')->withTrashed();
+                    $clients_count->where('clients.status','like','%')->withTrashed();
+                }
+                elseif(Input::get('status')==3){
+                    $clients->where('clients.status','like',3)->withTrashed();
+                    $clients_count->where('clients.status','like',3)->withTrashed();
+                }
+            }
+        }
+        if(Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!=''){
+            //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
+            /*$clients->leftJoin('clients_providers', function($join)
+                {
+                    $join->on('clients_providers.client_id', '=', 'clients.id')->andOn('clients_providers.provider_id','=',Session::get('logged_in_provider_id'));
+                })*/
+            //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+            $clients->whereExists(function($query)
+            {
+                $query->select(DB::raw(1))
+                    ->from('clients_providers')
+                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+            });
+        }
+        $total_count = $clients_count->get()->count();
+        $clients = $clients->orderBy($cols_r[$order['column']], $order['dir'] )->paginate($per_page);
+
+        //$queries = $clients->toSql();
+        //print_r( ($queries));
+
+        $return_data = ["draw"=> Input::get('draw'), "recordsTotal"=> $total_count,  "recordsFiltered"=> $total_count, 'data'=>Array()];
+
+
+
+        foreach($clients as $client){
+            $provider_id = Session::get('provider_id');
+            //if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
+            //else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+
+            //$this_clients_provider_id = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            //dd($this_clients_provider_id);
+            if($client->client_provider_id != null)$client->FProvider = FProvider::find($client->client_provider_id);
+            //else dd($client->FProvider );
+            //$client_DeceasedInfo = $client->deceasedInfo;
+            if($client->cremation_reason!=null){
+                //$client->deceased_first_name = $client->DeceasedInfo_first_name;
+                //$client->deceased_last_name = $client_DeceasedInfo->last_name;
+                if($client->cremation_reason == "planning_for_future")$client->preneed = "y";
+                else $client->preneed = "n";
+            }
+            else $client->preneed = "n";
+
+                $status = '';
+                switch($client->status){
+                    case 0:$status =  '<span class="pull-right">Active';break;
+                    case 1:$status =  '<span class="pull-right">Completed';break;
+                    case 3:$status =  '<span class="pull-right">Deleted';break;
+                }
+                if($client->preneed == "y")$status .=  '/Pre-Need';
+                $status .=  '</span>';
+
+                    if($client->status == 3)$action = '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success pull-right" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
+                    else $action = '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger pull-right" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
+
+                $action .= ' <a href="'. action('AdminController@getEditClient',$client->id) .'" class="btn btn-xs btn-default pull-right" style="margin-right:10px;">
+                                <span class="glyphicon glyphicon-pencil"></span> 
+                                </a>';
+
+                $client_name = $client->client_first_name.' '.$client->client_last_name;
+                $decease_name = $client->deceased_first_name.' '.$client->deceased_last_name;
+
+                $row_data = Array('<input type="checkbox" class="clients_mass_action" name="edit_clients['.$client->id.']" value="'.$client->id.'" />',
+                                ($client_name!='' ? $client_name: ' '),
+                                ($decease_name!='' ? $decease_name: ' '),
+                                ($client->phone!='' ? $client->phone: ' '),
+                                date('m/d/Y',strtotime($client->client_created)),
+                                ($client->FProvider != null ? '<a href="'. action('AdminController@getEditProvider',$client->FProvider->id).'"> '.$client->FProvider->business_name.' </a>' : ''),
+                                ($client->user != null ? $client->user->email : '').('<br />Informant: '.$client->shipto_email),
+                                "$status",
+                                "$action"
+                            );
+
+
+
+
+            array_push($return_data['data'], $row_data);
+
+        }
+
+       return  $return_data;
+
+    }
+
 
 
     public function getEditClient($id, $goto_section='')
@@ -885,6 +1053,11 @@ class AdminController extends BaseController {
         if(Input::get('password')!='')$password = Input::get('password');
         if(Input::get('first_name')!='')$first_name = Input::get('first_name');
         if(Input::get('provider_id')!='')$provider_id = Input::get('provider_id');
+
+        if(Input::get('email')!=''){
+            $check = User::where('email',Input::get('email'))->first();
+            if($check != null)return Response::json(['message'=>'A Client With That Email Exists Already']);
+        }
 
         $client_input = Array(
             'first_name' => $first_name,
@@ -919,7 +1092,7 @@ class AdminController extends BaseController {
         ));
 
         $client->user_id = $user->id;
-        $client->update();
+        $client->save();
 
         $client->User = User::where('id', $client->user_id)->first();
 

@@ -113,6 +113,7 @@ return array(
 		'Way\Generators\GeneratorsServiceProvider',
 		'Barryvdh\DomPDF\ServiceProvider',
 		'Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider',
+		'Greggilbert\Recaptcha\RecaptchaServiceProvider',
 	),
 
 	/*

@@ -77,7 +77,7 @@ Route::get('test2',function(){
         });*/
             
 });
-
+/*
 Route::get('/',function(){
 
     header("Location: https://provider.forcremation.com/clients/steps");
@@ -91,3 +91,4 @@ App::missing(function($exception) {
     header("Location: https://provider.forcremation.com/clients/steps");
     die();
 });
+*/
