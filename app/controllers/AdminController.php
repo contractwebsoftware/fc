@@ -882,7 +882,7 @@ class AdminController extends BaseController {
                             '2'=>'deceased_first_name',
                             '3'=>'clients.phone',
                             '4'=>'client_created',
-                            '5'=>'client_provider_id',
+                            '5'=>'client_created',
                             '6'=>'users.email',
                             '7'=>'clients.status',
                             '8'=>'clients.first_name'
@@ -894,11 +894,15 @@ class AdminController extends BaseController {
 
         if(strlen($q)>=3)
         {
-            $clients = Client::select(DB::raw('clients.*, clients_providers.provider_id as client_provider_id, clients.first_name as client_first_name, clients.last_name as client_last_name, clients.created_at as client_created, deceased_info.last_name as deceased_first_name, deceased_info.*, users.*,cremains_info.shipto_email'))
+            $clients = Client::select(DB::raw('clients.*, clients.created_at as client_created, 
+                                                clients.first_name as client_first_name, clients.last_name as client_last_name,                                                 
+                                                deceased_info.first_name as deceased_first_name, 
+                                                deceased_info.last_name as deceased_last_name, 
+                                                users.email,
+                                                clients_providers.provider_id as client_provider_id'))
                 ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
                 ->join('users', 'clients.user_id', '=', 'users.id')
                 ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
-                ->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id')
 
                 ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
                 ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
@@ -908,11 +912,25 @@ class AdminController extends BaseController {
                 ->orWhere('deceased_info.first_name','like','%'.$q.'%')->orWhere('deceased_info.last_name','like','%'.$q.'%')
                 ->orWhere('deceased_info.city','like','%'.$q.'%')->orWhere('deceased_info.state','like','%'.$q.'%')
                 ->orWhere('deceased_info.address','like','%'.$q.'%')->orWhere('deceased_info.phone','like','%'.$q.'%')
-                ->orWhere('deceased_info.zip','like','%'.$q.'%')
-                ->orWhere('cremains_info.shipto_email','like','%'.$q.'%')
-                ->orWhere('cremains_info.shipto_first_name','like','%'.$q.'%');
+                ->orWhere('deceased_info.zip','like','%'.$q.'%');
+                //->orWhere('cremains_info.shipto_email','like','%'.$q.'%')
+                //->orWhere('cremains_info.shipto_first_name','like','%'.$q.'%');
 
-            $clients_count = $clients;
+            $clients_count = Client::select(DB::raw('count(*) as count'))
+                ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
+                ->join('users', 'clients.user_id', '=', 'users.id')
+                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
+
+                ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
+                ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
+                ->orWhere('clients.zip','like','%'.$q.'%')->orWhere('clients.city','like','%'.$q.'%')
+                ->orWhere('clients.first_name','like','%'.$q.'%')->orWhere('clients.last_name','like','%'.$q.'%')
+                ->orWhere('clients.created_at','like','%'.$q.'%')
+                ->orWhere('deceased_info.first_name','like','%'.$q.'%')->orWhere('deceased_info.last_name','like','%'.$q.'%')
+                ->orWhere('deceased_info.city','like','%'.$q.'%')->orWhere('deceased_info.state','like','%'.$q.'%')
+                ->orWhere('deceased_info.address','like','%'.$q.'%')->orWhere('deceased_info.phone','like','%'.$q.'%')
+                ->orWhere('deceased_info.zip','like','%'.$q.'%');
+
 
             if($clients == null)$clients = Client::with('user');
 
@@ -920,13 +938,19 @@ class AdminController extends BaseController {
 
         else {
             //$clients = Client::with('user');
-            $clients = Client::select(DB::raw('clients.*, clients_providers.provider_id as client_provider_id, clients.first_name as client_first_name, clients.last_name as client_last_name, clients.created_at as client_created, deceased_info.last_name as deceased_first_name, deceased_info.*, users.*,cremains_info.shipto_email'))
+            $clients = Client::select(DB::raw('clients.*, clients.created_at as client_created, 
+                                                clients.first_name as client_first_name, clients.last_name as client_last_name,                                                 
+                                                deceased_info.first_name as deceased_first_name, 
+                                                deceased_info.last_name as deceased_last_name, 
+                                                users.email,
+                                                clients_providers.provider_id as client_provider_id'))
                 ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
                 ->join('users', 'clients.user_id', '=', 'users.id')
-                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
-                ->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id');
+                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id');
 
-            $clients_count = Client::select(DB::raw('clients.id'));
+                //->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id');
+
+            $clients_count = Client::select(DB::raw('count(*) as count'));
             if(Input::get('status')!="")
             {
                 if(Input::get('status')==0 || Input::get('status')==1){
@@ -957,26 +981,31 @@ class AdminController extends BaseController {
                     ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
             });
         }
-        $total_count = $clients_count->get()->count();
+
+        $clients_count_o = $clients_count->first();
+        $total_count = $clients_count_o->count;
         $clients = $clients->orderBy($cols_r[$order['column']], $order['dir'] )->paginate($per_page);
 
-        //$queries = $clients->toSql();
-        //print_r( ($queries));
 
         $return_data = ["draw"=> Input::get('draw'), "recordsTotal"=> $total_count,  "recordsFiltered"=> $total_count, 'data'=>Array()];
 
+        //DB::connection()->enableQueryLog();
+        //$queries = DB::getQueryLog();
+        //dd($queries);
 
-
+        //dd($clients);
+        $counter = 0;
         foreach($clients as $client){
             $provider_id = Session::get('provider_id');
             //if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
             //else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
 
-            //$this_clients_provider_id = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            //$client->client_provider_id = DB::table('clients_providers')->where('client_id', $client->id)->first();
             //dd($this_clients_provider_id);
             if($client->client_provider_id != null)$client->FProvider = FProvider::find($client->client_provider_id);
             //else dd($client->FProvider );
             //$client_DeceasedInfo = $client->deceasedInfo;
+
             if($client->cremation_reason!=null){
                 //$client->deceased_first_name = $client->DeceasedInfo_first_name;
                 //$client->deceased_last_name = $client_DeceasedInfo->last_name;
@@ -1010,13 +1039,13 @@ class AdminController extends BaseController {
                                 ($client->phone!='' ? $client->phone: ' '),
                                 date('m/d/Y',strtotime($client->client_created)),
                                 ($client->FProvider != null ? '<a href="'. action('AdminController@getEditProvider',$client->FProvider->id).'"> '.$client->FProvider->business_name.' </a>' : ''),
-                                ($client->user != null ? $client->user->email : '').('<br />Informant: '.$client->shipto_email),
+                                ($client->user != null ? $client->user->email : ''),
                                 "$status",
                                 "$action"
                             );
 
 
-
+                $counter++;
 
             array_push($return_data['data'], $row_data);
 
