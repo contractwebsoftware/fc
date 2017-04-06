@@ -16,7 +16,6 @@
 		"guzzlehttp/guzzle": "~4.0",
 		"rap2hpoutre/laravel-log-viewer": "^0.8.1",
 		"greggilbert/recaptcha": "^1.1.5"
-
 	},
 	"autoload": {
 		"classmap": [
