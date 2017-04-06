@@ -1107,6 +1107,7 @@ class AdminController extends BaseController {
 
 
 
+
         //dd( "creatd new user:".$client->id);
 
         $login = "unregistered".$client->id."@user.com";

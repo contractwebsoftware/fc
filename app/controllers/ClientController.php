@@ -610,6 +610,21 @@ class ClientController extends BaseController {
             }
 
         }
+
+
+        /* fix broken client/users */
+        $newclients = Client::where('user_id','like','')->get();
+        //dd($newclients);
+        if($newclients){
+            foreach($newclients as $newclient){
+                $unewser = new User();
+                $unewser->fill(['email'=>'unregistered'.$newclient->id.'@user.com', 'role'=>'client', 'activated'=>true, 'password'  => 'unregistered']);
+                $unewser->save();
+                $newclient->user_id = $unewser->id;
+                $newclient->save();
+            }
+        }
+
         return Redirect::action('ClientController@getSteps');
 
     }
