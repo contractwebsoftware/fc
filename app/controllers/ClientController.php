@@ -613,7 +613,7 @@ class ClientController extends BaseController {
 
 
         /* fix broken client/users */
-        $newclients = Client::where('user_id','like','')->get();
+        $newclients = Client::where('user_id','=',null)->orWhere('user_id','like','')->get();
         //dd($newclients);
         if($newclients){
             foreach($newclients as $newclient){
