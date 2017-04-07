@@ -1445,8 +1445,14 @@ class ClientController extends BaseController {
         if(strpos(public_path(), '/Users/')!==false)$local = true;
 
         $doc_name = 'CremationDocuments'.date('Y-m-d').'.pdf';
-        if($local)$doc_location = public_path('provider_files/'.$provider_id.'/'.$doc_name);
-        else $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
+        if($local){
+            $doc_location = public_path('provider_files/'.$provider_id.'/'.$doc_name);
+            mkdir(public_path('provider_files/'.$provider_id),0777);
+        }
+        else {
+            $doc_location = public_path('provider_files\\'.$provider_id.'\\'.$doc_name);
+            mkdir(public_path('provider_files\\'.$provider_id),0777);
+        }
 
         #dd('test'.$getPreview);
         if($getPreview) {
@@ -1456,10 +1462,22 @@ class ClientController extends BaseController {
             return $pdf->stream($doc_name);
         }
 
+        //$pdf = new \Barryvdh\DomPDF\PDF()
         $pdf = App::make('dompdf');
+        //echo '$html'.$html.'  $doc_location'.$doc_location;
+        //dd($pdf);
+
         if($html != ''){
+
             $pdf->loadHTML($html);
             $pdf->save($doc_location);
+            //PDF::loadHTML($html)->save($doc_location);
+            //dd($doc_location);
+            //$output = $pdf->stream($doc_name);
+            //$pdf->render();
+            //$output = $pdf->output();
+            //file_put_contents($doc_location, $output);
+
         }
 
 
