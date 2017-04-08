@@ -2033,7 +2033,7 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 {
 
         $forms_included = $com = $sep ='';
-        $forms_included_s = 'ForCremation-Form';
+        $forms_included_s = 'ForCremation-Forms';
 
         if(Input::get('return_redirect_url') != '')$return_redirect_url = (bool)Input::get('return_redirect_url');
         if($client_id=='')$client_id = Input::get('client_id');
@@ -2044,6 +2044,8 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 
         $provider = FProvider::find($provider_id);
         $provider = ClientController::updateProvider($provider_id);
+
+        $forms_included_s .= $provider->id;
 
         $client = Client::find($client_id);
         $clientData = ClientController::fillOutClientTables(Client::find($client_id));
