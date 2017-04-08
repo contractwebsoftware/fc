@@ -196,6 +196,15 @@
                                 </label>
                             </div>
                     </div>
+
+
+                    @if(Session::get('inAdminGroup')=='')
+                        <div class="row form-group">
+                            <div class="col-sm-10">
+                                {{ Form::captcha() }}
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-group">
                             <div class="col-sm-12">
                                     <button type="submit" class="btn btn-primary btn-block" onclick="return validateForm();">Apply</button>

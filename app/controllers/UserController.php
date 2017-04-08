@@ -112,7 +112,27 @@ class UserController extends BaseController {
    
     public function postRegisterProvider()
     {
+
+        if(Session::get('inAdminGroup')==''){
+
+            $rules = array( 'g-recaptcha-response' => 'required|recaptcha');
+
+            $validator = Validator::make(Input::all(), $rules);
+
+            if ($validator->fails())
+            {
+                $messages = $validator->messages();
+                //dd($messages);
+                return Redirect::to('/clients/steps')->withErrors($validator);
+            }
+
+
+        }
+
+
         Session::put('new_provider_data', Input::all());
+
+
         $input = [
                 'plan_id' => Input::get('plan_id'),
                 'business_name' => Input::get('business_name'),

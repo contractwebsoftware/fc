@@ -2032,7 +2032,7 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
 {
 
-        $forms_included = $com = '';
+        $forms_included = $com = $forms_included_s = $sep ='';
 
 
         if(Input::get('return_redirect_url') != '')$return_redirect_url = (bool)Input::get('return_redirect_url');
@@ -2052,13 +2052,6 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
         ## FORMS URL FOR RIGHTSIGNATURE TO DOWNLOAD FROM
         #$forms_url = 'http://provider.forcremation.com/clients/customer-documents?provider_id='.$provider_id.'&client_id='.$client_id;
 
-        $pdf = ClientController::getCustomerDocuments();
-        $form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
-        $forms_url = secure_url(URL::to($form_path));
-        #dd($pdf);
-        File::put(public_path() .$form_path, file_get_contents($pdf) );
-
-
 
         $download_forms = Input::get('download_forms');
         $doc_forms = ProviderController::getDocumentTypes();
@@ -2069,17 +2062,28 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            #$forms_included .= $com.$file_name;
+            $forms_included_s .= $sep.$file_name;
             $forms_included .= '<tag><name>'.$key.'</name><value>'.$file_name.'</value></tag>';
-
+            $sep = '-';
         }
 
-        #$forms_url = 'http://www.forcremation.com/images/test.pdf';
+
+        $pdf = ClientController::getCustomerDocuments();
+        $form_path =  "/provider_files/" . $provider_id ."/".$forms_included_s.".pdf";
+        #$form_path =  "/provider_files/" . $provider_id ."/". date('Y-m-d-h-i-s').'.pdf';
+        $forms_url = secure_url(URL::to($form_path));
+        #dd($pdf);
+        File::put(public_path() .$form_path, file_get_contents($pdf) );
+
+
+
+    #$forms_url = 'http://www.forcremation.com/images/test.pdf';
 
         if($client != null && $forms_url != ''){
             $rightsignature = new RightSignature();
             $rightsignature->debug = false;
 
+            //$doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
             $doc_data['doc_name'] = $client->first_name.' '.$client->last_name;
             $doc_data['doc_url'] = ($forms_url);
             $doc_data['doc_to_sign_name'] = str_replace('&','&amp;',$client->first_name.' '.$client->last_name);
