@@ -2062,7 +2062,7 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            $forms_included_s .= $sep.str_replace('\\','',str_replace('/','',str_replace('-','',$file_name)));
+            $forms_included_s .= $sep.$key;
             $forms_included .= '<tag><name>'.$key.'</name><value>'.$file_name.'</value></tag>';
             $sep = '-';
         }
