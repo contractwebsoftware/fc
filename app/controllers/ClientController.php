@@ -2033,7 +2033,7 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
 {
 
         $forms_included = $com = $sep ='';
-        $forms_included_s = 'ForCremation Form';
+        $forms_included_s = 'ForCremation-Form';
 
         if(Input::get('return_redirect_url') != '')$return_redirect_url = (bool)Input::get('return_redirect_url');
         if($client_id=='')$client_id = Input::get('client_id');
