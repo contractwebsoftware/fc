@@ -64,8 +64,8 @@
                   </div>
                   <div class="modal-body">
                     <div class="form-group">
-                        <input type="text" id="first_name" placeholder="First Name"/>
-                        <input type="text" id="last_name" placeholder="Last Name"/>
+                        <input type="text" id="first_name" placeholder="Informant First Name"/>
+                        <input type="text" id="last_name" placeholder="Informant Last Name"/>
                         <input type="email" id="new_client_email" placeholder="Login Email"/>
                         <input type="text" id="new_client_password" placeholder="Login Password"/>
 
