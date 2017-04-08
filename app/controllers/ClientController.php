@@ -2032,8 +2032,8 @@ public function postUpdateInvoiceItems($provider_id='', $client_id='', $return_c
 function postSendFormSigning($provider_id='', $client_id='', $return_redirect_url=false)
 {
 
-        $forms_included = $com = $forms_included_s = $sep ='';
-
+        $forms_included = $com = $sep ='';
+        $forms_included_s = 'ForCremation Form';
 
         if(Input::get('return_redirect_url') != '')$return_redirect_url = (bool)Input::get('return_redirect_url');
         if($client_id=='')$client_id = Input::get('client_id');
@@ -2060,11 +2060,11 @@ function postSendFormSigning($provider_id='', $client_id='', $return_redirect_ur
         if($download_forms == '')$download_forms = array('customer_form_2'=>'Hospital Release');
         if(!is_array($download_forms))$download_forms = array($download_forms=>$download_forms);
 
+
         if($download_forms != null)
         foreach($download_forms as $key=>$file_name){
-            $forms_included_s .= $sep.str_replace('customer_','',$key);
+            $forms_included_s .= '-'.str_replace('customer_form_','',$key);
             $forms_included .= '<tag><name>'.$key.'</name><value>'.$file_name.'</value></tag>';
-            $sep = '-';
         }
 
 
