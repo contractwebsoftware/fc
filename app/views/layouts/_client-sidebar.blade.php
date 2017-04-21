@@ -10,9 +10,9 @@
         <?php
             $vid = "016.m4v";
             switch(Session::get('step')){
-                case 1: $vid = "005.m4v"; break;
-                case 2: $vid = "006.m4v"; break;
-                case 3: $vid = "007.m4v"; break;
+                case 1: $vid = "006.m4v"; break;
+                case 2: $vid = "007.m4v"; break;
+                case 3: $vid = "005.m4v"; break;
                 case 4: $vid = "008.m4v"; break;
                 case 5: $vid = "009.m4v"; break;
                 case 6: $vid = "010.m4v"; break;
