@@ -123,7 +123,7 @@ class UserController extends BaseController {
             {
                 $messages = $validator->messages();
                 //dd($messages);
-                return Redirect::to('/clients/steps')->withErrors($validator);
+                //return Redirect::to('/clients/steps')->withErrors($validator);
             }
 
 
