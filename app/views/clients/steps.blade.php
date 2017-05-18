@@ -542,7 +542,7 @@ $().ready(function(){
 @if(Session::get('inAdminGroup')=='')
     <div class="row form-group">
         <div class="col-sm-10">
-            {{ Form::captcha() }}
+            <?php /*{{ Form::captcha() }} */ ?>
         </div>
     </div>
 @endif

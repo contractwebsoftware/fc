@@ -112,7 +112,7 @@ class UserController extends BaseController {
    
     public function postRegisterProvider()
     {
-
+/*
         if(Session::get('inAdminGroup')==''){
 
             $rules = array( 'g-recaptcha-response' => 'required|recaptcha');
@@ -123,12 +123,12 @@ class UserController extends BaseController {
             {
                 $messages = $validator->messages();
                 //dd($messages);
-                //return Redirect::to('/clients/steps')->withErrors($validator);
+                return Redirect::to('/clients/steps')->withErrors($validator);
             }
 
 
         }
-
+*/
 
         Session::put('new_provider_data', Input::all());
 
