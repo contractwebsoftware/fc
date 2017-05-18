@@ -364,14 +364,14 @@ class ClientController extends BaseController {
 
             if(Session::get('inAdminGroup')==''){
 
-                $rules = array( 'g-recaptcha-response' => 'required|recaptcha');
+                //$rules = array( 'g-recaptcha-response' => 'required|recaptcha');
 
-                $validator = Validator::make(Input::all(), $rules);
+                //$validator = Validator::make(Input::all(), $rules);
 
                 if ($validator->fails())
                 {
-                    $messages = $validator->messages();
-                    return Redirect::to('/clients/steps')->withErrors($validator);
+                 //   $messages = $validator->messages();
+                 //   return Redirect::to('/clients/steps')->withErrors($validator);
                 }
 
 
