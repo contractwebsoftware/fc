@@ -4,6 +4,7 @@ body{padding:0!important;background:none!important;}
 #footer{display:none;}
 /* general styles */
 .clear{clear:both;}
-
-
+#logo{display:none;}
+#navigation{background: #fff!important;}
+#navigation ul{margin: 0!important; }
 #step_navigation_menu{display:none;}
