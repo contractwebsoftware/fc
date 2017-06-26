@@ -13,8 +13,7 @@
 
 App::before(function($request)
 {
-	//Are we showing from another site?
-	if(Input::get('no-frame')=='y')Session::put('no-frame','y');
+	//
 });
 
 

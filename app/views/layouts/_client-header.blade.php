@@ -1,7 +1,5 @@
 <?php
-if(is_object(Session::get('no-frame'))){
-    $noframe = Session::get('no-frame');
-}
+if(!is_null(Session::get('no-frame')))$noframe = Session::get('no-frame');
 else $noframe = false;
 
 if(is_object(Session::get('provider'))){
@@ -11,7 +9,7 @@ if(is_object(Session::get('provider'))){
 else $provider_name = '';
 
 ?>
-@if($noframe)
+@if($noframe == false)
     <div id="header">
         <img src="{{ asset('img/photo-strip'.rand(1,16).'.jpg') }}" alt="header">
     </div>

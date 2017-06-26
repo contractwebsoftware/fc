@@ -1,9 +1,13 @@
 <?php
 
+
+//Are we showing from another site?
+if(Input::get('no-frame')=='y')Session::put('no-frame','y');
+elseif(Input::get('no-frame')=='n')Session::put('no-frame',null);
+
 /* CATCHALLS FOR ENTERING THE REGISTRATION AND PASSING PROVIDER IDS */
 Route::get('clients/steps/provider_id={id}', function($id)
 {
-
     return Redirect::to('clients/steps?provider_id='.$id);
 });
 Route::get('clients/steps/provider={id}', function($id)

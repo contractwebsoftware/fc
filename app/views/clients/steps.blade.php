@@ -1,8 +1,12 @@
 @extends('layouts.client')
 @section('content')
-<div class="col-sm-{{(Session::get('inAdminGroup')!=''?'12':'9')}}">
+<?php
+    if(!is_null(Session::get('no-frame')))$noframe = Session::get('no-frame');
+    else $noframe = false;
+?>
+<div class="col-sm-{{(Session::get('inAdminGroup')!='' || $noframe?'12':'9')}}">
 
-@if(Session::get('inAdminGroup') )
+@if(Session::get('inAdminGroup') || !$noframe )
      <style>
         .hideInAdmin{display:none;}
     </style>

@@ -17,9 +17,16 @@
 
 	@section('header')
 	@show
+    <?php
+        if(!is_null(Session::get('no-frame'))){
+            $noframe = Session::get('no-frame');
+            echo '<link rel="stylesheet" href="'.asset('css/client-no-frame.css').'">';
+        }
+        else $noframe = false;
+    ?>
 </head>
-<body class="container">
-	<div id="container">
+<body class="<?php if($noframe == false)echo 'container';?>">
+	<div id="<?php if($noframe == false)echo 'container';?>">
 		@yield('header')
             @if ( !Sentry::check() )
 				@include('layouts._client-header')
@@ -39,7 +46,7 @@
 		<div id="content">
 			@include('layouts.notification')
                         <div  class="row">
-                            @include('layouts._client-sidebar')
+                            <?php if($noframe == false) {?> @include('layouts._client-sidebar') <?php } ?>
                             @yield('content')
                         </div>
 		</div>
