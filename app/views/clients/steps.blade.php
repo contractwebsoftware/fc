@@ -4,9 +4,9 @@
     if(!is_null(Session::get('no-frame')))$noframe = Session::get('no-frame');
     else $noframe = false;
 ?>
-<div class="col-sm-{{(Session::get('inAdminGroup')!='' || $noframe?'12':'9')}}">
+<div class="col-sm-{{(Session::get('inAdminGroup')!='' || $noframe == 'y'?'12':'9')}}">
 
-@if(Session::get('inAdminGroup') || !$noframe )
+@if(Session::get('inAdminGroup') || $noframe == 'y' )
      <style>
         .hideInAdmin{display:none;}
     </style>
