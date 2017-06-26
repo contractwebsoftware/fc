@@ -20,7 +20,7 @@
     <?php
         if(!is_null(Session::get('no-frame'))){
             $noframe = Session::get('no-frame');
-            echo '<link rel="stylesheet" href="'.asset('css/client-no-frame.css').'">';
+            if($noframe == 'y')echo '<link rel="stylesheet" href="'.asset('css/client-no-frame.css').'">';
         }
         else $noframe = false;
     ?>
