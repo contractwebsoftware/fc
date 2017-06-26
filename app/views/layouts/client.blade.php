@@ -21,9 +21,9 @@
 <body class="container">
 	<div id="container">
 		@yield('header')
-                        @if ( !Sentry::check() )
+            @if ( !Sentry::check() )
 				@include('layouts._client-header')
-                        @else
+            @else
 				{{-- take the groups --}}
 				<?php $group = json_decode(Sentry::getUser()->getGroups()); ?>
 				@if( $group[0]->name == 'Provider')

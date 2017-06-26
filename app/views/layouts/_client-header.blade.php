@@ -1,7 +1,21 @@
-<div id="header">
-	<img src="{{ asset('img/photo-strip'.rand(1,16).'.jpg') }}" alt="header">
-</div>
+<?php
+if(is_object(Session::get('no-frame'))){
+    $noframe = Session::get('no-frame');
+}
+else $noframe = false;
 
+if(is_object(Session::get('provider'))){
+    $provider = Session::get('provider');
+    $provider_name = $provider->id;
+}
+else $provider_name = '';
+
+?>
+@if($noframe)
+    <div id="header">
+        <img src="{{ asset('img/photo-strip'.rand(1,16).'.jpg') }}" alt="header">
+    </div>
+@endif
 <!--
 <nav class="navbar navbar-default client-nav-bar" role="navigation">
   <div class="container-fluid">
@@ -20,14 +34,8 @@
   </div>
 </nav>
 -->
-<?php
-if(is_object(Session::get('provider'))){
-    $provider = Session::get('provider');
-    $provider_name = $provider->id;
-}
-else $provider_name = '';
 
-?>
+
 <div id="navigation">
         <ul id="provider_login_menu">
             <li><a href="{{action('UserController@getLogin')}}">Login</a></li>
