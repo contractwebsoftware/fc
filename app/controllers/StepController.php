@@ -55,22 +55,28 @@ class StepController extends BaseController {
             //$state = State::where('name_shor', 'like', Input::get('state'))->first();
 
             //$providers = FProvider::where('state')->whereNull('deleted_at')->orderBy('business_name', 'asc')->get();
+            $filename = public_path('provider_states_'.Input::get('state').'.txt');
+            if(!file_exists($filename))$fh = fopen($filename, 'w') or die("Can't create file");
+            //fclose($fh);
+
+            $providers_json = file_get_contents($filename);
+            if($providers_json != '' and Input::get('refresh')=='')return $providers_json;
 
 
             $providers = DB::select(DB::raw(" SELECT providers.id, providers.business_name, providers.city
-                                                FROM providers, provider_zips, zips 
-                                                WHERE providers.id = provider_zips.provider_id 
-                                                        and providers.provider_status = 1
-                                                        and providers.admin_provider = 0
-                                                        and provider_zips.zip = zips.zip
-                                                        and zips.state_abv like '".Input::get('state')."'
-                                        "));
+                                            FROM providers, provider_zips, zips 
+                                            WHERE providers.id = provider_zips.provider_id 
+                                                    and providers.provider_status = 1
+                                                    and providers.admin_provider = 0
+                                                    and provider_zips.zip = zips.zip
+                                                    and zips.state_abv like '".Input::get('state')."'
+                                    "));
             //dd(DB::getQueryLog());
             //
 
             if(!$providers){
                 $providers = FProvider::
-                    where('default_for_state', Input::get('state'))
+                where('default_for_state', Input::get('state'))
                     ->where('provider_status', 1)
                     ->whereNull('deleted_at')
                     ->orderBy('business_name', 'asc')
@@ -81,6 +87,8 @@ class StepController extends BaseController {
             foreach($providers as $key=>$row){
                 $json_r['provider-'.$row->id] = $row->city.' - '.$row->business_name;
             }
+
+            File::put($filename, json_encode($json_r));
 
 
             //dd($providers);

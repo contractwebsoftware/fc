@@ -151,9 +151,9 @@ class ClientController extends BaseController {
     public function getProviderLocation(){
 
         $states = DB::table('state')->distinct()->get();
+
         $html = '<html><body style="background-color: #FFF;background-image: none;padding-top:0px;">
                 <div id="select_location" class="row pull-left" style="margin-left:5px;margin-right:0px;">
-
                  <table ><tr><td align=left style="width: 265px;padding-left: 30px;">
                     <b>Select State</b>:<br />
                     <select id="state" name="state">
@@ -174,9 +174,20 @@ class ClientController extends BaseController {
                     <br style="float:none;clear:both;" /><Br />
                 </td>
                 <td align=left>
-                    <iframe style="width:200px;height:290px;border:none;" src="http://www.forcremation.com/slides/v_welcome.swf" frameborder="0"></iframe>
+                    
+                    <object type="application/x-shockwave-flash" id="slide1" style="float: left;" width="244" height="325" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540001" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" wmode="transparent">
+                    <param name="play" value="true">
+                    <param name="allowScriptAccess" value="always">
+                    <param name="allowFullScreen" value="false">
+                    <param name="quality" value="high">
+                    <param name="wmode" value="transparent" />
+                    <param name="bgcolor" value="#ffffff">
+                    <param name="movie" value="/slides/v_welcome.swf">
+                    <embed width="244" play="true" swliveconnect="true" name="myFlashMovie" height="325" type="application/x-shockwave-flash" src="slides/v_welcome.swf" allowscriptaccess="always" allowfullscreen="false" quality="high" wmode="transparent" bgcolor="#ffffff"></embed>
+                    </object>
                </td></tr></table>
             </div>
+            
             <link rel="stylesheet" href="'. asset('packages/Bootflat/css/bootstrap.min.css') .'">
             <link rel="stylesheet" href="'. asset('css/client.css') .'">
             <!--[if IE]>
@@ -185,12 +196,17 @@ class ClientController extends BaseController {
             <script src="'. asset('packages/Bootflat/js/jquery-1.11.1.min.js') .'"></script>
             <script src="'. asset('js/jquery.chained.remote.min.js') .'"></script>
             <script>
+                
+
 
                 //$("#city").remoteChained("#state", "'.action('StepController@getCities').'");
                 //$("#new_provider").remoteChained("#city", "'.action('StepController@getProvidersByCity').'");
                 
                 $("#new_provider").remoteChained("#state", "'.action('StepController@getProvidersByState').'");
                 $("#new_provider").on("change", function(){
+                
+                    
+                    
                     $("#new_provider option:contains(\'funeralhome-\')").attr("disabled",true);
                     $("#new_provider option[value*=\'funeralhome-\']").attr("disabled", true );
 
@@ -199,6 +215,8 @@ class ClientController extends BaseController {
                         $("#new_provider option:contains(\'provider-\')").attr("selected",true);
                         $("#new_provider option[value*=\'provider-\']").attr("selected", true );
                     }
+                    $.get("'.action('StepController@getProvidersByState').'?refresh=y&state="+$(\'#state\').val());
+                    
                 });
 
                 $("#choose_provider").click(function(){
