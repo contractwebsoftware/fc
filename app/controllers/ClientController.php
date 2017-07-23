@@ -11,141 +11,145 @@ class ClientController extends BaseController {
 	}
 	public function getSteps($goToStep=0, $jsonReturn=false, $client=null)
 	{
-            //dd(Session::get('inAdminGroup'));
-            if(Input::get('client_id')!=''){
-                //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
-                $client = Client::where('id',Input::get('client_id'))->first();
+        if(!is_null(Session::get('no-frame')))$noframe = Session::get('no-frame');
+        else $noframe = false;
+
+        //dd(Session::get('inAdminGroup'));
+        if(Input::get('client_id')!=''){
+            //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
+            $client = Client::where('id',Input::get('client_id'))->first();
+            $client = ClientController::fillOutClientTables($client);
+            Session::put('client_id',Input::get('client_id'));
+        }
+        elseif($client == null){
+            if(Session::get('client_id')!='') {
+                //dd(Session::get('client_id'));
+                $client = Client::where('id',Session::get('client_id'))->first();
                 $client = ClientController::fillOutClientTables($client);
-                Session::put('client_id',Input::get('client_id'));
             }
-            elseif($client == null){
-                if(Session::get('client_id')!='') {
-                    //dd(Session::get('client_id'));
-                    $client = Client::where('id',Session::get('client_id'))->first();
-                    $client = ClientController::fillOutClientTables($client);
-                }
-                elseif(Sentry::getUser()){
-                    //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
-                    $client = Client::where('user_id',Sentry::getUser()->id)->first();
-                    $client = ClientController::fillOutClientTables($client);
-                }
-                
-                if($client == null){
-                    //echo 'client not pulled form sentry or session';
-                    $client = New Client();
-                }
+            elseif(Sentry::getUser()){
+                //echo 'found client in sentry, userid:'.Sentry::getUser()->id;
+                $client = Client::where('user_id',Sentry::getUser()->id)->first();
+                $client = ClientController::fillOutClientTables($client);
             }
-            
-            if($client->DeceasedFamilyInfo == null)$client->DeceasedFamilyInfo = New DeceasedFamilyInfo();
-            if($client->DeceasedInfo == null)$client->DeceasedInfo = New DeceasedInfo();
-            if($client->CremainsInfo == null)$client->CremainsInfo = New CremainsInfo();
-            if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
-            if($client->User == null)$client->User = New User();
 
-            //echo 'SESSION<br />';
-            //print_r(Session::all());
-            
-            //echo '<br /><br />SENTRY<br />';
-            //print_r(Sentry::getUser($client->user_id));
-            
-            //echo '<Br /><Br /> client: <pre>'; 
-            //print_r($client); echo '</pre><Br /><br />';
-            
-
-            $steps_r = Step::whereRaw("status='1' and display_in_menu='1'")->orderBy('step_number','asc')->get();
-           
-            
-            $states = DB::table('state')->distinct()->get();
-            if(strpos($goToStep, 'provider-')!==false or strpos($goToStep, 'provider=')!==false){
-
-                $provider_id = str_replace('provider-','',$goToStep);
-                $provider_id = str_replace('provider=','',$goToStep);
-                //dd($provider_id);
-
-                $provider = ClientController::updateProvider($provider_id);
+            if($client == null){
+                //echo 'client not pulled form sentry or session';
+                $client = New Client();
             }
-            if(Input::get('provider_id')){
-                $provider_id = Input::get('provider_id');
-                $provider_id = str_replace('provider-','',$provider_id);
-                $provider = ClientController::updateProvider($provider_id);
-                    #elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
+        }
+
+        if($client->DeceasedFamilyInfo == null)$client->DeceasedFamilyInfo = New DeceasedFamilyInfo();
+        if($client->DeceasedInfo == null)$client->DeceasedInfo = New DeceasedInfo();
+        if($client->CremainsInfo == null)$client->CremainsInfo = New CremainsInfo();
+        if($client->DeceasedInfoPresentLoc == null)$client->DeceasedInfoPresentLoc = New DeceasedInfoPresentLoc();
+        if($client->User == null)$client->User = New User();
+
+        //echo 'SESSION<br />';
+        //print_r(Session::all());
+
+        //echo '<br /><br />SENTRY<br />';
+        //print_r(Sentry::getUser($client->user_id));
+
+        //echo '<Br /><Br /> client: <pre>';
+        //print_r($client); echo '</pre><Br /><br />';
+
+
+        $steps_r = Step::whereRaw("status='1' and display_in_menu='1'")->orderBy('step_number','asc')->get();
+
+
+        $states = DB::table('state')->distinct()->get();
+        if(strpos($goToStep, 'provider-')!==false or strpos($goToStep, 'provider=')!==false){
+
+            $provider_id = str_replace('provider-','',$goToStep);
+            $provider_id = str_replace('provider=','',$goToStep);
+            //dd($provider_id);
+
+            $provider = ClientController::updateProvider($provider_id);
+        }
+        if(Input::get('provider_id')){
+            $provider_id = Input::get('provider_id');
+            $provider_id = str_replace('provider-','',$provider_id);
+            $provider = ClientController::updateProvider($provider_id);
+                #elseif(!is_object(Session::get('provider')))$provider = ClientController::updateProvider(1); //default the provider to OCCS
+        }
+        elseif($client->FProvider!=null){
+            $provider = ClientController::updateProvider($client->FProvider->id);
+        }
+        //REFRESHING SO PROVIDER INFO ISN'T CACHED
+        elseif(is_object(Session::get('provider'))) {
+            $provider = Session::get('provider');
+            $provider = ClientController::updateProvider($provider->id);
+        }
+        else $provider = ClientController::updateProvider($this->default_provider_id);
+
+
+            //echo '<br>INPUTS:<br />'; print_r(Input::get());
+            //echo '<br>$provider:<br />'; print_r($provider);
+
+        ## IS THIS PROVIDER OUR DEFAULT QUIKFILES PROVIDER
+        $provider->is_default = FALSE;
+        if($provider->freshbooks_api_url == 'forcremationcom3' || $provider->freshbooks_api_token == '45dbba763492069606dc4125c413453a')
+            $provider->is_default = TRUE;
+        else $provider->is_default = FALSE;
+
+        /*
+         * USE THE PROVIDERS PRODUCT PRICES IF THEY HAVE ANY
+         */
+            $products = ProviderProducts::where('provider_id',$provider->id)->get();
+            if($products == null || count($products)<1)$products = Products::get();
+
+            $client_product = ClientProducts::where('provider_id',$provider->id)->where('client_id',$client->id)->first();
+            if($client_product == null || count($client_product)<1){
+                $client_product = new ClientProducts();
+                $client_product->product_id = 1;
             }
-            elseif($client->FProvider!=null){
-                $provider = ClientController::updateProvider($client->FProvider->id); 
+        /* END PROVIDER PRODUCTS */
+
+
+        if($goToStep != 0)Session::put('step', $goToStep);
+        elseif(Input::get('submit')=="submit" || Input::get('submit')=="save"){
+
+            $current_step = Step::where('step_number', '=', Input::get('step',1))->firstOrFail();
+            Session::put('step', $current_step->next_step_number);
+        }
+        else Session::put('step', Input::get('step',1));
+        if(Session::get('step')>11) Session::put('step',11);
+
+        $client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+        //if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
+        //else $client->sale_summary_r = Array();
+        //dd($sale_summary_r);
+
+        /* IF WE'RE ACTUALLY IN ADMINSITRATION THEN SHOW ALL STEPS AT ONCE */
+        if(Sentry::getUser()){
+            $group = json_decode(Sentry::getUser()->getGroups());
+            if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
+            elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
+            else Session::put('inAdminGroup','');
+
+            $adminController = new AdminController();
+            $provider->signature_docs =  $adminController->getListProviderSignatureDocs('', $client->id);
+
+            if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
+                $client->fb_invoice = ClientController::postGetInvoiceItems($provider->id, $client->id);
             }
-            //REFRESHING SO PROVIDER INFO ISN'T CACHED
-            elseif(is_object(Session::get('provider'))) {
-                $provider = Session::get('provider');
-                $provider = ClientController::updateProvider($provider->id);
-            }
-            else $provider = ClientController::updateProvider($this->default_provider_id);
-            
-            
-                //echo '<br>INPUTS:<br />'; print_r(Input::get());  
-                //echo '<br>$provider:<br />'; print_r($provider);  
 
-            ## IS THIS PROVIDER OUR DEFAULT QUIKFILES PROVIDER
-            $provider->is_default = FALSE;
-            if($provider->freshbooks_api_url == 'forcremationcom3' || $provider->freshbooks_api_token == '45dbba763492069606dc4125c413453a')
-                $provider->is_default = TRUE;
-            else $provider->is_default = FALSE;
-           
-            /*
-             * USE THE PROVIDERS PRODUCT PRICES IF THEY HAVE ANY 
-             */
-                $products = ProviderProducts::where('provider_id',$provider->id)->get();
-                if($products == null || count($products)<1)$products = Products::get();
-
-                $client_product = ClientProducts::where('provider_id',$provider->id)->where('client_id',$client->id)->first();
-                if($client_product == null || count($client_product)<1){
-                    $client_product = new ClientProducts();
-                    $client_product->product_id = 1;
-                }
-            /* END PROVIDER PRODUCTS */
-            
-            
-            if($goToStep != 0)Session::put('step', $goToStep);
-            elseif(Input::get('submit')=="submit" || Input::get('submit')=="save"){
-                
-                $current_step = Step::where('step_number', '=', Input::get('step',1))->firstOrFail();
-                Session::put('step', $current_step->next_step_number);
-            } 
-            else Session::put('step', Input::get('step',1));
-            if(Session::get('step')>11) Session::put('step',11);
-
-            $client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
-            //if(Session::get('step')==9)$client->sale_summary_r = ClientController::getSaleTotals($client, $provider);
-            //else $client->sale_summary_r = Array();
-            //dd($sale_summary_r);
-            
-            /* IF WE'RE ACTUALLY IN ADMINSITRATION THEN SHOW ALL STEPS AT ONCE */
-            if(Sentry::getUser()){
-                $group = json_decode(Sentry::getUser()->getGroups());
-                if( $group[0]->name == 'Provider')Session::put('inAdminGroup','Provider');
-                elseif( $group[0]->name == 'Admin')Session::put('inAdminGroup','Admin');
-                else Session::put('inAdminGroup','');
-
-                $adminController = new AdminController();
-                $provider->signature_docs =  $adminController->getListProviderSignatureDocs('', $client->id);
-
-                if($client->fb_client_id !='' and $provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_clients_invoice == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '') {
-                    $client->fb_invoice = ClientController::postGetInvoiceItems($provider->id, $client->id);
-                }
-
-                $provider->provider_files = ProviderFiles::where('provider_id', $provider->id)
-                                                        ->where('file_type','not like','provider_logo')
-                                                        ->where('file_type','not like','provider_slide_%')
-                                                        ->where('file_name','like','%.pdf')
-                                                        ->get();
+            $provider->provider_files = ProviderFiles::where('provider_id', $provider->id)
+                                                    ->where('file_type','not like','provider_logo')
+                                                    ->where('file_type','not like','provider_slide_%')
+                                                    ->where('file_name','like','%.pdf')
+                                                    ->get();
 
 #dd($provider->provider_files);
-                #echo '<pre>';dd($client->fb_invoice['invoice']['lines']['line'] );
-            }
-            else Session::put('inAdminGroup','');
-            
-            if($jsonReturn)return Response::json(Input::get());
-            else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider, 'products'=>$products,'client_product'=>$client_product]);
-            
+            #echo '<pre>';dd($client->fb_invoice['invoice']['lines']['line'] );
+        }
+        else Session::put('inAdminGroup','');
+
+        if($jsonReturn)return Response::json(Input::get());
+        elseif($noframe == 'y')return View::make('clients.quick-steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider, 'products'=>$products,'client_product'=>$client_product]);
+        else return View::make('clients.steps',['states'=>$states, 'client'=>$client, 'steps_r'=>$steps_r, 'provider'=>$provider, 'products'=>$products,'client_product'=>$client_product]);
+
 	}
 
     public function getProviderLocation(){
@@ -305,6 +309,14 @@ class ClientController extends BaseController {
         return ClientController::getSteps(1,false);
     }
 
+    public function postQuickStep(){
+
+        ClientController::postSteps2();
+        ClientController::postSteps3();
+        ClientController::postSteps7();
+
+        return "A Representative from Rogue Valley Cremation will call to confirm with the next regular business day";
+    }
         
 	public function postSteps2()
 	{
@@ -531,7 +543,15 @@ class ClientController extends BaseController {
                 $client->CremainsInfo->fill($input['cremains_info']);
                 $client->CremainsInfo->save(); 
             }
-            return ClientController::getSteps();	   
+
+            if(is_array(Input::get('deceased_info'))){
+                $input['deceased_info'] = Input::get('deceased_info');
+                $client->DeceasedInfo->fill($input['deceased_info']);
+                $client->DeceasedInfo->save();
+            }
+
+
+        return ClientController::getSteps();
         }
 	public function postSteps10()
 	{

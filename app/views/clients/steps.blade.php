@@ -37,12 +37,12 @@ $save_button = 'Continue';
     <div class="row">
         <div class="col-md-12" style="font-size:12px!important;text-align:center;">
         <b>Goto:</b>
-            <a href="#step2">Certificate Information</a>
-            | <a href="#step3">Life Data</a>
+            <a href="#step2">Death Certificate Information</a>
+            | <a href="#step3">Family Information</a>
+            | <a href="#step6">Authorized Informant</a>
             | <a href="#step1">Cremation Plans</a>
-            | <a href="#step4">Location of Pending Death</a>
             | <a href="#step5">Line of Authority</a><br />
-            <a href="#step6">Authorized Person</a>
+             <a href="#step4">Location of Pending Death</a>
             | <a href="#step7">Certified Death Certificates</a>
             | <a href="#step8">Shipping Information</a>
             | <a href="#step9">Payment Summary</a>
@@ -432,9 +432,9 @@ $().ready(function(){
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
 
 <fieldset id="step2">
-<h3>Certificate Information <p></p></h3>
+<h3>Death Certificate Information<p></p></h3>
 <div class="row form-group">
-   <div class="col-sm-4"><input name="deceased_info[first_name]" type="text" placeholder="First Name" value="{{$client->DeceasedInfo->first_name}}" /></div>
+   <div class="col-sm-4"><input name="deceased_info[first_name]" type="text" placeholder="First Name of the person you are arranging for" value="{{$client->DeceasedInfo->first_name}}" /></div>
    <div class="col-sm-4"><input name="deceased_info[middle_name]" type="text" placeholder="Middle" value="{{$client->DeceasedInfo->middle_name}}"  /></div>
    <div class="col-sm-4"><input name="deceased_info[last_name]" type="text" placeholder="Last Name" value="{{$client->DeceasedInfo->last_name}}" /></div>
 </div>
@@ -514,25 +514,6 @@ $().ready(function(){
         <input name="deceased_info[dob]" id="dob" type="text" class="calendar" placeholder="Date of Birth MM/DD/YYYY" value="{{ $dob }}" /></div>
 </div>
 
-<div class="row form-group">
-   <div class="col-sm-6">
-       Items with potential additional fees<br />
-       <select name="deceased_info[weight]" class="form-control">
-            <option value="">Weight</option>
-            <option value="weight_lt_250" {{ ($client->DeceasedInfo->weight=="weight_lt_250"?'selected':'') }} >Weight less than 250lbs - Add ${{$provider->pricing_options->weight_lt_250}}</option>
-            <option value="weight_lt_300" {{ ($client->DeceasedInfo->weight=="weight_lt_300"?'selected':'') }} >Weight 251-300lbs - Add ${{$provider->pricing_options->weight_lt_300}}</option>
-            <option value="weight_lt_350" {{ ($client->DeceasedInfo->weight=="weight_lt_350"?'selected':'') }} >Weight 301-350lbs - Add ${{$provider->pricing_options->weight_lt_350}}</option>
-            <option value="weight_gt_350" {{ ($client->DeceasedInfo->weight=="weight_gt_350"?'selected':'') }} >Weight 351lbs - Add ${{$provider->pricing_options->weight_gt_350}}</option>
-        </select>
-   </div>
-   <div class="col-sm-6"><br />
-       <select name="deceased_info[has_pace_maker]" class="form-control">
-           <option value="">Does deceased have a pacemaker?</option>
-           <option value="0" {{ ($client->DeceasedInfo->has_pace_maker=="0"?'selected':'') }}>Deceased DOES NOT have a pacemaker</option>
-           <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add ${{$provider->pricing_options->pacemaker}}</option>
-       </select>
-   </div>
-</div>
 <br />
 
     <!--<script src='https://www.google.com/recaptcha/api.js'></script>
@@ -579,7 +560,7 @@ $("#dob").datepicker( {
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
 
 <fieldset id="step3">
-<h3>Life Data <p>Additional information about the deceased</p></h3>
+<h3>Family Information <p>Additional information about the deceased</p></h3>
 
 <div class="row form-group">
    <div class="col-sm-6">
@@ -664,7 +645,140 @@ $("#dob").datepicker( {
 @endif
 
 
+
+
 @if(Session::get('step')==3 || Session::get('inAdminGroup')!='')
+    {{ Form::open(['action'=>'ClientController@postSteps7','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+    {{ Form::hidden('client_id',$client->id) }}
+    {{ Form::hidden('provider_id',$provider->id) }}
+    {{ Form::hidden('step',Session::get('step')) }}
+
+    <fieldset class="step-authorized-person" id="step6">
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <h3>Authorized Informant <p>Person authorized to make the arrangements &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Some states refer to this person as the informant. This is the person providing the information for the Death Certificate and the one authorized to request any changes needed.">?</a></p></h3>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-5"><input type="text" name="client[first_name]" id="client_first_name" value="{{($client->first_name=="unregistered"?'':$client->first_name)}}" placeholder="First Name" ></div>
+            <div class="col-sm-2"><input type="text" name="client[middle_name]" id="client_middle_name" value="{{$client->middle_name}}" placeholder="Middle" ></div>
+            <div class="col-sm-5"><input type="text" name="client[last_name]" id="client_last_name" value="{{($client->last_name=="unregistered"?'':$client->last_name)}}" placeholder="Last Name" ></div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-9"><input type="text" name="client[address]" id="client_address" value="{{$client->address}}" placeholder="Street Address" ></div>
+            <div class="col-sm-3"><input type="text" name="client[apt]" id="client_apt" value="{{$client->apt}}" placeholder="Apartment/Suite" ></div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12"><input type="text" name="client[phone]" id="client_phone" value="{{$client->phone}}" placeholder="Phone Number" ></div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-5"><input type="text" name="client[city]" id="client_city" value="{{$client->city}}" placeholder="City" ></div>
+            <div class="col-sm-2"><input type="text" name="client[state]" id="client_state" value="{{$client->state}}" placeholder="State" ></div>
+            <div class="col-sm-5"><input type="text" name="client[zip]" id="client_zip" value="{{$client->zip}}" placeholder="ZIP" ></div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">Your plans for the cremated remains &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Plans for the cremains are not always requested by the state, if a permit is issued by the state for the cremains then this information is most often requested.">?</a></div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <select name="cremains_info[cremain_plan]" class="form-control">
+                    <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option>
+                    <option value="kept_at_residence" {{ ($client->CremainsInfo->cremain_plan=="kept_at_residence"?'selected':'') }}> Kept at residence </option>
+                    <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land </option> <!--- Add ${{$provider->pricing_options->scatter_on_land}} -->
+                    <option value="you_scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_land"?'selected':'') }}> You scatter on land </option>
+                    <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea </option> <!--- Add ${{$provider->pricing_options->scatter_at_sea}} -->
+                    <option value="you_scatter_on_sea" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_sea"?'selected':'') }}> You scatter at sea </option>
+                </select>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12"><br />
+                Name and Address of person(s) who will keep the cremated remains at their residence, or county and state of ocean water if scatter at sea:<br>
+                <input type="checkbox" id="keeper_of_cremains">
+                <label for="keeper_of_cremains">Use address above</label><br>
+                <textarea name="cremains_info[keeper_of_cremains]" rows="2" cols="20" id="keeper_of_cremains_field">{{$client->CremainsInfo->keeper_of_cremains}}</textarea>
+            </div>
+        </div>
+
+        <Br /><Br />
+        <h3>Select An Urn</h3>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="owl-example" class="owl-carousel owl-theme" data-toggle="buttons" style="max-width:600px;">
+                    @foreach( $products as $product )
+                        <?php $product->product_id = ($product->product_id==''?$product->id:$product->product_id); ?>
+                        <div class="item">
+                            <table style="border:none;">
+                                <tr><td style="width:230px;">
+                                        <img src="{{ str_replace('http:','https:',$product->image) }}" style="max-width:200px;width:auto;height:auto;max-height:200px;" />
+                                    </td><td valign="top">
+                                        <h4>{{ $product->name }}</h4><Br />
+                                        Description: {{ $product->description }}<Br /><Br />
+                                        <label class="btn btn-primary {{$client_product->product_id == $product->product_id?'active':''}}" for="client_product_id{{ $product->product_id }}">
+                                            <input name="client_product[product_id]" style="display:none;" id="client_product_id{{ $product->product_id }}" value="{{ $product->product_id }}" {{$client_product->product_id == $product->product_id?'checked="true"':''}} type="radio"> &nbsp; <b>Select</b> &nbsp; ${{ $product->price }}
+                                            <input name="client_product[price][{{ $product->product_id }}]" value="{{ $product->price }}" type="hidden" />
+                                        </label>
+                                    </td></tr>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+                <hr>
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-12" >
+                <label for="client_product_note">Send Your Provider A Note About Your Urn Order</label>
+                <i><b>*</b> Urns do not come inscribed or engraved. Personalization is responsibility of client.</i><BR />
+                <textarea name="client_product[note]" id="client_product_note" style="width:100%;height:100px;">{{ $client_product->note }}</textarea>
+
+            </div>
+        </div>
+
+
+
+        <div class="row form-group">
+            <div class="col-sm-10 warn-login-text"></div>
+            <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
+        </div>
+    </fieldset>
+
+    <!-- Important Owl stylesheet -->
+    <link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.carousel.css')}}">
+    <link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.theme.css')}}">
+    <style>#owl-example table td{border:none!important;}</style>
+    <script src="{{asset('packages/owl-carousel/owl.carousel.min.js')}}"></script>
+    <script>
+
+        function updateAddr(){
+            var html = $('#client_first_name').val() +" "+ $('#client_middle_name').val() +" "+ $('#client_last_name').val() + "\n"+
+                    $('#client_address').val() +" "+ $('#client_city').val() +", "+ $('#client_state').val() +" "+ $('#client_zip').val() + "\n" +
+                    "Apt: "+$('#client_apt').val() +", phone: "+ $('#client_phone').val();
+            if($('#keeper_of_cremains').prop('checked'))$('#keeper_of_cremains_field').val(html);
+        }
+
+        $(function(){
+            var carousel = $("#owl-example").owlCarousel({
+                navigation : true, // Show next and prev buttons
+                slideSpeed : 300,
+                paginationSpeed : 400,
+                singleItem:true
+            });
+            carousel.trigger('owl.jumpTo', {{($client_product->product_id-1) }})
+            $('#keeper_of_cremains').click(function(){ updateAddr(); });
+            $('.step-authorized-person').on('change', function(){ updateAddr() });
+            $('.step-authorized-person').on('keyup', function(){ updateAddr() });
+        });
+    </script>
+    {{ Form::close() }}
+
+@endif
+
+
+@if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
 
     {{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
     {{ Form::hidden('client_id',$client->id) }}
@@ -843,8 +957,7 @@ $("#dob").datepicker( {
 
 
 
-
-@if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==5 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps5','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
@@ -899,7 +1012,7 @@ Location of Deceased:<br>
 {{ Form::close() }}
 
 @endif
-@if(Session::get('step')==5 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps6','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
@@ -947,135 +1060,7 @@ Location of Deceased:<br>
 
 @endif
 
-@if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
-{{ Form::open(['action'=>'ClientController@postSteps7','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
-{{ Form::hidden('client_id',$client->id) }}
-{{ Form::hidden('provider_id',$provider->id) }}
-{{ Form::hidden('step',Session::get('step')) }}
 
-<fieldset class="step-authorized-person" id="step6">
-<div class="row form-group">
-   <div class="col-sm-12">
-       <h3>Authorized Person <p>Person authorized to make the arrangements &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Some states refer to this person as the informant. This is the person providing the information for the Death Certificate and the one authorized to request any changes needed.">?</a></p></h3>
-   </div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-5"><input type="text" name="client[first_name]" id="client_first_name" value="{{($client->first_name=="unregistered"?'':$client->first_name)}}" placeholder="First Name" ></div>
-   <div class="col-sm-2"><input type="text" name="client[middle_name]" id="client_middle_name" value="{{$client->middle_name}}" placeholder="Middle" ></div>
-   <div class="col-sm-5"><input type="text" name="client[last_name]" id="client_last_name" value="{{($client->last_name=="unregistered"?'':$client->last_name)}}" placeholder="Last Name" ></div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-9"><input type="text" name="client[address]" id="client_address" value="{{$client->address}}" placeholder="Street Address" ></div>
-   <div class="col-sm-3"><input type="text" name="client[apt]" id="client_apt" value="{{$client->apt}}" placeholder="Apartment/Suite" ></div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-12"><input type="text" name="client[phone]" id="client_phone" value="{{$client->phone}}" placeholder="Phone Number" ></div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-5"><input type="text" name="client[city]" id="client_city" value="{{$client->city}}" placeholder="City" ></div>
-   <div class="col-sm-2"><input type="text" name="client[state]" id="client_state" value="{{$client->state}}" placeholder="State" ></div>
-   <div class="col-sm-5"><input type="text" name="client[zip]" id="client_zip" value="{{$client->zip}}" placeholder="ZIP" ></div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-12">Your plans for the cremated remains &nbsp; <a href="#" data-toggle="tooltip" data-placement="bottom" class="tooltips" title="Plans for the cremains are not always requested by the state, if a permit is issued by the state for the cremains then this information is most often requested.">?</a></div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-12">
-       <select name="cremains_info[cremain_plan]" class="form-control">
-       <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option>
-       <option value="kept_at_residence" {{ ($client->CremainsInfo->cremain_plan=="kept_at_residence"?'selected':'') }}> Kept at residence </option>
-       <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land </option> <!--- Add ${{$provider->pricing_options->scatter_on_land}} -->
-       <option value="you_scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_land"?'selected':'') }}> You scatter on land </option>
-       <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea </option> <!--- Add ${{$provider->pricing_options->scatter_at_sea}} -->
-       <option value="you_scatter_on_sea" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_sea"?'selected':'') }}> You scatter at sea </option>
-   </select>
-   </div>
-</div>
-<div class="row form-group">
-   <div class="col-sm-12"><br />
-       Name and Address of person(s) who will keep the cremated remains at their residence, or county and state of ocean water if scatter at sea:<br>
-       <input type="checkbox" id="keeper_of_cremains">
-       <label for="keeper_of_cremains">Use address above</label><br>
-       <textarea name="cremains_info[keeper_of_cremains]" rows="2" cols="20" id="keeper_of_cremains_field">{{$client->CremainsInfo->keeper_of_cremains}}</textarea>
-   </div>
-</div>
-
-<Br /><Br />
-<h3>Select An Urn</h3>
-<hr>
-<div class="row">
-   <div class="col-sm-12">
-       <div id="owl-example" class="owl-carousel owl-theme" data-toggle="buttons" style="max-width:600px;">
-           @foreach( $products as $product )
-           <?php $product->product_id = ($product->product_id==''?$product->id:$product->product_id); ?>
-               <div class="item">
-                   <table style="border:none;">
-                       <tr><td style="width:230px;">
-                       <img src="{{ str_replace('http:','https:',$product->image) }}" style="max-width:200px;width:auto;height:auto;max-height:200px;" />
-                       </td><td valign="top">
-                           <h4>{{ $product->name }}</h4><Br />
-                           Description: {{ $product->description }}<Br /><Br />
-                           <label class="btn btn-primary {{$client_product->product_id == $product->product_id?'active':''}}" for="client_product_id{{ $product->product_id }}">
-                               <input name="client_product[product_id]" style="display:none;" id="client_product_id{{ $product->product_id }}" value="{{ $product->product_id }}" {{$client_product->product_id == $product->product_id?'checked="true"':''}} type="radio"> &nbsp; <b>Select</b> &nbsp; ${{ $product->price }}
-                               <input name="client_product[price][{{ $product->product_id }}]" value="{{ $product->price }}" type="hidden" />
-                           </label>
-                       </td></tr>
-                   </table>
-               </div>
-           @endforeach
-       </div>
-<hr>
-
-   </div>
-</div>
-
-<div class="row form-group">
-   <div class="col-sm-12" >
-       <label for="client_product_note">Send Your Provider A Note About Your Urn Order</label>
-       <i><b>*</b> Urns do not come inscribed or engraved. Personalization is responsibility of client.</i><BR />
-       <textarea name="client_product[note]" id="client_product_note" style="width:100%;height:100px;">{{ $client_product->note }}</textarea>
-
-   </div>
-</div>
-
-
-
-<div class="row form-group">
-   <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
-</div>
-</fieldset>
-
-<!-- Important Owl stylesheet -->
-<link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.carousel.css')}}">
-<link rel="stylesheet" href="{{asset('packages/owl-carousel/owl.theme.css')}}">
-<style>#owl-example table td{border:none!important;}</style>
-<script src="{{asset('packages/owl-carousel/owl.carousel.min.js')}}"></script>
-<script>
-
-function updateAddr(){
-   var html = $('#client_first_name').val() +" "+ $('#client_middle_name').val() +" "+ $('#client_last_name').val() + "\n"+
-           $('#client_address').val() +" "+ $('#client_city').val() +", "+ $('#client_state').val() +" "+ $('#client_zip').val() + "\n" +
-           "Apt: "+$('#client_apt').val() +", phone: "+ $('#client_phone').val();
-   if($('#keeper_of_cremains').prop('checked'))$('#keeper_of_cremains_field').val(html);
-}
-
-$(function(){
-   var carousel = $("#owl-example").owlCarousel({
-       navigation : true, // Show next and prev buttons
-       slideSpeed : 300,
-       paginationSpeed : 400,
-       singleItem:true
-   });
-   carousel.trigger('owl.jumpTo', {{($client_product->product_id-1) }})
-   $('#keeper_of_cremains').click(function(){ updateAddr(); });
-   $('.step-authorized-person').on('change', function(){ updateAddr() });
-   $('.step-authorized-person').on('keyup', function(){ updateAddr() });
-});
-</script>
-{{ Form::close() }}
-
-@endif
 @if(Session::get('step')==7 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps8','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
@@ -1157,6 +1142,27 @@ $(function(){
        </select>
    </div>
    <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship cremains.</span></div>
+</div>
+
+
+<div class="row form-group">
+    <div class="col-sm-6">
+        Items with potential additional fees<br />
+        <select name="deceased_info[weight]" class="form-control">
+            <option value="">Weight</option>
+            <option value="weight_lt_250" {{ ($client->DeceasedInfo->weight=="weight_lt_250"?'selected':'') }} >Weight less than 250lbs - Add ${{$provider->pricing_options->weight_lt_250}}</option>
+            <option value="weight_lt_300" {{ ($client->DeceasedInfo->weight=="weight_lt_300"?'selected':'') }} >Weight 251-300lbs - Add ${{$provider->pricing_options->weight_lt_300}}</option>
+            <option value="weight_lt_350" {{ ($client->DeceasedInfo->weight=="weight_lt_350"?'selected':'') }} >Weight 301-350lbs - Add ${{$provider->pricing_options->weight_lt_350}}</option>
+            <option value="weight_gt_350" {{ ($client->DeceasedInfo->weight=="weight_gt_350"?'selected':'') }} >Weight 351lbs - Add ${{$provider->pricing_options->weight_gt_350}}</option>
+        </select>
+    </div>
+    <div class="col-sm-6"><br />
+        <select name="deceased_info[has_pace_maker]" class="form-control">
+            <option value="">Does deceased have a pacemaker?</option>
+            <option value="0" {{ ($client->DeceasedInfo->has_pace_maker=="0"?'selected':'') }}>Deceased DOES NOT have a pacemaker</option>
+            <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add ${{$provider->pricing_options->pacemaker}}</option>
+        </select>
+    </div>
 </div>
 
 
