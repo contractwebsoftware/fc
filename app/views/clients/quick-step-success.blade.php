@@ -14,8 +14,7 @@
     </div>
 </div>
 <script>
-    window.parent.scrollTo(1500,0);
-    window.parent.parent.scrollTo(1500,0);
+    window.scrollTo(1500,0);
     window.location.href="#success";
 </script>
 
