@@ -314,8 +314,8 @@ class ClientController extends BaseController {
         ClientController::postSteps2();
         ClientController::postSteps3();
         ClientController::postSteps7();
+        return View::make('clients.quick-step-success');
 
-        return "A Representative from Rogue Valley Cremation will call to confirm with the next regular business day";
     }
         
 	public function postSteps2()
