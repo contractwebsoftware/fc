@@ -14,7 +14,7 @@
     </div>
 </div>
 <script>
-    window.scrollTo(1500,0);
+    window.scrollTo(0,1500);
     window.location.href="#success";
 </script>
 
