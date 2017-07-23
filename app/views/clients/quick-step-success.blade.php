@@ -13,8 +13,11 @@
         </div>
     </div>
 </div>
-<script>window.scrollTo(0);
-    window.location("#success");</script>
+<script>
+    window.parent.scrollTo(1500,0);
+    window.parent.parent.scrollTo(1500,0);
+    window.location.href="#success";
+</script>
 
 
 @stop
