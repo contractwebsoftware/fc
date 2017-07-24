@@ -778,7 +778,7 @@ $("#dob").datepicker( {
 @endif
 
 
-@if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==8 || Session::get('inAdminGroup')!='')
 
     {{ Form::open(['action'=>'ClientController@postSteps2','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
     {{ Form::hidden('client_id',$client->id) }}
@@ -894,6 +894,27 @@ $("#dob").datepicker( {
 
             </div>
         </div>
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                Items with potential additional fees<br />
+                <select name="deceased_info[weight]" class="form-control">
+                    <option value="">Weight</option>
+                    <option value="weight_lt_250" {{ ($client->DeceasedInfo->weight=="weight_lt_250"?'selected':'') }} >Weight less than 250lbs - Add ${{$provider->pricing_options->weight_lt_250}}</option>
+                    <option value="weight_lt_300" {{ ($client->DeceasedInfo->weight=="weight_lt_300"?'selected':'') }} >Weight 251-300lbs - Add ${{$provider->pricing_options->weight_lt_300}}</option>
+                    <option value="weight_lt_350" {{ ($client->DeceasedInfo->weight=="weight_lt_350"?'selected':'') }} >Weight 301-350lbs - Add ${{$provider->pricing_options->weight_lt_350}}</option>
+                    <option value="weight_gt_350" {{ ($client->DeceasedInfo->weight=="weight_gt_350"?'selected':'') }} >Weight 351lbs - Add ${{$provider->pricing_options->weight_gt_350}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6"><br />
+                <select name="deceased_info[has_pace_maker]" class="form-control">
+                    <option value="">Does deceased have a pacemaker?</option>
+                    <option value="0" {{ ($client->DeceasedInfo->has_pace_maker=="0"?'selected':'') }}>Deceased DOES NOT have a pacemaker</option>
+                    <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add ${{$provider->pricing_options->pacemaker}}</option>
+                </select>
+            </div>
+        </div>
+
 
         <div class="row form-group">
             <div class="col-sm-10 warn-login-text"></div>
@@ -1012,7 +1033,7 @@ Location of Deceased:<br>
 {{ Form::close() }}
 
 @endif
-@if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==4 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps6','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
@@ -1061,7 +1082,7 @@ Location of Deceased:<br>
 @endif
 
 
-@if(Session::get('step')==7 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==6 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps8','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
@@ -1106,14 +1127,14 @@ Location of Deceased:<br>
 {{ Form::close() }}
 
 @endif
-@if(Session::get('step')==8 || Session::get('inAdminGroup')!='')
+@if(Session::get('step')==7 || Session::get('inAdminGroup')!='')
 {{ Form::open(['action'=>'ClientController@postSteps9','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
 {{ Form::hidden('client_id',$client->id) }}
 {{ Form::hidden('step',Session::get('step')) }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
 
 <fieldset id="step8">
-<h3>Shipping Information <p>Shipping Information for the cremains</p></h3>
+<h3>Shipping Information <p>Shipping Information for the cremains - (<i>skip if not shipping)</i>)</p></h3>
 <div class="row form-group">
    <div class="col-sm-5"><input type="text" placeholder="First Name" name="cremains_info[shipto_first_name]" value="{{$client->CremainsInfo->shipto_first_name}}" ></div>
    <div class="col-sm-2"><input type="text" placeholder="Middle" name="cremains_info[shipto_middle_name]" value="{{$client->CremainsInfo->shipto_middle_name}}" ></div>
@@ -1144,26 +1165,6 @@ Location of Deceased:<br>
    <div class="col-sm-12"><span id="shippingtext" style="FONT-SIZE: small; FONT-WEIGHT: bold; text-align: center">We can only ship by registered U.S. mail. UPS, Fedex, or other providers will NOT ship cremains.</span></div>
 </div>
 
-
-<div class="row form-group">
-    <div class="col-sm-6">
-        Items with potential additional fees<br />
-        <select name="deceased_info[weight]" class="form-control">
-            <option value="">Weight</option>
-            <option value="weight_lt_250" {{ ($client->DeceasedInfo->weight=="weight_lt_250"?'selected':'') }} >Weight less than 250lbs - Add ${{$provider->pricing_options->weight_lt_250}}</option>
-            <option value="weight_lt_300" {{ ($client->DeceasedInfo->weight=="weight_lt_300"?'selected':'') }} >Weight 251-300lbs - Add ${{$provider->pricing_options->weight_lt_300}}</option>
-            <option value="weight_lt_350" {{ ($client->DeceasedInfo->weight=="weight_lt_350"?'selected':'') }} >Weight 301-350lbs - Add ${{$provider->pricing_options->weight_lt_350}}</option>
-            <option value="weight_gt_350" {{ ($client->DeceasedInfo->weight=="weight_gt_350"?'selected':'') }} >Weight 351lbs - Add ${{$provider->pricing_options->weight_gt_350}}</option>
-        </select>
-    </div>
-    <div class="col-sm-6"><br />
-        <select name="deceased_info[has_pace_maker]" class="form-control">
-            <option value="">Does deceased have a pacemaker?</option>
-            <option value="0" {{ ($client->DeceasedInfo->has_pace_maker=="0"?'selected':'') }}>Deceased DOES NOT have a pacemaker</option>
-            <option value="1" {{ ($client->DeceasedInfo->has_pace_maker=="1"?'selected':'') }}>Deceased DOES have a pacemaker- Add ${{$provider->pricing_options->pacemaker}}</option>
-        </select>
-    </div>
-</div>
 
 
 <div class="row form-group">
@@ -1223,7 +1224,7 @@ Location of Deceased:<br>
 </div>
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
-   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
+   <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
 </div>
 </fieldset>
 {{ Form::close() }}

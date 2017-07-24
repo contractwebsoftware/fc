@@ -320,22 +320,24 @@ class ClientController extends BaseController {
         
 	public function postSteps2()
 	{
-            if(Session::get('client_id')==null || Session::get('client_id')=='')$plan_change = false;
-            else $plan_change = true;
+        if(Session::get('client_id')==null || Session::get('client_id')=='')$plan_change = false;
+        else $plan_change = true;
 
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('deceased_info'))){
-                $input['deceased_info'] = Input::get('deceased_info');
-                if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('deceased_info'))){
+            $input['deceased_info'] = Input::get('deceased_info');
+            if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
 
-                if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
-                if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
+            if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+            if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
 
-                $client->DeceasedInfo->fill($input['deceased_info']);
-                $client->DeceasedInfo->save(); 
-            }
-            
-            if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
+            $client->DeceasedInfo->fill($input['deceased_info']);
+            $client->DeceasedInfo->save();
+        }
+
+
+
+        if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
             
             if(is_array(Input::get('cremains_info'))){
                 $input['cremains_info'] = Input::get('cremains_info');
@@ -544,15 +546,9 @@ class ClientController extends BaseController {
                 $client->CremainsInfo->save(); 
             }
 
-            if(is_array(Input::get('deceased_info'))){
-                $input['deceased_info'] = Input::get('deceased_info');
-                $client->DeceasedInfo->fill($input['deceased_info']);
-                $client->DeceasedInfo->save();
-            }
-
 
         return ClientController::getSteps();
-        }
+    }
 	public function postSteps10()
 	{
             $client = ClientController::registerUser();
