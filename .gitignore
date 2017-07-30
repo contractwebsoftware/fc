@@ -13,3 +13,7 @@ public/css/.sass-cache
 public/provider_files
 /.idea
 app/config/.env
+public/provider_states_.txt
+public/provider_states_CA.txt
+public/provider_states_OR.txt
+public/provider_states_WA.txt
