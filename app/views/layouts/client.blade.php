@@ -25,7 +25,7 @@
                 <link rel="stylesheet" href="<?=asset('css/client-no-frame.css')?>">
                 <script>
                     //$(".no-frame-container,.no-frame-container div:first").width("480px");
-                    $("body, .no-frame-container").width(window.parent.document.body.clientWidth);
+                    $("body, .no-frame-container").width(parent.document.body.clientHeight);
                 </script>
                 <?php
             }
