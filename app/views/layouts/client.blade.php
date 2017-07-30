@@ -20,13 +20,21 @@
     <?php
         if(!is_null(Session::get('no-frame'))){
             $noframe = Session::get('no-frame');
-            if($noframe == 'y')echo '<link rel="stylesheet" href="'.asset('css/client-no-frame.css').'">';
+            if($noframe == 'y'){
+                ?>
+                <link rel="stylesheet" href="<?=asset('css/client-no-frame.css')?>">
+                <script>
+                    //$(".no-frame-container,.no-frame-container div:first").width("480px");
+                    $("body, .no-frame-container").width(parent.document.body.clientHeight);
+                </script>
+                <?php
+            }
         }
         else $noframe = false;
     ?>
 </head>
-<body class="<?php if($noframe == false)echo 'container';else echo 'no-frame-container';?>">
-	<div id="<?php if($noframe == false)echo 'container';?>">
+<body class="<?php if($noframe == false)echo 'container';?>">
+	<div id="<?php if($noframe == false)echo 'container';else echo 'no-frame-container';?>">
 		@yield('header')
             @if ( !Sentry::check() )
 				@include('layouts._client-header')
