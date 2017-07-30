@@ -25,7 +25,7 @@
         else $noframe = false;
     ?>
 </head>
-<body class="<?php if($noframe == false)echo 'container';?>">
+<body class="<?php if($noframe == false)echo 'container';else echo 'no-frame-container';?>">
 	<div id="<?php if($noframe == false)echo 'container';?>">
 		@yield('header')
             @if ( !Sentry::check() )
