@@ -21,10 +21,16 @@
         if(!is_null(Session::get('no-frame'))){
             $noframe = Session::get('no-frame');
             if($noframe == 'y'){
+				$w = (int)((int)Input::get('w')-300);
+				
+				$w = $w < 320 ? 320 : $w;
+				$w = $w > 1000 ? 1000 : $w;
+				
                 ?>
                 <link rel="stylesheet" href="<?=asset('css/client-no-frame.css')?>">
                 <style>
-                    body,.no-frame-container{width:100%;width:<?=Input::get('w')?>!important;}
+                    body,#no-frame-container,#content{width:<?=$w?>px!important;}
+					
                 </style>
                 <?php
             }
