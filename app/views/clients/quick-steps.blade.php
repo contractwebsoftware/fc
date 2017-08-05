@@ -15,7 +15,7 @@
 @endif
 
 <?php
-$save_button = 'Continue';
+$save_button = 'Continue to Save';
 ?>
 
 
