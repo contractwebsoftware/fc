@@ -16,6 +16,9 @@
 <script>
     window.scrollTo(0,0);
     window.location.href="#success";
+    $('body').scrollTo(0,0);
+    $("#success")[0].scrollIntoView();
+    document.getElementById("success").scrollIntoView();
 </script>
 
 
