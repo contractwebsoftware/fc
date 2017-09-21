@@ -313,6 +313,7 @@ class ClientController extends BaseController {
 
         ClientController::postSteps2();
         ClientController::postSteps3();
+        ClientController::postSteps4();
         ClientController::postSteps7();
         return View::make('clients.quick-step-success');
 
