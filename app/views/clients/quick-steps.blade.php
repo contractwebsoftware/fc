@@ -282,9 +282,7 @@ $save_button = 'Continue to Save';
 
         <div class="row form-group">
             <div class="col-sm-8 warn-login-text"></div>
-            <div class="col-sm-2">
-                <span id="siteseal"></span>
-            </div>
+            <div class="col-sm-2"><img src="{{ asset('img/ssl-seal.png') }}" /></div>
             <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
         </div>
     </fieldset>
