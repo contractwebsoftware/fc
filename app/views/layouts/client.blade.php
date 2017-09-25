@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Forcremation</title>
 	<link rel="stylesheet" href="{{ asset('packages/Bootflat/css/bootstrap.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/client.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/client.css?v=2') }}">
     <link rel="stylesheet" href="{{ asset('css/colorbox.css') }}">
     <!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/ie-only.css') }}" />
