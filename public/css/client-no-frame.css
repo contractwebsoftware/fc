@@ -8,7 +8,7 @@ body{padding:0!important;background:none!important;min-width:320px;width:100%;}
 #logo{display:none;}
 #navigation{background: #fff!important;}
 #navigation ul{margin: 0!important; }
-.navbar-right ul li{float:left;margin:0 0px!important;}
+.navbar-right li{float:left;margin:0 0px!important;}
 #step_navigation_menu{display:none;}
 
 .owl-item td:first-child{width:0px!important;vertical-align:top;}

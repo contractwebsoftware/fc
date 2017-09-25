@@ -83,7 +83,7 @@ body{font-family:sans-serif;background:#0078a5 url(../img/mainbckg.png) repeat-x
 #footer{background:lightyellow url(../img/footer.jpg) repeat-x center top;height:170px;}
 /* general styles */
 .clear{clear:both;}
-.navbar-right ul li{float:left;margin:0 0px!important;}
+.navbar-right li{float:left;margin:0 0px!important;}
 
 
 /* OVERALL STEPS LAYOUTS */
