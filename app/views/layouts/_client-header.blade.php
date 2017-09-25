@@ -46,7 +46,7 @@ else $provider_name = '';
         </div>
         <div class="col-sm-8">
             <ul class="nav navbar-nav navbar-right">
-            <li><img src="{{ asset('img/ssl-seal.png') }}" style="margin:0px;15px;"/></li>
+            <li><img src="{{ asset('img/ssl-seal.png') }}" style="margin:0px 15px;"/></li>
             <li><a href="http://www.forcremation.com?provider={{$provider_name}}">home</a></li>
             <!--<li><a href="#">how it works</a></li>
             <li><a href="{{action('ClientController@getSteps')}}">step 1</a></li>
