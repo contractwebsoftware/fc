@@ -1105,7 +1105,7 @@ Location of Deceased:<br>
        <select name="cremains_info[cert_plan]" class="form-control">
            <option value="deathcert_wurn" {{ ($client->CremainsInfo->cert_plan=="deathcert_wurn"?'selected':'') }}>Mail certificate(s) with urn- Add ${{$provider->pricing_options->deathcert_wurn}}</option>
            <option value="deathcert_cep" {{ ($client->CremainsInfo->cert_plan=="deathcert_cep"?'selected':'') }}>Mail certificate(s) separately- Add ${{$provider->pricing_options->deathcert_cep}}</option>
-           <option value="deathcert_pickup" {{ ($client->CremainsInfo->cert_plan=="deathcert_pickup"?'selected':'') }}>Pick up certificate(s) at our office- Add ${{$provider->pricing_options->deathcert_pickup}}</option>
+           <option value="deathcert_pickup" {{ (($client->CremainsInfo->cert_plan=="deathcert_pickup" || $client->CremainsInfo->cert_plan=="")?'selected':'') }}>Pick up certificate(s) at our office- Add ${{$provider->pricing_options->deathcert_pickup}}</option>
        </select>
    </div>
    <div class="col-sm-3">
