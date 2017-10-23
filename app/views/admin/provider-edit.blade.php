@@ -1017,7 +1017,7 @@
                                     </div>
                                 </td>
                                 <td >
-                                    <a href="{{ action('AdminController@getEditClient',$client->id) }}" class="btn btn-xs btn-default">
+                                    <a href="{{ action('AdminController@getEditClient',$client->id).'?no-frame=n' }}" class="btn btn-xs btn-default">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                     </a>&nbsp;
                                     <?php

@@ -1026,7 +1026,7 @@ class AdminController extends BaseController {
                     if($client->status == 3)$action = '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success pull-right" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
                     else $action = '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger pull-right" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
 
-                $action .= ' <a href="'. action('AdminController@getEditClient',$client->id) .'" class="btn btn-xs btn-default pull-right" style="margin-right:10px;">
+                $action .= ' <a href="'. action('AdminController@getEditClient',$client->id) .'?no-frame=n" class="btn btn-xs btn-default pull-right" style="margin-right:10px;">
                                 <span class="glyphicon glyphicon-pencil"></span> 
                                 </a>';
 

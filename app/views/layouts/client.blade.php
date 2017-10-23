@@ -139,9 +139,10 @@
                     });
             });
 
+            /*
             if($('#login_to_save').is(':visible') && $('fieldset#step1').text()==''){
                 $('.warn-login-text').html('<a href="#" class="warning-text" data-toggle="modal" data-target="#loginModal">For Account Access Please Create a Login and Password Here</a>');
-            }
+            }*/
 
             $('#owl-example label.btn-primary').each(function(){
                 $('#owl-example label.btn-primary').find('b').html('<i class="glyphicon glyphicon-unchecked"></i> &nbsp; Select ');
