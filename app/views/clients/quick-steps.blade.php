@@ -19,7 +19,7 @@ $save_button = 'Continue to Save';
 ?>
 
 
-{{ Form::open(['action'=>'ClientController@postQuickStep','class'=>'form-horizontal','role'=>'form','files'=>true]) }}
+{{ Form::open(['action'=>'ClientController@postQuickStep','class'=>'form-horizontal','role'=>'form','files'=>true, 'onsubmit'=>'return checkForm(this);']) }}
 
 
 {{ Form::hidden('client_id',$client->id) }}
@@ -283,10 +283,22 @@ $save_button = 'Continue to Save';
         <div class="row form-group">
             <div class="col-sm-7 warn-login-text"></div>
             <div class="col-sm-3"><img src="{{ asset('img/ssl-seal.png') }}" style="margin-left:5px;margin-right:15px;" /></div>
-            <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit" onclick="$('.step_submit').attr('disabled',true);return true;">{{$save_button}}</button><br class="clear" /></div>
+            <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
         </div>
     </fieldset>
+<script>
+    function checkForm(form)
+    {
+        //
+        // validate form fields
+        //
+        $('.step_submit').attr('disabled',true).html('Saving...');
+        
+        return true;
+    }
 
+
+</script>
 
 {{ Form::close() }}
 
