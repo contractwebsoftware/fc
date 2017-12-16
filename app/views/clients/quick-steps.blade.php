@@ -293,7 +293,7 @@ $save_button = 'Continue to Save';
         // validate form fields
         //
         $('.step_submit').attr('disabled',true).html('Saving...');
-        
+
         return true;
     }
 

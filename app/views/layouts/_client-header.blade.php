@@ -33,7 +33,7 @@ else $provider_name = '';
 </nav>
 -->
 
-
+@if($noframe == false)
 <div id="navigation">
         <ul id="provider_login_menu">
             <li><a href="{{action('UserController@getLogin')}}">Login</a></li>
@@ -71,6 +71,7 @@ else $provider_name = '';
         </div>
     </div>
 </div>
+@endif
 
 @if(is_object(Session::get('provider')))
     <div class="row selected-provider-box">
