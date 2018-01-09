@@ -499,7 +499,7 @@ $().ready(function(){
 </div>
 
 <div class="row form-group">
-    <div class="col-sm-6" style="@if(Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br />
+    <div class="col-sm-6" style="@if(!Session::get('inAdminGroup') || !($client->id!=''))display:none;@endif">Date of Death<br />
         <?php
             $dod = date('m/d/Y', strtotime($client->DeceasedInfo->dod));
             if($dod == '01/01/1970' || $dod == '11/30/-0001')$dod = '';
