@@ -8,14 +8,14 @@
         $provider = Session::get('provider');
         $provider_name = 'from '.$provider->name;
     }
-else $provider_name = '';
+    else $provider_name = '';
 ?>
 <div class="col-sm-12">
 
     <div name="success" id="success">
 
         <div class="alert alert-success">
-            <h3>Success, A Representative {{ $provider->name }} will call to confirm with the next regular business day</h3>
+            <h3>Success, a representative {{ $provider_name }} will call to confirm with the next regular business day</h3>
         </div>
     </div>
 </div>
