@@ -1,14 +1,15 @@
-@extends('layouts.client')
+@extends('layouts.master')
 @section('content')
 <?php
     if(!is_null(Session::get('no-frame')))$noframe = Session::get('no-frame');
     else $noframe = false;
 
-    if(is_object(Session::get('provider'))){
+    /*if(is_object(Session::get('provider'))){
         $provider = Session::get('provider');
         $provider_name = 'from '.$provider->business_name;
     }
-    else if(is_object($provider)) $provider_name = $provider->business_name;
+    else */
+    if(is_object($provider)) $provider_name = $provider->business_name;
     else $provider_name = '';
     //dd($provider_name);
 ?>

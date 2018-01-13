@@ -23,7 +23,7 @@ $save_button = 'Continue to Save';
 
 
 {{ Form::hidden('client_id',$client->id) }}
-{{ Form::hidden('step',Session::get('step')) }}
+{{ Form::hidden('step','') }}
 {{ Form::hidden('provider_id', (is_object($provider)?$provider->id:'1')) }}
 
 
