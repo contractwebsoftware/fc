@@ -8,6 +8,7 @@
         $provider = Session::get('provider');
         $provider_name = 'from '.$provider->name;
     }
+    elseif(is_object($provider)) $provider_name = $provider->name;
     else $provider_name = '';
 ?>
 <div class="col-sm-12">

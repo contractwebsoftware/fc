@@ -311,14 +311,14 @@ class ClientController extends BaseController {
 
     public function postQuickStep(){
 
-        //$provider_id = Input::get('provider_id');
-        //$data['provider'] = DB::table('providers')->where('id', $provider_id)->first();
+        $provider_id = Input::get('provider_id');
+        $data['provider'] = DB::table('providers')->where('id', $provider_id)->first();
 
         ClientController::postSteps2();
         ClientController::postSteps3();
         ClientController::postSteps4();
         ClientController::postSteps7();
-        return View::make('clients.quick-step-success');
+        return View::make('clients.quick-step-success', $data);
 
     }
         
