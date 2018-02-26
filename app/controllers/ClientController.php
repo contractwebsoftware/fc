@@ -327,7 +327,18 @@ class ClientController extends BaseController {
         if(Session::get('client_id')==null || Session::get('client_id')=='')$plan_change = false;
         else $plan_change = true;
 
-        $client = ClientController::registerUser();
+        if(is_array(Input::get('user')))$input['user'] = Input::get('user');
+        else {
+            $input['user'] = null;
+            $input['user']['email'] = null;
+        }
+        if(is_array(Input::get('deceased_info')))$input['deceased_info'] = Input::get('deceased_info');
+        else {
+            $input['deceased_info'] = null;
+            $input['deceased_info']['first_name'] = null;
+        }
+
+        $client = ClientController::registerUser($input['user']['email'], $input['deceased_info']['first_name']);
         if(is_array(Input::get('deceased_info'))){
             $input['deceased_info'] = Input::get('deceased_info');
             if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
@@ -338,7 +349,6 @@ class ClientController extends BaseController {
             $client->DeceasedInfo->fill($input['deceased_info']);
             $client->DeceasedInfo->save();
         }
-
 
 
         if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
@@ -415,11 +425,20 @@ class ClientController extends BaseController {
         */
 
 
-         $client = ClientController::registerUser();
+
+
+        $client = ClientController::registerUser();
         if(Input::get('provider_id')!='')ClientController::updateProvider(Input::get('provider_id'), $client);
 
         if(is_array(Input::get('deceased_info'))){
             $input['deceased_info'] = Input::get('deceased_info');
+
+            if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
+            if(!array_key_exists('on_hospice',$input['deceased_info']))$input['deceased_info']['on_hospice']=0;
+            if(!array_key_exists('in_city',$input['deceased_info']))$input['deceased_info']['in_city']=0;
+            //dd($input['deceased_info']);
+
+
 
             #dd($input['deceased_info']['dob']);
 
@@ -436,111 +455,136 @@ class ClientController extends BaseController {
 
 	public function postSteps4()
 	{
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('deceased_info'))){
-                $input['deceased_info'] = Input::get('deceased_info');
-                $client->DeceasedInfo->fill($input['deceased_info']);
-                $client->DeceasedInfo->save(); 
-            }
-            if(is_array(Input::get('deceased_family_info'))){
-                $input['deceased_family_info'] = Input::get('deceased_family_info');
-                $client->DeceasedFamilyInfo->fill($input['deceased_family_info']);
-                $client->DeceasedFamilyInfo->save(); 
-            }
-            
-            return ClientController::getSteps();	
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('deceased_info'))){
+            $input['deceased_info'] = Input::get('deceased_info');
+            $client->DeceasedInfo->fill($input['deceased_info']);
+            $client->DeceasedInfo->save();
+        }
+        if(is_array(Input::get('deceased_family_info'))){
+            $input['deceased_family_info'] = Input::get('deceased_family_info');
+            $client->DeceasedFamilyInfo->fill($input['deceased_family_info']);
+            $client->DeceasedFamilyInfo->save();
+        }
+
+        return ClientController::getSteps();
     }
 
 	public function postSteps5()
 	{
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('deceased_info_present_loc'))){
-                $input['deceased_info_present_loc'] = Input::get('deceased_info_present_loc');
-                $client->DeceasedInfoPresentLoc->fill($input['deceased_info_present_loc']);
-                $client->DeceasedInfoPresentLoc->save(); 
-            }
-            return ClientController::getSteps();	
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('deceased_info_present_loc'))){
+            $input['deceased_info_present_loc'] = Input::get('deceased_info_present_loc');
+            $client->DeceasedInfoPresentLoc->fill($input['deceased_info_present_loc']);
+            $client->DeceasedInfoPresentLoc->save();
         }
+        return ClientController::getSteps();
+    }
+
 	public function postSteps6()
 	{
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('client'))){
-                $input['client'] = Input::get('client');
-                $client->fill($input['client']);
-                DB::table('clients')->where('id', $client->id)->update($input['client']);
-            }
-            return ClientController::getSteps();	   
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('client'))){
+            $input['client'] = Input::get('client');
+            $client->fill($input['client']);
+            DB::table('clients')->where('id', $client->id)->update($input['client']);
         }
+        return ClientController::getSteps();
+    }
+
 	public function postSteps7()
 	{
-            $client = ClientController::registerUser();
-            if($client->CremainsInfo->keeper_of_cremains == "" and $client->address=='')$new_client=true;
-            else $new_client=false;
-            
-            
-            if(is_array(Input::get('client'))){
-                $input['client'] = Input::get('client');
-                $client->fill($input['client']);
-                DB::table('clients')->where('id', $client->id)->update($input['client']);
-            }
-            if(is_array(Input::get('cremains_info'))){
-                $input['cremains_info'] = Input::get('cremains_info');
-                $client->CremainsInfo->fill($input['cremains_info']);
-                $client->CremainsInfo->save(); 
-            }
-            $provider_id = Input::get('provider_id');
-            if($provider_id == '')$provider_id = Session::get('provider_id');
-            if($provider_id == '')$provider_id = $this->default_provider_id;
+        $pass = 'unregistered';
 
-            if(is_array(Input::get('client_product'))){
-                $client_product = Input::get('client_product');
-                
-                $cliend_product_r = ClientProducts::where('provider_id', $provider_id)->where('client_id', Input::get('client_id'))->first();
-                #dd(Input::all());
-                if($cliend_product_r == null){
-
-                    $cliend_product_r = new ClientProducts();
-                    $cliend_product_r->provider_id = $provider_id;
-                    $cliend_product_r->client_id = $client->id;
-                }
-                $cliend_product_r->product_id = $client_product['product_id'];
-                $cliend_product_r->price = $client_product['price'][$client_product['product_id']];
-                $cliend_product_r->note = $client_product['note'];
-                $cliend_product_r->save();
-                #dd( DB::getQueryLog());
-                
-            }
-            
-            
-            if($new_client){
-                if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
-                else {
-                    $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
-                    $mail_data['provider'] = FProvider::find($provider_id);
-                }
-                $mail_data['client'] = $client;
-                $mail_data['type'] = 'started';
-                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
-                {
-                    $message->subject('A new customer has started the ForCremation Registration');
-                    $message->to($mail_data['provider']->email);
-                    Log::info('A new customer has started the ForCremation Registration Emailed: '.$mail_data['provider']->email);
-                });
-            }
-            
-            return ClientController::getSteps();	   
+        if(is_array(Input::get('user')))$input['user'] = Input::get('user');
+        else {
+            $input['user'] = null;
+            $input['user']['email'] = null;
         }
+        if(is_array(Input::get('deceased_info')))$input['deceased_info'] = Input::get('deceased_info');
+        else {
+            $input['deceased_info'] = null;
+            $input['deceased_info']['first_name'] = null;
+        }
+
+        $client = ClientController::registerUser($input['user']['email'], $input['deceased_info']['first_name']);
+        if($input['user']['email']){
+            $user = $client->User;
+            $user->email = $input['user']['email'];
+            $user->save();
+        }
+        if($client->CremainsInfo->keeper_of_cremains == "" and $client->address=='')$new_client=true;
+        else $new_client=false;
+
+
+        if(is_array(Input::get('client'))){
+            $input['client'] = Input::get('client');
+            $client->fill($input['client']);
+            DB::table('clients')->where('id', $client->id)->update($input['client']);
+        }
+
+
+
+        if(is_array(Input::get('cremains_info'))){
+            $input['cremains_info'] = Input::get('cremains_info');
+            $client->CremainsInfo->fill($input['cremains_info']);
+            $client->CremainsInfo->save();
+        }
+        $provider_id = Input::get('provider_id');
+        if($provider_id == '')$provider_id = Session::get('provider_id');
+        if($provider_id == '')$provider_id = $this->default_provider_id;
+
+        if(is_array(Input::get('client_product'))){
+            $client_product = Input::get('client_product');
+
+            $cliend_product_r = ClientProducts::where('provider_id', $provider_id)->where('client_id', Input::get('client_id'))->first();
+            #dd(Input::all());
+            if($cliend_product_r == null){
+
+                $cliend_product_r = new ClientProducts();
+                $cliend_product_r->provider_id = $provider_id;
+                $cliend_product_r->client_id = $client->id;
+            }
+            $cliend_product_r->product_id = $client_product['product_id'];
+            $cliend_product_r->price = $client_product['price'][$client_product['product_id']];
+            $cliend_product_r->note = $client_product['note'];
+            $cliend_product_r->save();
+            #dd( DB::getQueryLog());
+
+        }
+
+
+        if($new_client){
+            if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+            else {
+                $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
+                $mail_data['provider'] = FProvider::find($provider_id);
+            }
+            $mail_data['client'] = $client;
+            $mail_data['type'] = 'started';
+            Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
+            {
+                $message->subject('A new customer has started the ForCremation Registration');
+                $message->to($mail_data['provider']->email);
+                Log::info('A new customer has started the ForCremation Registration Emailed: '.$mail_data['provider']->email);
+            });
+        }
+
+        return ClientController::getSteps();
+    }
+
 	public function postSteps8()
 	{
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('cremains_info'))){
-                $input['cremains_info'] = Input::get('cremains_info');
-                $client->CremainsInfo->fill($input['cremains_info']);
-                $client->CremainsInfo->save(); 
-            }
-            
-            return ClientController::getSteps();	   
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('cremains_info'))){
+            $input['cremains_info'] = Input::get('cremains_info');
+            $client->CremainsInfo->fill($input['cremains_info']);
+            $client->CremainsInfo->save();
         }
+
+        return ClientController::getSteps();
+    }
+
 	public function postSteps9()
 	{
             $client = ClientController::registerUser();
@@ -563,52 +607,53 @@ class ClientController extends BaseController {
 	public function postSteps11()
 	{
            
-            if(is_array(Input::get('client'))){
-                $input['client'] = Input::get('client');
-                if(!array_key_exists('confirmed_legal_auth',$input['client']))$input['client']['confirmed_legal_auth'] = null;
-                if(!array_key_exists('confirmed_correct_info',$input['client']))$input['client']['confirmed_correct_info'] = null;
-                if(!array_key_exists('confirmed_legal_auth_name',$input['client']))$input['client']['confirmed_legal_auth_name'] = null;
-                if(!array_key_exists('confirmed_terms',$input['client']))$input['client']['confirmed_terms'] = null;
-                if(!array_key_exists('confirmed_correct_info_initial',$input['client']))$input['client']['confirmed_correct_info_initial'] = null;
-                
-                $validate_inputs = ['Confirmed Legal Authorization Checkbox'=>$input['client']['confirmed_legal_auth'],
-                                    'Confirmed Correct Information Checkbox'=>$input['client']['confirmed_correct_info'],
-                                    'Your Name'=>$input['client']['confirmed_legal_auth_name'],
-                                    'Confirmed Terms Checkbox'=>$input['client']['confirmed_terms'],
-                                    'Your Initials'=>$input['client']['confirmed_correct_info_initial']];
-                $rules = ['Confirmed Legal Authorization Checkbox'=>'required','Confirmed Correct Information Checkbox'=>'required',
-                            'Your Name'=>'required','Your Initials'=>'required'];
-                $v = Validator::make($validate_inputs,$rules);
-                if( $v->fails() ) return Redirect::back()->withErrors($v);
-            } else return Redirect::back();
-            
-            $client = ClientController::registerUser();
-            if(is_array(Input::get('client'))){
-                $input['client'] = Input::get('client');
-                $client->fill($input['client']);
-                DB::table('clients')->where('id', $client->id)->update($input['client']);
-                
-                if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
-                else {
-                    $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
-                    $mail_data['provider'] = FProvider::find($provider_id);
-                }
-                $mail_data['client'] = $client;
-                $mail_data['type'] = 'completed';
-                //echo '<pre>';dd($mail_data);
-                Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
-                {
-                    //$message->from('us@example.com', 'Laravel');
-                    $message->subject('New customer has completed ForCremation Registration Process');
-                    $message->to($mail_data['provider']->email);
-                    //dd($mail_data['provider']->email);
-                    //$message->attach($pathToFile);
-                    Log::info('New customer has completed ForCremation Registration Process Emailed: '.$mail_data['provider']->email);
-                });
+        if(is_array(Input::get('client'))){
+            $input['client'] = Input::get('client');
+            if(!array_key_exists('confirmed_legal_auth',$input['client']))$input['client']['confirmed_legal_auth'] = null;
+            if(!array_key_exists('confirmed_correct_info',$input['client']))$input['client']['confirmed_correct_info'] = null;
+            if(!array_key_exists('confirmed_legal_auth_name',$input['client']))$input['client']['confirmed_legal_auth_name'] = null;
+            if(!array_key_exists('confirmed_terms',$input['client']))$input['client']['confirmed_terms'] = null;
+            if(!array_key_exists('confirmed_correct_info_initial',$input['client']))$input['client']['confirmed_correct_info_initial'] = null;
 
+            $validate_inputs = ['Confirmed Legal Authorization Checkbox'=>$input['client']['confirmed_legal_auth'],
+                                'Confirmed Correct Information Checkbox'=>$input['client']['confirmed_correct_info'],
+                                'Your Name'=>$input['client']['confirmed_legal_auth_name'],
+                                'Confirmed Terms Checkbox'=>$input['client']['confirmed_terms'],
+                                'Your Initials'=>$input['client']['confirmed_correct_info_initial']];
+            $rules = ['Confirmed Legal Authorization Checkbox'=>'required','Confirmed Correct Information Checkbox'=>'required',
+                        'Your Name'=>'required','Your Initials'=>'required'];
+            $v = Validator::make($validate_inputs,$rules);
+            if( $v->fails() ) return Redirect::back()->withErrors($v);
+        } else return Redirect::back();
+
+        $client = ClientController::registerUser();
+        if(is_array(Input::get('client'))){
+            $input['client'] = Input::get('client');
+            $client->fill($input['client']);
+            DB::table('clients')->where('id', $client->id)->update($input['client']);
+
+            if(is_object(Session::get('provider')))$mail_data['provider'] = Session::get('provider');
+            else {
+                $provider_id = Session::get('provider_id')==''?$this->default_provider_id:Session::get('provider_id');
+                $mail_data['provider'] = FProvider::find($provider_id);
             }
-            return ClientController::getSteps();	  
+            $mail_data['client'] = $client;
+            $mail_data['type'] = 'completed';
+            //echo '<pre>';dd($mail_data);
+            Mail::send('emails.provider-client-status', $mail_data, function($message) use($mail_data)
+            {
+                //$message->from('us@example.com', 'Laravel');
+                $message->subject('New customer has completed ForCremation Registration Process');
+                $message->to($mail_data['provider']->email);
+                //dd($mail_data['provider']->email);
+                //$message->attach($pathToFile);
+                Log::info('New customer has completed ForCremation Registration Process Emailed: '.$mail_data['provider']->email);
+            });
+
         }
+        return ClientController::getSteps();
+    }
+
 
     public function postUpdateEmail()
     {
@@ -784,8 +829,8 @@ class ClientController extends BaseController {
         
         
         //CREATE A NEW CLIENT ACCOUNT OR TEMP CLIENT ACCOUNT
-        public function registerUser(){
-            
+        public function registerUser($email = '', $pass = 'unregistered'){
+            if($pass == '')$pass = 'unregistered';
             $create_client = false;
             $client = null;
             //dd(Session::get('client_id'));
@@ -864,16 +909,16 @@ class ClientController extends BaseController {
                         'first_name' => "unregistered",
                         'last_name' => "unregistered"
                     );
-                    
- 
+
                 $client = new Client();  
                 $client->fill($client_input);     
                 $client->save();     
                 //dd( "creatd new user:".$client->id);
                 
+                if($email == '')$email = 'unregistered'.$client->id.'@user.com';
                 $user = Sentry::createUser(array(
-                        'email'     => 'unregistered'.$client->id.'@user.com',
-                        'password'  => 'unregistered', 
+                        'email'     => $email,
+                        'password'  => $pass,
                         'role'  => 'client',
                         'activated' => true
                     ));
@@ -1342,6 +1387,8 @@ class ClientController extends BaseController {
             'DeceasedInfo_has_pace_maker',
             'DeceasedInfo_cremation_reason',
             'DeceasedInfo_medical_donation',
+            'DeceasedInfo_on_hospice',
+            'DeceasedInfo_in_city',
             'DeceasedInfo_ssn',
             
             'CremainsInfo_number_of_certs',

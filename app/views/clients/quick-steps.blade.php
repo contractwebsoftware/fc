@@ -64,6 +64,13 @@ $save_button = 'Continue to Save';
 </div>
 
 <div class="row form-group">
+    <div class="col-sm-12" >
+        <input name="deceased_info[in_city]" id="in_city" type="checkbox" value="1" style="cursor:pointer;float:left;margin-right:10px;" {{ ($client->DeceasedInfo->in_city=="1"?'checked':'') }} />
+        <label for="in_city"  style="float:left;cursor:pointer;">In City Limits</label>
+    </div>
+</div>
+
+<div class="row form-group">
    <div class="col-sm-12"><input name="deceased_info[birth_city_state]" type="text" placeholder="City and State of Birth" value="{{$client->DeceasedInfo->birth_city_state}}"/></div>
 </div>
 <div class="row form-group">
@@ -100,14 +107,21 @@ $save_button = 'Continue to Save';
             $dod = date('m/d/Y', strtotime($client->DeceasedInfo->dod));
             if($dod == '01/01/1970' || $dod == '11/30/-0001')$dod = '';
         ?>
-        <input name="deceased_info[dod]" id="dod" class="calendar" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{ $dod }}" /></div>
+        <input name="deceased_info[dod]" id="dod" class="calendar date placeholder" type="text" placeholder="Date of Death MM/DD/YYYY" value="{{ $dod }}" /></div>
 
     <div class="col-sm-12">Date of Birth<br />
         <?php
             $dob = date('m/d/Y', strtotime($client->DeceasedInfo->dob));
             if($dob == '01/01/1970' || $dob == '11/30/-0001')$dob = '';
         ?>
-        <input name="deceased_info[dob]" id="dob" type="text" class="calendar" placeholder="Date of Birth MM/DD/YYYY" value="{{ $dob }}" /></div>
+        <input name="deceased_info[dob]" id="dob" type="text" class="calendar date" placeholder="Date of Birth MM/DD/YYYY" value="{{ $dob }}" /></div>
+</div>
+
+<div class="row form-group">
+    <div class="col-sm-12" >
+        <input name="deceased_info[on_hospice]" id="on_hospice" type="checkbox" value="1" style="cursor:pointer;float:left;margin-right:10px;" {{ ($client->DeceasedInfo->on_hospice=="1"?'checked':'') }} />
+        <label for="on_hospice" style="cursor:pointer;float:left;margin-right:10px;">On Hospice</label>
+    </div>
 </div>
 
 <br />
@@ -118,7 +132,7 @@ $save_button = 'Continue to Save';
 
 
 <fieldset id="step3">
-<h3>Family Information <p>Additional information about the deceased</p></h3>
+<h3>Family Information For Death Certificate <p>Additional information about the deceased</p></h3>
 
 <div class="row form-group">
    <div class="col-sm-6">
@@ -176,7 +190,7 @@ $save_button = 'Continue to Save';
 </div>
 
 <div class="row form-group">
-   <div class="col-sm-12"><input name="deceased_family_info[fthr_birth_city]" value="{{$client->DeceasedFamilyInfo->fthr_birth_city}}" type="text" placeholder="Father's birth state" ></div>
+   <div class="col-sm-12"><input name="deceased_family_info[fthr_birth_city]" value="{{$client->DeceasedFamilyInfo->fthr_birth_city}}" type="text" placeholder="Father's birth state, california only" ></div>
 </div>
 
 <i>Mother</i><br />
@@ -187,6 +201,9 @@ $save_button = 'Continue to Save';
    <div class="col-sm-5"><input name="deceased_family_info[mthr_last_name]" value="{{$client->DeceasedFamilyInfo->mthr_last_name}}" type="text" placeholder="Maiden Name" ></div>
 </div>
 
+<div class="row form-group">
+    <div class="col-sm-12"><input name="deceased_family_info[mthr_birth_city]" value="{{$client->DeceasedFamilyInfo->mthr_birth_city}}" type="text" placeholder="Mother's birth state, california only" ></div>
+</div>
 
 
 </fieldset>
@@ -212,6 +229,9 @@ $save_button = 'Continue to Save';
             <div class="col-sm-12"><input type="text" name="client[phone]" id="client_phone" value="{{$client->phone}}" placeholder="Phone Number" ></div>
         </div>
         <div class="row form-group">
+            <div class="col-sm-12"><input type="text" name="user[email]" id="client_email" value="{{ $client->User->email }}" placeholder="Your Email" ></div>
+        </div>
+        <div class="row form-group">
             <div class="col-sm-5"><input type="text" name="client[city]" id="client_city" value="{{$client->city}}" placeholder="City" ></div>
             <div class="col-sm-2"><input type="text" name="client[state]" id="client_state" value="{{$client->state}}" placeholder="State" ></div>
             <div class="col-sm-5"><input type="text" name="client[zip]" id="client_zip" value="{{$client->zip}}" placeholder="ZIP" ></div>
@@ -222,12 +242,12 @@ $save_button = 'Continue to Save';
         <div class="row form-group">
             <div class="col-sm-12">
                 <select name="cremains_info[cremain_plan]" class="form-control">
-                    <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option>
-                    <option value="kept_at_residence" {{ ($client->CremainsInfo->cremain_plan=="kept_at_residence"?'selected':'') }}> Kept at residence </option>
+                    <option value="kept_at_residence" {{ (($client->CremainsInfo->cremain_plan=="kept_at_residence" || $client->CremainsInfo->cremain_plan=='')?'selected':'') }}> Kept at residence </option>
                     <option value="scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="scatter_on_land"?'selected':'') }}> We scatter on land </option> <!--- Add ${{$provider->pricing_options->scatter_on_land}} -->
                     <option value="you_scatter_on_land" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_land"?'selected':'') }}> You scatter on land </option>
                     <option value="scatter_at_sea" {{ ($client->CremainsInfo->cremain_plan=="scatter_at_sea"?'selected':'') }}> We scatter at sea </option> <!--- Add ${{$provider->pricing_options->scatter_at_sea}} -->
                     <option value="you_scatter_on_sea" {{ ($client->CremainsInfo->cremain_plan=="you_scatter_on_sea"?'selected':'') }}> You scatter at sea </option>
+                    <option value="burial" {{ ($client->CremainsInfo->cremain_plan=="burial"?'selected':'') }}> Burial </option>
                 </select>
             </div>
         </div>
@@ -286,22 +306,8 @@ $save_button = 'Continue to Save';
             <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">{{$save_button}}</button><br class="clear" /></div>
         </div>
     </fieldset>
-<script>
-    function checkForm(form)
-    {
-        //
-        // validate form fields
-        //
-        $('.step_submit').attr('disabled',true).html('Saving...');
-
-        return true;
-    }
-
-
-</script>
 
 {{ Form::close() }}
-
 
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
@@ -327,6 +333,16 @@ $save_button = 'Continue to Save';
         if($('#keeper_of_cremains').prop('checked'))$('#keeper_of_cremains_field').val(html);
     }
 
+    function checkForm(form)
+    {
+        //
+        // validate form fields
+        //
+        $('.step_submit').attr('disabled',true).html('Saving...');
+
+        return true;
+    }
+
     $(function(){
         var carousel = $("#owl-example").owlCarousel({
             navigation : true, // Show next and prev buttons
@@ -338,6 +354,26 @@ $save_button = 'Continue to Save';
         $('#keeper_of_cremains').click(function(){ updateAddr(); });
         $('.step-authorized-person').on('change', function(){ updateAddr() });
         $('.step-authorized-person').on('keyup', function(){ updateAddr() });
+
+
+        $('#dod,#dob').on('blur', function(){
+            //var this_date = $.datepicker.parseDate('dd/mm/yyyy', $(this).val());
+            //$(this).val( this_date );
+            if( $(this).val() == '')return;
+            var formattedDate = new Date( $(this).val() );
+            var d = formattedDate.getDate();
+            d = (d < 10) ? '0' + d : d;
+
+            var m =  formattedDate.getMonth();
+            m += 1;  // JavaScript months are 0-11
+            m = (m < 10) ? '0' + m : m;
+
+            var y = formattedDate.getFullYear();
+
+            $(this).val(m + "/" + d + "/" + y);
+            if(m == NaN || d == NaN || y == NaN)$(this).val('');
+        });
+
     });
 
     $('#submit').click(function(){
