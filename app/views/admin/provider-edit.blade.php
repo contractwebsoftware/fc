@@ -941,6 +941,7 @@
         </div><!--/col-12-->
         </div><!--/row-->
     </div> <!-- /END zip info tab -->
+@endif <!--//end admin only -->
 
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.css"/>
@@ -1227,7 +1228,6 @@
             });
         }
     </script>
-   @endif
 
 
 
