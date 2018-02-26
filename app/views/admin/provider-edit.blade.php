@@ -956,26 +956,7 @@
 <script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/1.0.0/css/dataTables.responsive.css">
 -->
-<script>
-    $(document).ready(function(){
-        $('#provider_clients_table')
-                .DataTable( {
-                    "pagingType": "full_numbers",
-                    "pageLength": 25
-                } );
-        $('#provider_clients_invoice_table')
-                .DataTable( {
-                    "pagingType": "full_numbers",
-                    "pageLength": 25
-                } );
-        $('#provider_clients_signed_table')
-                .DataTable( {
-                    "pagingType": "full_numbers",
-                    "pageLength": 25
-                } );
 
-    });
-</script>
     <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
@@ -1039,7 +1020,28 @@
             </div><!--/col-12-->
         </div><!--/row-->
     </div> <!-- /END Client info tab -->
+        <script>
 
+            $(document).ready(function(){
+                $('#provider_clients_table')
+                        .DataTable( {
+                            "pagingType": "full_numbers",
+                            "pageLength": 25,
+                            "order": [[ 3, "desc" ]]
+                        } );
+                $('#provider_clients_invoice_table')
+                        .DataTable( {
+                            "pagingType": "full_numbers",
+                            "pageLength": 25
+                        } );
+                $('#provider_clients_signed_table')
+                        .DataTable( {
+                            "pagingType": "full_numbers",
+                            "pageLength": 25
+                        } );
+
+            });
+        </script>
 @if($provider->freshbooks_clients_enabled == '1' and $provider->freshbooks_api_url != '' and $provider->freshbooks_api_token != '')
 
 <div class="tab-pane {{$current_tab=='client_invoices'?'active':''}}" id="client_invoices" name="client_invoices">

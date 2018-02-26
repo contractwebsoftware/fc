@@ -1020,7 +1020,15 @@ class AdminController extends BaseController {
                     case 1:$status =  '<span class="pull-right">Completed';break;
                     case 3:$status =  '<span class="pull-right">Deleted';break;
                 }
+
+                $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
+                if($client_DeceasedInfo!=null){
+                    if($client_DeceasedInfo->cremation_reason == "planning_for_future")$client->preneed = "y";
+                }
+
                 if($client->preneed == "y")$status .=  '/Pre-Need';
+
+
                 $status .=  '</span>';
 
                     if($client->status == 3)$action = '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success pull-right" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
