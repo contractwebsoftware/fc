@@ -1,6 +1,7 @@
 @section('content')
+    <script src="//cdn.ckeditor.com/4.4.4/full/ckeditor.js"></script>
 
-<div class="row" style="margin:0 5px;">
+    <div class="row" style="margin:0 5px;">
     <div class="col-xs-12">
         <h2>Edit Provider &nbsp; <i style="font-size:14px;">{{ $provider->business_name }}</i></h2>
         <hr>
@@ -701,6 +702,32 @@
                         .form_sheet td{border:1px solid #999;} 
                 </style>
 
+                <script>
+                    $().ready( function() {
+                       var editor = CKEDITOR.replace( 'custom_provider_form', { height: '500px' });
+                       editor.config.enterMode = CKEDITOR.ENTER_BR;
+
+                       $('.form_keys li').click(function() {
+                         //alert('awesome'+$(this).text());
+                         //$(".cke_source:first").insertAtCaret($(this).text());
+                         //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
+                         var editor = CKEDITOR.instances.custom_provider_form;
+                         editor.insertText( $(this).text() );
+
+                         return false
+                       });
+                       /*
+                       $("#DragWordList li").draggable({helper: 'clone'});
+                       $(".txtDropTarget").droppable({
+                         accept: "#DragWordList li",
+                         drop: function(ev, ui) {
+                           $(this).insertAtCaret(ui.draggable.text());
+                         }
+                       });*/
+
+                     });
+
+                </script>
                
                 {{ Form::close() }}
                 </fieldset>
@@ -1534,37 +1561,7 @@
 </div> <!-- /END Help1 info tab -->
 
 
-<script src="//cdn.ckeditor.com/4.4.4/full/ckeditor.js"></script>
 
-<script>
-
-
-
-    $().ready( function() {
-        var editor = CKEDITOR.replace( 'custom_provider_form', { height: '500px' });
-        editor.config.enterMode = CKEDITOR.ENTER_BR;
-
-        $('.form_keys li').click(function() {
-            //alert('awesome'+$(this).text());
-            //$(".cke_source:first").insertAtCaret($(this).text());
-            //$('.cke_wysiwyg_frame:first').src($('.cke_wysiwyg_frame:first'));
-            var editor = CKEDITOR.instances.custom_provider_form;
-            editor.insertText( $(this).text() );
-
-            return false
-        });
-        /*
-         $("#DragWordList li").draggable({helper: 'clone'});
-         $(".txtDropTarget").droppable({
-         accept: "#DragWordList li",
-         drop: function(ev, ui) {
-         $(this).insertAtCaret(ui.draggable.text());
-         }
-         });*/
-
-    });
-
-</script>
 <script src="{{ asset('js/jquery.colorbox-min.js') }}"></script>
 <script>
     $().ready(function(){
