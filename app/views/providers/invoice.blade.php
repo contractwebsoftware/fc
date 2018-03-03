@@ -125,7 +125,7 @@
                 Signature:____________________________
 
                 Date:_____________________-->
-                <hr style="page-break-after:always" />
+                <hr style="page-break-after:always;border: none;" />
                 <div class="row">
                     <div id="terms" class="col-xs-6 pull-left" style=";">
                         <h5>Terms</h5>
