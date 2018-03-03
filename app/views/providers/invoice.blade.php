@@ -125,14 +125,15 @@
                 Signature:____________________________
 
                 Date:_____________________-->
+                <hr style="page-break-after:always" />
                 <div class="row">
                     <div id="terms" class="col-xs-6 pull-left" style=";">
                         <h5>Terms</h5>
-                        <textarea id="terms_text" name="custom_invoice_email[fb_invoice_terms]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{($client->fb_invoice_terms!=''?$client->fb_invoice_terms:$provider->freshbooks_terms)}}</textarea>
+                        <textarea id="terms_text" name="custom_invoice_email[fb_invoice_terms]" style="height:250px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{($client->fb_invoice_terms!=''?$client->fb_invoice_terms:$provider->freshbooks_terms)}}</textarea>
                     </div>
                     <div id="terms" class="col-xs-6 pull-right" style="">
                         <h5>Notes</h5>
-                        <textarea name="custom_invoice_email[fb_invoice_notes]" style="height:80px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{$client->fb_invoice_notes}}</textarea>
+                        <textarea name="custom_invoice_email[fb_invoice_notes]" style="height:250px;overflow-y:auto;border:1px solid #aaa;text-align:left;padding:2px;">{{$client->fb_invoice_notes}}</textarea>
                     </div>
                 </div>
                 <div class="row">
