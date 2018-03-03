@@ -950,7 +950,9 @@ class AdminController extends BaseController {
 
                 //->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id');
 
-            $clients_count = Client::select(DB::raw('count(*) as count'));
+            $clients_count = Client::select(DB::raw('count(*) as count'))
+                                    ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id');
+
             if(Input::get('status')!="")
             {
                 if(Input::get('status')==0 || Input::get('status')==1){
@@ -966,35 +968,50 @@ class AdminController extends BaseController {
                     $clients_count->where('clients.status','like',3)->withTrashed();
                 }
             }
+            if(Input::get('preneed')=="1") {
+                $clients->where('deceased_info.cremation_reason','=','planning_for_future');
+                $clients_count->where('deceased_info.cremation_reason','=','planning_for_future');
+            }
+
         }
-        
-        if(Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!=''){
+
+        if((Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!='') || Input::get('provider_id')!=''){
             //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
             /*$clients->leftJoin('clients_providers', function($join)
                 {
                     $join->on('clients_providers.client_id', '=', 'clients.id')->andOn('clients_providers.provider_id','=',Session::get('logged_in_provider_id'));
                 })*/
             //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+
             $clients->whereExists(function($query)
             {
+                $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
                 $query->select(DB::raw(1))
                     ->from('clients_providers')
-                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
+                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$this_provider_id."'");
+            });
+            $clients_count->whereExists(function($query)
+            {
+                $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
+                $query->select(DB::raw(1))
+                    ->from('clients_providers')
+                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$this_provider_id."'");
             });
         }
 
         $clients_count_o = $clients_count->first();
         $total_count = $clients_count_o->count;
         $clients = $clients->orderBy($cols_r[$order['column']], $order['dir'] )->paginate($per_page);
-
+        //if(Input::get('preneed') == '1')$total_count = 0;
 
         $return_data = ["draw"=> Input::get('draw'), "recordsTotal"=> $total_count,  "recordsFiltered"=> $total_count, 'data'=>Array()];
 
-        //DB::connection()->enableQueryLog();
-        //$queries = DB::getQueryLog();
-        //dd($queries);
 
-        //dd($clients);
+
+        #DB::connection()->enableQueryLog();
+        #$queries = DB::getQueryLog();
+        #dd($queries);
+        #dd($clients);
         $counter = 0;
         foreach($clients as $client){
             $provider_id = Session::get('provider_id');
@@ -1054,11 +1071,13 @@ class AdminController extends BaseController {
                             );
 
 
-                $counter++;
+            $counter++;
 
             array_push($return_data['data'], $row_data);
 
+
         }
+
 
        return  $return_data;
 

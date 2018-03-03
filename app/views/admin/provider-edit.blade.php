@@ -40,7 +40,7 @@
                     <fieldset>
                     {{ Form::open(['action'=>'AdminController@postUpdateProvider','class'=>'form-horizontal','role'=>'form']) }}
                             {{ Form::hidden("provider[id]",$provider->id) }}
-                                
+
                                     <div class="form-group" {{(Sentry::getUser()->role=='admin')?'':'style="display:none;"'}}>
                                         <label  class="col-sm-2" for="provider_status">Provider Status</label>
                                         <div class="col-sm-10">
@@ -977,6 +977,39 @@
             <div class="col-xs-12">
             {{  $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links()  }}
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <ul class="nav nav-pills">
+                            <li class="disabled"><a href="#">Filter:</a></li>
+                            <?php
+                            if(array_key_exists('status', $_GET))$status = $_GET['status'];
+                            else $status='';
+                            if(array_key_exists('preneed', $_GET))$preneed = $_GET['preneed'];
+                            else $preneed='';
+                            ?>
+
+                            <li {{ ($status=="2" && !array_key_exists('q', $_GET)?'class="active"':'') }}>
+                                <a href="{{ URL::to(action('AdminController@getEditProvider') .'/'.$provider->id."?". http_build_query(array('status'=>'2', 'current_tab'=>'provider_clients')) ) }}">All</a>
+                            </li>
+                            <!-- Active=0 Completed=2 Deleted=3 -->
+                            <li {{ (($status=="0"||$status=="") && ($status=="" || $preneed=="0"||$preneed=="")?'class="active"':'') }}>
+                                <a href="{{ URL::to(action('AdminController@getEditProvider') .'/'.$provider->id."?". http_build_query(array('status'=>'0', 'current_tab'=>'provider_clients')) ) }}">Active</a></li>
+                            <li {{ ($status=="0" && $preneed=="1"?'class="active"':'') }}>
+                                <a href="{{ URL::to(action('AdminController@getEditProvider') .'/'.$provider->id."?". http_build_query(array('status'=>'0','preneed'=>'1', 'current_tab'=>'provider_clients')) ) }}">Pre-need</a>
+                            </li>
+                            <li {{ ($status=="1"?'class="active"':'') }}>
+                                <a href="{{ URL::to(action('AdminController@getEditProvider') .'/'.$provider->id."?". http_build_query(array('status'=>'1', 'current_tab'=>'provider_clients')) ) }}">Completed</a>
+                            </li>
+                            <li {{ ($status=="3"?'class="active"':'') }}>
+                                <a href="{{ URL::to(action('AdminController@getEditProvider') .'/'.$provider->id."?". http_build_query(array('status'=>'3', 'current_tab'=>'provider_clients')) ) }}">Deleted</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-md-6 text-right">
+
+                    </div>
+                </div>
 
             <table class="display" cellspacing="0" width="100%" id="provider_clients_table">
                 <thead>
@@ -996,41 +1029,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php /*
-                    @foreach( $clients as $client )
-                        <tr>
-                                <td >{{ $client->first_name.' '.$client->last_name }}</td>
-                                <td >{{ $client->deceased_first_name.' '.$client->deceased_last_name }}</td>
-                                <td >{{ $client->phone }}</td>
-                                <td >{{ date('m/d/Y',strtotime($client->created_at)) }}</td>
-                                <td style="font-size:11px;">@if($client->user != null) {{ $client->user->email }} @endif</td>
-                                <td  >
-                                    <div data-toggle="tooltip" data-html="true" class="tooltips" data-placement="bottom"
-                            title="<div style='text-align:left;'><b>Date Created</b>: {{ date("m/d/Y",strtotime($client->created_at)) }}
-                                    <br /><b>Agreed To FTC</b>: {{$client->agreed_to_ftc?'Yes':'No'}}<br /><b>Confirmed Legal Auth</b>: {{$client->confirmed_legal_auth?'Yes':'No'}}
-                                    <br /><b>Confirmed Correct Info</b>: {{$client->confirmed_correct_info?'Yes':'No'}}<br /> <b>Relationship</b>: {{$client->relationship}}</div>">
-                                    <?php
-                                        switch($client->status){
-                                            case 0:echo 'Active';break;
-                                            case 1:echo 'Completed';break;
-                                            case 3:echo 'Deleted';break;
-                                        }
-                                        if($client->preneed == "y")echo '/Pre-Need';
-                                    ?>
-                                    </div>
-                                </td>
-                                <td >
-                                    <a href="{{ action('AdminController@getEditClient',$client->id).'?no-frame=n' }}" class="btn btn-xs btn-default">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>&nbsp;
-                                    <?php
-                                    if($client->status == 3)echo '<a href="'.action('AdminController@getUnDeleteClient',$client->id).'" class="btn btn-xs btn-success" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> UnDelete</a>';
-                                    else echo '<a href="'.action('AdminController@getDeleteClient',$client->id).'" class="btn btn-xs btn-danger" onclick="return confirm(\'Are you sure?\')"><span class="glyphicon glyphicon-trash"></span> </a>';
-                                    ?>
-                                </td>
-                        </tr>
-                    @endforeach
-                    */ ?>
                 </tbody>
             </table>
                 @if(count($clients)<1)
@@ -1070,6 +1068,7 @@
                                 "data": function ( d ) {
                                     d.status = "{{ Input::get('status') }}";
                                     d.preneed = "{{ Input::get('preneed') }}";
+                                    d.provider_id = "{{ $provider->id }}";
                                     d.page = $('#provider_clients_table').DataTable().page.info().page+1;
                                     // etc
                                 },
