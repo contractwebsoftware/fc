@@ -731,28 +731,31 @@ class AdminController extends BaseController {
     {
         Session::put('client_providers_id',$provider_id);
         $per_page = 1000;
-        $clients = Client::with('user');
-        $clients->whereExists(function($query)
-            {
-                $provider_id = Session::get('client_providers_id');
-                $query->select(DB::raw(1))
-                      ->from('clients_providers')
-                      ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
-                //dd("clients_providers.client_id = clients.id and clients_providers.provider_id='".$provider_id."'");
-            });
+        $clients = Client::with('user')
+                ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id');
+
 
         if($invoiced_only)$clients->whereRaw("clients.fb_invoice_id !=''");
 
-        $clients->orderBy('created_at', 'desc');
+        if((Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!='') || Input::get('provider_id')!=''){
+            $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
+            $clients->where('clients_providers.provider_id', $this_provider_id);
+        }
+
+
+
+
+        $clients->orderBy('clients.created_at', 'desc');
         $clients = $clients->paginate($per_page);
         $clients->setBaseUrl('provider_clients');
 
         //$clients = $clients->get();
 
         foreach($clients as $client){
-            $provider_id = Session::get('provider_id');
-            if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
-            else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            //$provider_id = Session::get('provider_id');
+            //if($provider_id!='')$client->provider = DB::table('clients_providers')->where('client_id', $client->id)->where('provider_id', $provider_id)->first();
+            //else $client->provider = DB::table('clients_providers')->where('client_id', $client->id)->first();
+            //if($client->client_provider_id != null)$client->provider = FProvider::find($client->client_provider_id);
 
 
             $client_DeceasedInfo = DeceasedInfo::where('client_id', $client->id)->first();
@@ -980,29 +983,6 @@ class AdminController extends BaseController {
             $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
             $clients->where('clients_providers.provider_id', $this_provider_id);
             $clients_count->where('clients_providers.provider_id', $this_provider_id);
-
-            //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
-            /*$clients->leftJoin('clients_providers', function($join)
-                {
-                    $join->on('clients_providers.client_id', '=', 'clients.id')->andOn('clients_providers.provider_id','=',Session::get('logged_in_provider_id'));
-                })*/
-            //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
-
-            /*
-            $clients->whereExists(function($query)
-            {
-                $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
-                $query->select(DB::raw(1))
-                    ->from('clients_providers')
-                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$this_provider_id."'");
-            });
-            $clients_count->whereExists(function($query)
-            {
-                $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
-                $query->select(DB::raw(1))
-                    ->from('clients_providers')
-                    ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$this_provider_id."'");
-            });*/
         }
 
         $clients_count_o = $clients_count->first();
