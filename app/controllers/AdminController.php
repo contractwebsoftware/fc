@@ -904,7 +904,7 @@ class AdminController extends BaseController {
                 ->join('users', 'clients.user_id', '=', 'users.id')
                 ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
 
-                ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
+                ->where('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
                 ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
                 ->orWhere('clients.zip','like','%'.$q.'%')->orWhere('clients.city','like','%'.$q.'%')
                 ->orWhere('clients.first_name','like','%'.$q.'%')->orWhere('clients.last_name','like','%'.$q.'%')
@@ -921,7 +921,7 @@ class AdminController extends BaseController {
                 ->join('users', 'clients.user_id', '=', 'users.id')
                 ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id')
 
-                ->where('clients.zip','like','%'.$q.'%')->orWhere('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
+                ->where('clients.phone','like','%'.$q.'%')->orWhere('clients.state','like','%'.$q.'%')
                 ->orWhere('clients.address','like','%'.$q.'%')->orWhere('legal_name','like','%'.$q.'%')
                 ->orWhere('clients.zip','like','%'.$q.'%')->orWhere('clients.city','like','%'.$q.'%')
                 ->orWhere('clients.first_name','like','%'.$q.'%')->orWhere('clients.last_name','like','%'.$q.'%')
@@ -951,7 +951,8 @@ class AdminController extends BaseController {
                 //->join('cremains_info', 'cremains_info.client_id', '=', 'clients.id');
 
             $clients_count = Client::select(DB::raw('count(*) as count'))
-                                    ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id');
+                                    ->join('deceased_info', 'clients.id', '=', 'deceased_info.client_id')
+                                    ->join('clients_providers', 'clients_providers.client_id', '=', 'clients.id');
 
             if(Input::get('status')!="")
             {
@@ -976,6 +977,10 @@ class AdminController extends BaseController {
         }
 
         if((Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!='') || Input::get('provider_id')!=''){
+            $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
+            $clients->where('clients_providers.provider_id', $this_provider_id);
+            $clients_count->where('clients_providers.provider_id', $this_provider_id);
+
             //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
             /*$clients->leftJoin('clients_providers', function($join)
                 {
@@ -983,6 +988,7 @@ class AdminController extends BaseController {
                 })*/
             //$clients = $clients->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".Session::get('logged_in_provider_id')."'");
 
+            /*
             $clients->whereExists(function($query)
             {
                 $this_provider_id = Input::get('provider_id') != '' ? Input::get('provider_id') : Session::get('logged_in_provider_id');
@@ -996,7 +1002,7 @@ class AdminController extends BaseController {
                 $query->select(DB::raw(1))
                     ->from('clients_providers')
                     ->whereRaw("clients_providers.client_id = clients.id and clients_providers.provider_id='".$this_provider_id."'");
-            });
+            });*/
         }
 
         $clients_count_o = $clients_count->first();
