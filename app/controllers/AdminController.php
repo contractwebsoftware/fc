@@ -240,7 +240,7 @@ class AdminController extends BaseController {
         }
         else $data['provider_homepage_files'] = array();
         //echo '<pre>';dd($data);
-        $data['clients'] = AdminController::getProviderCustomers($id);
+        //$data['clients'] = AdminController::getProviderCustomers($id);
         $data['invoiced_clients'] = AdminController::getProviderCustomers($id, true);
 
         //dd($data['clients']);

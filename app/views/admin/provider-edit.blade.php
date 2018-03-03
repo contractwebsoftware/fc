@@ -975,7 +975,6 @@
     <div class="tab-pane {{$current_tab=='provider_clients'?'active':''}}" id="provider_clients">
 	<div class="row">
             <div class="col-xs-12">
-            {{  $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links()  }}
 
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
@@ -1031,11 +1030,7 @@
                 <tbody>
                 </tbody>
             </table>
-                @if(count($clients)<1)
-                    <br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br />
-                @endif
 
-            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links() }}
 
             </div><!--/col-12-->
         </div><!--/row-->
@@ -1094,7 +1089,7 @@
 <div class="tab-pane {{$current_tab=='client_invoices'?'active':''}}" id="client_invoices" name="client_invoices">
     <div class="row">
         <div class="col-xs-12">
-            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
+            {{ $invoiced_clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
             <fieldset>
                 <table class="display" cellspacing="0" width="100%" id="provider_clients_invoice_table">
                     <thead>
@@ -1173,7 +1168,7 @@
                     <br /><center><b><i style="color:green;">Your clients will appear here when they register</i></b></center><br />
                 @endif
             </fieldset>
-            {{ $clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
+            {{ $invoiced_clients->appends(array('id' => $provider->id,'current_tab'=>'client_invoices'))->links() }}
 
         </div><!--/col-12-->
     </div><!--/row-->
