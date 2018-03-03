@@ -84,8 +84,8 @@ Route::get('test2',function(){
 
 Route::get('/',function(){
 
-   // header("Location: https://provider.forcremation.com/clients/steps");
-   // die();
+    header("Location: https://provider.forcremation.com/clients/steps");
+    die();
 });
 
 
