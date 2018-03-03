@@ -9,7 +9,7 @@
     <ul class="nav nav-pills">
             <li class="{{(strpos(Request::path(),'admin/customers')!==false || strpos(Request::path(),'clients/steps')!==false?'active':'')}}"><a href="{{ action('AdminController@getCustomers') }}">My Clients</a></li>
             <li class="{{(strpos(Request::path(),'admin/providers')!==false || strpos(Request::path(),'admin/edit-provider')!==false?'active':'')}}"><a href="{{ action('AdminController@getProviders')}}">Provider Setup</a></li>
-            <li class="{{(strpos(Request::path(),'admin/setting')!==false?'active':'')}}"><a href="{{ action('AdminController@getSetting') }}">Account Settings</a></li>
+            <!--<li class="{{(strpos(Request::path(),'admin/setting')!==false?'active':'')}}"><a href="{{ action('AdminController@getSetting') }}">Account Settings</a></li>-->
             <li ><a href="{{ action('UserController@getLogout')}}">Logout</a></li>
     </ul>
     <div class="clear"></div>

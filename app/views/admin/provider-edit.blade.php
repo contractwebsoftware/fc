@@ -645,6 +645,7 @@
                     <li>{{DeceasedInfo_dod}}</li>
                     <li>{{DeceasedInfo_gender}}</li>
                     <li>{{DeceasedInfo_race}}</li>
+                    <li>{{DeceasedInfo_IsHispanic}}</li>
                     <li>{{DeceasedInfo_weight}}</li>
                     <li>{{DeceasedInfo_marriage_status}}</li>
                     <li>{{DeceasedInfo_birth_city_state}}</li>
@@ -951,6 +952,20 @@
         width: 80%;
     }
     #provider_clients_table,#provider_clients_invoice_table,#provider_clients_signed_table{ table-layout: auto!important; }
+    #provider_clients_table_processing{
+        position: absolute;
+        font-weight: bold;
+        background-color: #428bca;
+        color: #fff;
+        padding: 15px 25px;
+        margin-top: -60px;
+        left: 50%;
+        margin-left: -100px;
+        width: 150px;
+        border-radius: 5px;
+    }
+    #provider_clients_table_filter{float:left;margin-top:6px;}
+    #provider_clients_table_length{margin-top:-43px;}
 </style>
 <!--
 <script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.min.js"></script>
@@ -962,19 +977,26 @@
             <div class="col-xs-12">
             {{  $clients->appends(array('id' => $provider->id,'current_tab'=>'provider_clients'))->links()  }}
 
+
             <table class="display" cellspacing="0" width="100%" id="provider_clients_table">
                 <thead>
                     <tr>
+                        <th style="width:30px">
+                            <input type="checkbox" onclick="checkall();" id="checkallcb" style="float: left;" />
+                            <label for="checkallcb" style="cursor:pointer;white-space:nowrap;">All</label>
+                        </th>
                         <th>Customer Name</th>
                         <th>Deceased Name</th>
                         <th>Phone</th>
                         <th>Date</th>
+                        <th>Provider</th>
                         <th>Customer Email</th>
-                        <th >Status</th>
-                        <th >Actions</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php /*
                     @foreach( $clients as $client )
                         <tr>
                                 <td >{{ $client->first_name.' '.$client->last_name }}</td>
@@ -1008,7 +1030,7 @@
                                 </td>
                         </tr>
                     @endforeach
-
+                    */ ?>
                 </tbody>
             </table>
                 @if(count($clients)<1)
@@ -1027,7 +1049,33 @@
                         .DataTable( {
                             "pagingType": "full_numbers",
                             "pageLength": 25,
-                            "order": [[ 3, "desc" ]]
+                            "processing": true,
+                            "serverSide": true,
+                            "order": [[ 4, "desc" ]],
+                            "columnDefs": [
+                                {
+                                    "targets": [ 0 ],
+                                    "visible": false,
+                                    "searchable": false
+                                },
+                                {
+                                    "targets": [ 5 ],
+                                    "visible": false,
+                                    "searchable": false
+                                }
+                            ],
+                            "ajax": {
+                                "url": "{{ action('AdminController@getCustomerList') }}",
+                                "type": "GET",
+                                "data": function ( d ) {
+                                    d.status = "{{ Input::get('status') }}";
+                                    d.preneed = "{{ Input::get('preneed') }}";
+                                    d.page = $('#provider_clients_table').DataTable().page.info().page+1;
+                                    // etc
+                                },
+                            },
+                            //"dom": '<"top"ilfp>rt<"bottom"flp><"clear">'
+                            "dom": '<"top"tifp>rt<"bottom"pl><"clear">'
                         } );
                 $('#provider_clients_invoice_table')
                         .DataTable( {

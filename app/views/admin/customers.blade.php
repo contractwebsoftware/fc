@@ -19,6 +19,8 @@
             width: 150px;
             border-radius: 5px;
         }
+        #clients_table_filter{margin-top:5px;}
+        #clients_table_paginate{margin-top:-40px;}
     </style>
     <script>
         $(document).ready(function(){
@@ -40,7 +42,7 @@
                                 // etc
                             }
                         },
-                        "dom": '<"top"ilfp>rt<"bottom"flp><"clear">'
+                        "dom": '<"top"ifp>rt<"bottom"pl><"clear">'
                     } );
 
         });

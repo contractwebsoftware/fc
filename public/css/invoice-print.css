@@ -2,6 +2,6 @@
 .delete,.no-print {
   display: none;
 }
-#terms_text{height:300px;}
+#terms_text{height:400px;overflow-y:auto;overflow:visible;}
 
 #invoice-page-wrap #meta{ float: none!important;width:250px!important; }

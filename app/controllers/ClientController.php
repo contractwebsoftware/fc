@@ -1493,7 +1493,7 @@ class ClientController extends BaseController {
                     $class = new Client();
                     $class->$key = '';
                 }
-                ## TRANSFORM DATES
+                ## TRANSFORM DATES AND OTHER
                 switch($key){
                     case 'dob':
                     case 'dod':
@@ -1501,6 +1501,15 @@ class ClientController extends BaseController {
                         if($class->$key == '0000-00-00'  || $class->$key == '11/30/-0001' || $class->$key == null  || $class->$key == '01/01/1970' || date('m/d/Y', strtotime($class->$key)) == '01/01/1970')$class->$key = '';
                         else $class->$key = date('m/d/Y', strtotime($class->$key)); break;
 
+                    default: break;
+                }
+
+                ## SPECIAL CASE TRANSFORMS
+                switch($key){
+                    case 'race':
+                        if( is_object($client->DeceasedInfo) )
+                        $html = str_replace('{{DeceasedInfo_IsHispanic}}', ($client->DeceasedInfo->race == 'Hispanic or Latino' ? 'Yes' : 'No'), $html);
+                        
                     default: break;
                 }
 

@@ -967,6 +967,7 @@ class AdminController extends BaseController {
                 }
             }
         }
+        
         if(Sentry::getUser()->role=='provider' && Session::get('logged_in_provider_id')!=''){
             //$clients = $clients->leftJoin('clients_providers', 'clients_providers.client_id','=', 'clients.id');
             /*$clients->leftJoin('clients_providers', function($join)
