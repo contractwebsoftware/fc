@@ -215,7 +215,7 @@ class ClientController extends BaseController {
                     $("#new_provider option[value*=\'funeralhome-\']").attr("disabled", true );
 
                     var val = $(this).val();
-                    if(val == null or !val)val = "";
+                    if(val == null || !val)val = "";
                     if(val == "" || val.toLowerCase().indexOf("funeralhome-") >= 0){
                         $("#new_provider option:contains(\'provider-\')").attr("selected",true);
                         $("#new_provider option[value*=\'provider-\']").attr("selected", true );
