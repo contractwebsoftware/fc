@@ -1331,7 +1331,9 @@ class ClientController extends BaseController {
             'client_is_junk',
             'client_purchase_option',
             'client_majority_count',
-            
+
+            'User_email',
+
             'provider_business_name',
             'provider_address',
             'provider_city',
@@ -1440,6 +1442,9 @@ class ClientController extends BaseController {
                 switch ($object) {
                     case 'client':
                         $class = $client;
+                        break;
+                    case 'User':
+                        $class = $client->User;
                         break;
                     case 'provider':
                         $class = $provider;

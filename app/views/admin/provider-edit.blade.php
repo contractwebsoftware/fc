@@ -584,6 +584,9 @@
                     <li>{{client_is_junk}}</li>
                     <li>{{client_purchase_option}}</li>
                     <li>{{client_majority_count}}<Br /><br /></li>
+
+                    <li><b>Account Information</b></li>
+                    <li>{{User_email}}<Br /><br /></li>
                     
                     <li><b>Urn Selection</b></li>
                     <li>{{ClientProducts_name}}</li>
