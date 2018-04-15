@@ -319,7 +319,7 @@ class ClientController extends BaseController {
 
         if($deceased_info['dob'] == '' or date('Y-m-d', strtotime($deceased_info['dob']) == '0000-00-00') ){
             Session::flash('warning','Please enter a valid date of birth');
-            return Redirect::back();
+            //return Redirect::back();
             //return ClientController::getSteps();
         }
         //if($deceased_info['dod'] == '' or date('m/d/Y', strtotime($deceased_info['dod']));
