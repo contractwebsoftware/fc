@@ -338,6 +338,16 @@ $save_button = 'Continue to Save';
         //
         // validate form fields
         //
+        var dod =  $('#dod').val();
+        var dob =  $('#dob').val();
+        var message = "";
+        if(dod == '')message = "Please enter a date of death";
+        if(dob == '')message = "Please enter a date of birth";
+        if(message != ''){
+            alert(message);
+            return false;
+        }
+
         $('.step_submit').attr('disabled',true).html('Saving...');
 
         return true;

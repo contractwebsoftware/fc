@@ -315,6 +315,15 @@ class ClientController extends BaseController {
         $provider_id = Input::get('provider_id');
         $data['provider'] = DB::table('providers')->where('id', $provider_id)->first();
 
+        $deceased_info = Input::get('deceased_info');
+
+        if($deceased_info['dob'] == '' or date('Y-m-d', strtotime($deceased_info['dob']) == '0000-00-00') ){
+            Session::flash('warning','Please enter a valid date of birth');
+            return ClientController::getSteps();
+        }
+        //if($deceased_info['dod'] == '' or date('m/d/Y', strtotime($deceased_info['dod']));
+
+
         ClientController::postSteps2();
         ClientController::postSteps3();
         ClientController::postSteps4();
