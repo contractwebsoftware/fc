@@ -341,10 +341,11 @@ $save_button = 'Continue to Save';
         var dod =  $('#dod').val();
         var dob =  $('#dob').val();
         var message = "";
-        if(dod == '')message = "Please enter a date of death";
+        //if(dod == '')message = "Please enter a date of death";
         if(dob == '')message = "Please enter a date of birth";
         if(message != ''){
             alert(message);
+            $('#dob').focus();
             return false;
         }
 
