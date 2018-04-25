@@ -173,7 +173,7 @@ $save_button = 'Continue to Save';
 
 
 <strong>Family Information</strong><br />
-<i>Surviving spouse/SRDP</i><br />
+<i>Spouse/SRDP</i><br />
 
 <div class="row form-group">
    <div class="col-sm-5"><input name="deceased_family_info[srdp_first_name]" value="{{$client->DeceasedFamilyInfo->srdp_first_name}}" type="text" placeholder="First Name"></div>
