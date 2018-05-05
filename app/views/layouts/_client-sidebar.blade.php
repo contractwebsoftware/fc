@@ -12,16 +12,29 @@
             switch(Session::get('step')){
                 case 1: $vid = "006.m4v"; break;
                 case 2: $vid = "007.m4v"; break;
-                case 3: $vid = "005.m4v"; break;
-                case 4: $vid = "008.m4v"; break;
-                case 5: $vid = "009.m4v"; break;
-                case 6: $vid = "010.m4v"; break;
-                case 7: $vid = "011.m4v"; break;
-                case 8: $vid = "013.m4v"; break;
+                case 3: $vid = "010.m4v"; break;//5
+                case 4: $vid = "009.m4v"; break;
+                case 5: $vid = "008.m4v"; break;//9
+                case 6: $vid = "011.m4v"; break;
+                case 7: $vid = "013.m4v"; break;//11
+                case 8: $vid = "005.m4v"; break;//013
                 case 9: $vid = "014.m4v"; break;
                 case 10: $vid = "015.m4v"; break;
                 case 11: $vid = "016.m4v"; break;
             }
+        /*
+         * 005 =
+         * 006 = death cert information
+         * 007 = family info
+         * 008 = location address
+         * 009 = line of authority
+         * 010 =
+         * 011 = death cert copies
+         * 013 = shipping info
+         * 014 =
+         * 015 =
+         * 016 =
+         */
         ?>
         
         
