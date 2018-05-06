@@ -1323,7 +1323,19 @@ Location of Deceased:<br>
        Type Last 4 of SSN here: <input type="text" class="form-control" id="ssn" name="client[ssn]" value="{{$client->ssn}}">
    </div>
 </div>
-<Br /><Br />
+
+@if(Session::get('inAdminGroup')!='')
+<Br />
+<div class="row form-group">
+    <div class="col-sm-12">
+        <label for="notes" >Client Notes (by ForCremation Staff)</label>
+
+        <textarea placeholder="Client Notes" name="client[notes]" style="height:200px;" >{{$client->notes}}</textarea>
+    </div>
+</div>
+@endif
+
+    <Br /><Br />
 <div class="row form-group">
    <div class="col-sm-10 warn-login-text"></div>
    <div class="col-sm-2"><button type="submit" name="submit" value="submit" class="step_submit">Submit</button><br class="clear" /></div>
