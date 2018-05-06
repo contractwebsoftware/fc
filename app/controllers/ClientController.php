@@ -317,9 +317,11 @@ class ClientController extends BaseController {
 
         $deceased_info = Input::get('deceased_info');
 
-        if($deceased_info['dob'] == '' or date('Y-m-d', strtotime($deceased_info['dob']) == '0000-00-00') ){
+        if($deceased_info['dob'] == '' or date('Y-m-d', strtotime($deceased_info['dob'])) == '0000-00-00'){
+            //dd($deceased_info['dob'] );
             Session::flash('warning','Please enter a valid date of birth');
             //return Redirect::back();
+            return Redirect::back();
             //return ClientController::getSteps();
         }
         //if($deceased_info['dod'] == '' or date('m/d/Y', strtotime($deceased_info['dod']));
@@ -343,22 +345,30 @@ class ClientController extends BaseController {
             $input['user'] = null;
             $input['user']['email'] = null;
         }
+        /*
         if(is_array(Input::get('deceased_info')))$input['deceased_info'] = Input::get('deceased_info');
         else {
             $input['deceased_info'] = null;
             $input['deceased_info']['first_name'] = null;
         }
-
+        */
+        $input['deceased_info'] = Input::get('deceased_info');
         $client = ClientController::registerUser($input['user']['email'], $input['deceased_info']['first_name']);
-        if(is_array(Input::get('deceased_info'))){
-            $input['deceased_info'] = Input::get('deceased_info');
+        if(is_array($input['deceased_info'])){
+
             if(!array_key_exists('medical_donation',$input['deceased_info']))$input['deceased_info']['medical_donation']=0;
 
-            if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
-            if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
+            if($input['deceased_info']['dob']!='')$dob = $input['deceased_info']['dob'];
+            if($input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+            if($input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
+
+            if($input['deceased_info']['dob'] == '' or $input['deceased_info']['dob'] == '0000-00-00')$input['deceased_info']['dob'] = $dob;
+            //dd($input['deceased_info']);
 
             $client->DeceasedInfo->fill($input['deceased_info']);
+
             $client->DeceasedInfo->save();
+
         }
 
 
@@ -469,6 +479,8 @@ class ClientController extends BaseController {
         $client = ClientController::registerUser();
         if(is_array(Input::get('deceased_info'))){
             $input['deceased_info'] = Input::get('deceased_info');
+            if(@$input['deceased_info']['dob']!='')$input['deceased_info']['dob'] = date('Y-m-d', strtotime($input['deceased_info']['dob']));
+            if(@$input['deceased_info']['dod']!='')$input['deceased_info']['dod'] = date('Y-m-d', strtotime($input['deceased_info']['dod']));
             $client->DeceasedInfo->fill($input['deceased_info']);
             $client->DeceasedInfo->save();
         }
@@ -512,11 +524,12 @@ class ClientController extends BaseController {
             $input['user'] = null;
             $input['user']['email'] = null;
         }
+        /*
         if(is_array(Input::get('deceased_info')))$input['deceased_info'] = Input::get('deceased_info');
         else {
             $input['deceased_info'] = null;
             $input['deceased_info']['first_name'] = null;
-        }
+        }*/
 
         $client = ClientController::registerUser($input['user']['email'], $input['deceased_info']['first_name']);
         if($input['user']['email']){
